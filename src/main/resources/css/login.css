@@ -1,0 +1,287 @@
+.root {
+    -fx-font-family: "System";
+}
+
+/* =========================================================
+   BACKGROUND
+   ========================================================= */
+
+.background-overlay {
+    /* Nền rất nhẹ để giữ nguyên texture của background */
+    -fx-background-color: rgba(244, 241, 232, 0.08);
+}
+
+
+/* =========================================================
+   LOGIN CARD
+   ========================================================= */
+
+.login-card {
+    -fx-background-color: rgba(255, 255, 255, 0.94);
+    -fx-background-radius: 24px;
+
+    -fx-border-color: rgba(200, 168, 120, 0.45);
+    -fx-border-width: 1px;
+    -fx-border-radius: 24px;
+
+    -fx-effect: dropshadow(
+            gaussian,
+            rgba(79, 96, 74, 0.15),
+            25,
+            0.20,
+            0,
+            8
+    );
+}
+
+
+/* =========================================================
+   MOON
+   ========================================================= */
+
+.moon-icon {
+    -fx-text-fill: #C8A878;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 42px;
+    -fx-font-weight: normal;
+}
+
+
+/* =========================================================
+   TITLE
+   ========================================================= */
+
+.login-title {
+    -fx-text-fill: #4F604A;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 27px;
+    -fx-font-weight: bold;
+}
+
+.login-description {
+    -fx-text-fill: #6F8068;
+    -fx-font-size: 13px;
+    -fx-padding: 0 0 10px 0;
+}
+
+
+/* =========================================================
+   INPUT GROUP
+   ========================================================= */
+
+.input-group {
+    -fx-padding: 0;
+}
+
+.input-label {
+    -fx-text-fill: #4F604A;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+
+/* =========================================================
+   INPUT FIELD
+   ========================================================= */
+
+.input-field {
+    -fx-background-color: #FFFFFF;
+
+    -fx-background-radius: 22px;
+
+    -fx-border-color: #D8D8CE;
+    -fx-border-radius: 22px;
+    -fx-border-width: 1px;
+
+    -fx-text-fill: #4F604A;
+    -fx-prompt-text-fill: #9AA095;
+
+    -fx-font-size: 13px;
+    -fx-padding: 0 15px;
+}
+
+.input-field:hover {
+    -fx-border-color: #B8C2B1;
+}
+
+.input-field:focused {
+    -fx-border-color: #6F8068;
+    -fx-border-width: 1.5px;
+
+    -fx-background-color: #FFFFFF;
+
+    -fx-effect: dropshadow(
+            gaussian,
+            rgba(111, 128, 104, 0.20),
+            9,
+            0.25,
+            0,
+            0
+    );
+}
+
+
+/* =========================================================
+   PASSWORD BUTTON
+   ========================================================= */
+
+.password-button {
+    -fx-background-color: #FFFFFF;
+
+    -fx-background-radius: 22px;
+
+    -fx-border-color: #D8D8CE;
+    -fx-border-radius: 22px;
+    -fx-border-width: 1px;
+
+    -fx-text-fill: #6F8068;
+
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+}
+
+.password-button:hover {
+    -fx-background-color: #F4F1E8;
+    -fx-border-color: #B8C2B1;
+    -fx-text-fill: #4F604A;
+}
+
+
+/* =========================================================
+   REMEMBER LOGIN
+   ========================================================= */
+
+.remember-check {
+    -fx-text-fill: #596556;
+    -fx-font-size: 11px;
+}
+
+.remember-check .box {
+    -fx-background-color: #FFFFFF;
+
+    -fx-border-color: #AEB7A8;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+.remember-check:hover .box {
+    -fx-border-color: #6F8068;
+}
+
+.remember-check:selected .box {
+    -fx-background-color: #6F8068;
+    -fx-border-color: #6F8068;
+}
+
+.remember-check:selected .mark {
+    -fx-background-color: #FFFFFF;
+}
+
+
+/* =========================================================
+   FORGOT PASSWORD
+   ========================================================= */
+
+.forgot-password {
+    -fx-text-fill: #B18B54;
+
+    -fx-font-size: 11px;
+
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+
+    -fx-cursor: hand;
+}
+
+.forgot-password:hover {
+    -fx-text-fill: #C8A878;
+}
+
+
+/* =========================================================
+   LOGIN BUTTON
+   ========================================================= */
+
+.login-button {
+    -fx-background-color: #6F8068;
+
+    -fx-background-radius: 24px;
+    -fx-border-radius: 24px;
+
+    -fx-text-fill: #FFFFFF;
+
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+
+    -fx-cursor: hand;
+
+    -fx-effect: dropshadow(
+            gaussian,
+            rgba(79, 96, 74, 0.20),
+            8,
+            0.20,
+            0,
+            3
+    );
+}
+
+.login-button:hover {
+    -fx-background-color: #4F604A;
+
+    -fx-effect: dropshadow(
+            gaussian,
+            rgba(45, 58, 43, 0.48),
+            32,
+            0.25,
+            0,
+            10
+    );
+}
+
+.login-button:pressed {
+    -fx-background-color: #43523F;
+}
+
+
+/* =========================================================
+   SEPARATOR
+   ========================================================= */
+
+.separator {
+    -fx-background-color: rgba(200, 168, 120, 0.35);
+
+    -fx-pref-height: 1px;
+    -fx-min-height: 1px;
+    -fx-max-height: 1px;
+}
+
+.separator-star {
+    -fx-text-fill: #C8A878;
+    -fx-font-size: 13px;
+}
+
+
+/* =========================================================
+   REGISTER
+   ========================================================= */
+
+.register-text {
+    -fx-text-fill: #899187;
+    -fx-font-size: 11px;
+}
+
+.register-link {
+    -fx-text-fill: #B18B54;
+
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+
+    -fx-cursor: hand;
+}
+
+.register-link:hover {
+    -fx-text-fill: #C8A878;
+}

@@ -1,0 +1,42 @@
+                    ┌──────────────────┐
+                    │   login.fxml     │
+                    │   Login Screen   │
+                    └────────┬─────────┘
+                             │
+                             ▼
+                    Người dùng nhập
+                  Username + Password
+                             │
+                             ▼
+                    [ ĐĂNG NHẬP ]
+                             │
+                             ▼
+                  LoginController
+                             │
+                             ▼
+                 Kiểm tra dữ liệu nhập
+                             │
+                 ┌───────────┴───────────┐
+                 │                       │
+              Không hợp lệ            Hợp lệ
+                 │                       │
+                 ▼                       ▼
+              Alert ERROR          Kiểm tra tài khoản
+                                         │
+                                         ▼
+                                  Kiểm tra username
+                                  + password
+                                         │
+                              ┌──────────┴──────────┐
+                              │                     │
+                           Sai mật khẩu          Đúng
+                           / tài khoản             │
+                              │                    ▼
+                              ▼              Kiểm tra ROLE
+                         Alert ERROR              │
+                                          ┌───────┴────────┐
+                                          │                │
+                                       OWNER           EMPLOYEE
+                                          │                │
+                                          ▼                ▼
+                                AdminDashboard.fxml  EmployeeDashboard.fxml
