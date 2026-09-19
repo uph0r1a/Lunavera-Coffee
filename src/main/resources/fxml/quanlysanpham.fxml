@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<BorderPane fx:id="QuanLySanPhamRoot"
+            prefWidth="1600"
+            prefHeight="1000"
+            stylesheets="@../css/quanlysanpham.css"
+            xmlns="http://javafx.com/javafx/26"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.controller.AdminController">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <left>
+        <VBox fx:id="sidebar"
+              prefWidth="230"
+              minWidth="230"
+              maxWidth="230"
+              styleClass="sidebar">
+
+            <!-- ================= LOGO ================= -->
+
+            <VBox alignment="CENTER"
+                  prefHeight="115"
+                  styleClass="logo-section">
+                <ImageView fx:id="logoImage"
+                           fitHeight="90"
+                           fitWidth="155"
+                           preserveRatio="true">
+                    <image>
+                        <Image url="@../images/LunaveraLogo.png"/>
+                    </image>
+                </ImageView>
+            </VBox>
+
+            <!-- ================= MENU ================= -->
+
+            <VBox fx:id="menuContainer"
+                  spacing="5"
+                  styleClass="menu-container">
+
+                <Button fx:id="homeButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        styleClass="menu-button"
+                        text="⌂   Trang chủ"
+                        onAction="#handleNavigation"/>
+
+                <Button fx:id="productButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        styleClass="menu-button,menu-button-active"
+                        text="▣   Quản lý sản phẩm"
+                        onAction="#handleNavigation"/>
+
+                <Button fx:id="orderButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        styleClass="menu-button"
+                        text="🛒   Quản lý đơn hàng"
+                        onAction="#handleNavigation"/>
+
+                <Button fx:id="accountButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        styleClass="menu-button"
+                        text="♙   Quản lý tài khoản"
+                        onAction="#handleNavigation"/>
+
+                <Button fx:id="categoryButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        styleClass="menu-button"
+                        text="▦   Quản lý danh mục"
+                        onAction="#handleNavigation"/>
+
+                <Button fx:id="reviewButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        styleClass="menu-button"
+                        text="☆   Quản lý đánh giá"
+                        onAction="#handleNavigation"/>
+
+                <Button fx:id="blogButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        styleClass="menu-button"
+                        text="▤   Tin tức &amp; Blog"
+                        onAction="#handleNavigation"/>
+            </VBox>
+
+            <!-- ================= BOTTOM ================= -->
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <VBox alignment="CENTER"
+                  spacing="6"
+                  styleClass="sidebar-bottom">
+
+                <Button fx:id="logoutButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        styleClass="logout-button"
+                        text="←   Đăng xuất"
+                        onAction="#handleLogout"/>
+
+                <Label styleClass="coffee-slogan"
+                       text="Good Coffee&#10;Better Days"
+                       textAlignment="CENTER"/>
+            </VBox>
+
+        </VBox>
+    </left>
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <center>
+        <VBox styleClass="content">
+
+            <!-- ================= HEADER ================= -->
+
+            <HBox alignment="CENTER_LEFT"
+                  spacing="10"
+                  prefHeight="72"
+                  styleClass="page-header">
+
+                <VBox HBox.hgrow="ALWAYS" spacing="3">
+                    <Label text="Quản lý sản phẩm"
+                           styleClass="page-title"/>
+                    <Label text="Danh sách và quản lý các sản phẩm trong cửa hàng"
+                           styleClass="page-description"/>
+                </VBox>
+
+                <Label text="♧"
+                       styleClass="header-icon"/>
+
+                <VBox alignment="CENTER_RIGHT" spacing="2">
+                    <Label text="Admin"
+                           styleClass="admin-name"/>
+                    <Label text="Quản trị viên"
+                           styleClass="admin-role"/>
+                </VBox>
+
+                <Label text="◎"
+                       styleClass="profile-icon"/>
+            </HBox>
+
+            <!-- ================= CATEGORY TABS ================= -->
+
+            <HBox spacing="8"
+                  styleClass="category-tabs">
+
+                <Button fx:id="allCategoryButton"
+                        text="▦   Tất cả"
+                        onAction="#handleAllCategory"
+                        styleClass="category-button,category-button-active"/>
+
+                <Button fx:id="coffeeCategoryButton"
+                        text="☕   Cà phê"
+                        onAction="#handleCoffeeCategory"
+                        styleClass="category-button"/>
+
+                <Button fx:id="cakeCategoryButton"
+                        text="♨   Bánh ngọt"
+                        onAction="#handleCakeCategory"
+                        styleClass="category-button"/>
+
+                <Button fx:id="juiceCategoryButton"
+                        text="▣   Nước ép"
+                        onAction="#handleJuiceCategory"
+                        styleClass="category-button"/>
+            </HBox>
+
+            <!-- ================= PRODUCT AREA ================= -->
+
+            <HBox spacing="12"
+                  VBox.vgrow="ALWAYS"
+                  styleClass="product-area">
+
+                <!-- ================= CATEGORY LIST ================= -->
+
+                <VBox prefWidth="215"
+                      minWidth="215"
+                      maxWidth="215"
+                      spacing="8"
+                      styleClass="category-card">
+
+                    <Label text="Danh mục sản phẩm"
+                           styleClass="card-title"/>
+
+                    <!-- ALL -->
+
+                    <Button fx:id="allCategoryListButton"
+                            maxWidth="1.7976931348623157E308"
+                            prefHeight="36"
+                            onAction="#handleAllCategory"
+                            styleClass="category-list-button,category-list-active">
+
+                        <graphic>
+                            <HBox alignment="CENTER_LEFT"
+                                  spacing="8">
+
+                                <Label text="▦"/>
+                                <Label text="Tất cả"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+
+                                <Label fx:id="allProductCountLabel"
+                                       text="0"/>
+                            </HBox>
+                        </graphic>
+                    </Button>
+
+                    <!-- COFFEE -->
+
+                    <Button fx:id="coffeeCategoryListButton"
+                            maxWidth="1.7976931348623157E308"
+                            prefHeight="36"
+                            onAction="#handleCoffeeCategory"
+                            styleClass="category-list-button">
+
+                        <graphic>
+                            <HBox alignment="CENTER_LEFT"
+                                  spacing="8">
+
+                                <Label text="☕"/>
+                                <Label text="Cà phê"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+
+                                <Label fx:id="coffeeCountLabel"
+                                       text="0"/>
+                            </HBox>
+                        </graphic>
+                    </Button>
+
+                    <!-- CAKE -->
+
+                    <Button fx:id="cakeCategoryListButton"
+                            maxWidth="1.7976931348623157E308"
+                            prefHeight="36"
+                            onAction="#handleCakeCategory"
+                            styleClass="category-list-button">
+
+                        <graphic>
+                            <HBox alignment="CENTER_LEFT"
+                                  spacing="8">
+
+                                <Label text="♨"/>
+                                <Label text="Bánh ngọt"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+
+                                <Label fx:id="cakeCountLabel"
+                                       text="0"/>
+                            </HBox>
+                        </graphic>
+                    </Button>
+
+                    <!-- JUICE -->
+
+                    <Button fx:id="juiceCategoryListButton"
+                            maxWidth="1.7976931348623157E308"
+                            prefHeight="36"
+                            onAction="#handleJuiceCategory"
+                            styleClass="category-list-button">
+
+                        <graphic>
+                            <HBox alignment="CENTER_LEFT"
+                                  spacing="8">
+
+                                <Label text="▣"/>
+                                <Label text="Nước ép"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+
+                                <Label fx:id="juiceCountLabel"
+                                       text="0"/>
+                            </HBox>
+                        </graphic>
+                    </Button>
+
+                    <Region VBox.vgrow="ALWAYS"/>
+
+                    <Button maxWidth="1.7976931348623157E308"
+                            prefHeight="36"
+                            mnemonicParsing="false"
+                            styleClass="add-category-button"
+                            text="+   Thêm danh mục"
+                            fx:id="addCategoryButton"
+                            onAction="#handleAddCategory"/>
+                </VBox>
+
+                <!-- ================= PRODUCT TABLE ================= -->
+
+                <VBox spacing="10"
+                      HBox.hgrow="ALWAYS"
+                      styleClass="table-card">
+
+                    <!-- SEARCH + FILTER -->
+
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+
+                        <TextField fx:id="searchField"
+                                   promptText="Tìm kiếm theo tên sản phẩm..."
+                                   HBox.hgrow="ALWAYS"
+                                   styleClass="search-field"/>
+
+                        <ComboBox fx:id="categoryFilter"
+                                  prefWidth="125"
+                                  promptText="Danh mục"
+                                  styleClass="filter-combo"
+                                  onAction="#handleCategoryFilter"/>
+
+                        <ComboBox fx:id="statusFilter"
+                                  prefWidth="115"
+                                  promptText="Trạng thái sản phẩm"
+                                  styleClass="filter-combo"
+                                  onAction="#handleStatusFilter"/>
+
+                        <Button fx:id="addProductButton"
+                                mnemonicParsing="false"
+                                styleClass="primary-button"
+                                text="+   Thêm sản phẩm"
+                                onAction="#handleAddProduct"/>
+                    </HBox>
+
+                    <!-- TABLE -->
+
+                    <TableView fx:id="productTable"
+                               VBox.vgrow="ALWAYS"
+                               styleClass="product-table">
+
+                        <columns>
+                            <TableColumn fx:id="imageColumn"
+                                         text="Ảnh"
+                                         prefWidth="65"/>
+
+                            <TableColumn fx:id="nameColumn"
+                                         text="Tên sản phẩm"
+                                         prefWidth="220"/>
+
+                            <TableColumn fx:id="categoryColumn"
+                                         text="Danh mục"
+                                         prefWidth="120"/>
+
+                            <TableColumn fx:id="sellingPriceColumn"
+                                         text="Giá"
+                                         prefWidth="110"/>
+
+                            <TableColumn fx:id="statusColumn"
+                                         text="Trạng thái"
+                                         prefWidth="120"/>
+
+                            <TableColumn fx:id="actionColumn"
+                                         text="Thao tác"
+                                         prefWidth="120"/>
+                        </columns>
+
+                        <placeholder>
+                            <Label text="Chưa có sản phẩm"
+                                   styleClass="empty-label"/>
+                        </placeholder>
+                    </TableView>
+
+                    <!-- FOOTER -->
+
+                    <HBox alignment="CENTER_LEFT" spacing="5">
+
+                        <Label fx:id="totalProductLabel"
+                               text="Tổng cộng: 0 sản phẩm"
+                               styleClass="table-footer"/>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <Button fx:id="previousPageButton"
+                                text="‹"
+                                styleClass="page-button"
+                                onAction="#handlePreviousPage"/>
+
+                        <Button fx:id="pageOneButton"
+                                text="1"
+                                styleClass="page-button,page-button-active"
+                                onAction="#handlePageOne"/>
+
+                        <Button fx:id="pageTwoButton"
+                                text="2"
+                                styleClass="page-button"
+                                onAction="#handlePageTwo"/>
+
+                        <Button fx:id="nextPageButton"
+                                text="›"
+                                styleClass="page-button"
+                                onAction="#handleNextPage"/>
+                    </HBox>
+
+                </VBox>
+            </HBox>
+        </VBox>
+    </center>
+
+</BorderPane>

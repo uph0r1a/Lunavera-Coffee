@@ -8,6 +8,7 @@ module com.coffeeshop.coffeeshopmanagement {
     requires net.synedra.validatorfx;
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
+    requires kotlin.stdlib;
 
     exports com.coffeeshop.coffeeshopmanagement;
     exports org.example.controller;

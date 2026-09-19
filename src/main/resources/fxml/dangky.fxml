@@ -14,30 +14,57 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<StackPane fx:id="registerRoot" stylesheets="@../css/register.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.RegisterController">
+<StackPane fx:id="registerRoot"
+           stylesheets="@../css/dangky.css"
+           xmlns="http://javafx.com/javafx/26"
+           xmlns:fx="http://javafx.com/fxml/1">
 
-    <ImageView fx:id="backgroundImage" mouseTransparent="true" preserveRatio="false" smooth="true">
+    <!-- Background -->
+    <ImageView fx:id="backgroundImage"
+               mouseTransparent="true"
+               preserveRatio="false"
+               smooth="true">
         <image>
             <Image url="@../images/LoginBackgroung.png"/>
         </image>
     </ImageView>
 
-    <Region fx:id="backgroundOverlay" mouseTransparent="true" styleClass="background-overlay"/>
+    <Region fx:id="backgroundOverlay"
+            mouseTransparent="true"
+            styleClass="background-overlay"/>
 
-    <BorderPane fx:id="mainContent" maxHeight="800" maxWidth="1400">
+    <!-- Main content -->
+    <BorderPane fx:id="mainContent"
+                maxHeight="800"
+                maxWidth="1400">
 
+        <!-- Left decorative panel -->
         <left>
-            <VBox fx:id="leftPanel" alignment="CENTER" maxWidth="650" prefWidth="650" spacing="12">
+            <VBox fx:id="leftPanel"
+                  alignment="CENTER"
+                  maxWidth="650"
+                  prefWidth="650"
+                  spacing="12">
                 <padding>
-                    <Insets bottom="40" left="40" right="40" top="40"/>
+                    <Insets top="40"
+                            right="40"
+                            bottom="40"
+                            left="40"/>
                 </padding>
             </VBox>
         </left>
 
+        <!-- Registration panel -->
         <right>
-            <VBox fx:id="rightPanel" alignment="CENTER" maxWidth="800" prefWidth="800">
+            <VBox fx:id="rightPanel"
+                  alignment="CENTER"
+                  maxWidth="800"
+                  prefWidth="800">
                 <padding>
-                    <Insets top="40" right="80" bottom="40" left="20"/>
+                    <Insets top="40"
+                            right="80"
+                            bottom="40"
+                            left="20"/>
                 </padding>
 
                 <VBox fx:id="registerCard"
@@ -47,27 +74,36 @@
                       prefWidth="510"
                       prefHeight="700"
                       spacing="10"
-                      translateX="0"
                       styleClass="register-card">
 
                     <padding>
-                        <Insets bottom="28" left="30" right="30" top="25"/>
+                        <Insets top="25"
+                                right="30"
+                                bottom="28"
+                                left="30"/>
                     </padding>
 
+                    <!-- Logo -->
                     <Label fx:id="moonIcon"
                            styleClass="moon-icon"
                            text="☾"/>
 
+                    <!-- Title -->
                     <Label fx:id="registerTitle"
                            styleClass="register-title"
                            text="ĐĂNG KÝ TÀI KHOẢN"/>
 
-                    <Label fx:id="registerSubtitle"
-                           styleClass="register-description"
-                           text="Trở thành thành viên của Lunavera để tận hưởng những ưu đãi đặc biệt"/>
+                    <!-- ==================== CUSTOMER INFO ==================== -->
 
-                    <VBox maxWidth="410" prefWidth="410" spacing="5" styleClass="input-group">
-                        <Label styleClass="input-label" text="Họ và tên"/>
+                    <!-- Customer.full_name -->
+                    <VBox maxWidth="410"
+                          prefWidth="410"
+                          spacing="5"
+                          styleClass="input-group">
+
+                        <Label styleClass="input-label"
+                               text="Họ và tên"/>
+
                         <TextField fx:id="fullNameField"
                                    prefHeight="44"
                                    prefWidth="410"
@@ -75,17 +111,15 @@
                                    styleClass="input-field"/>
                     </VBox>
 
-                    <VBox maxWidth="410" prefWidth="410" spacing="5" styleClass="input-group">
-                        <Label styleClass="input-label" text="Tên đăng nhập"/>
-                        <TextField fx:id="usernameField"
-                                   prefHeight="44"
-                                   prefWidth="410"
-                                   promptText="Nhập tên đăng nhập"
-                                   styleClass="input-field"/>
-                    </VBox>
+                    <!-- Customer.phone -->
+                    <VBox maxWidth="410"
+                          prefWidth="410"
+                          spacing="5"
+                          styleClass="input-group">
 
-                    <VBox maxWidth="410" prefWidth="410" spacing="5" styleClass="input-group">
-                        <Label styleClass="input-label" text="Số điện thoại"/>
+                        <Label styleClass="input-label"
+                               text="Số điện thoại"/>
+
                         <TextField fx:id="phoneField"
                                    prefHeight="44"
                                    prefWidth="410"
@@ -93,10 +127,37 @@
                                    styleClass="input-field"/>
                     </VBox>
 
-                    <VBox maxWidth="410" prefWidth="410" spacing="5" styleClass="input-group">
-                        <Label styleClass="input-label" text="Mật khẩu"/>
+                    <!-- ==================== USER INFO ==================== -->
 
-                        <HBox maxWidth="410" prefWidth="410" spacing="5">
+                    <!-- User.username -->
+                    <VBox maxWidth="410"
+                          prefWidth="410"
+                          spacing="5"
+                          styleClass="input-group">
+
+                        <Label styleClass="input-label"
+                               text="Tên đăng nhập"/>
+
+                        <TextField fx:id="usernameField"
+                                   prefHeight="44"
+                                   prefWidth="410"
+                                   promptText="Nhập tên đăng nhập"
+                                   styleClass="input-field"/>
+                    </VBox>
+
+                    <!-- User.password -->
+                    <VBox maxWidth="410"
+                          prefWidth="410"
+                          spacing="5"
+                          styleClass="input-group">
+
+                        <Label styleClass="input-label"
+                               text="Mật khẩu"/>
+
+                        <HBox maxWidth="410"
+                              prefWidth="410"
+                              spacing="5">
+
                             <PasswordField fx:id="passwordField"
                                            prefHeight="44"
                                            promptText="Nhập mật khẩu"
@@ -112,10 +173,19 @@
                         </HBox>
                     </VBox>
 
-                    <VBox maxWidth="410" prefWidth="410" spacing="5" styleClass="input-group">
-                        <Label styleClass="input-label" text="Nhập lại mật khẩu"/>
+                    <!-- Confirm password - UI only, not a DB field -->
+                    <VBox maxWidth="410"
+                          prefWidth="410"
+                          spacing="5"
+                          styleClass="input-group">
 
-                        <HBox maxWidth="410" prefWidth="410" spacing="5">
+                        <Label styleClass="input-label"
+                               text="Nhập lại mật khẩu"/>
+
+                        <HBox maxWidth="410"
+                              prefWidth="410"
+                              spacing="5">
+
                             <PasswordField fx:id="confirmPasswordField"
                                            prefHeight="44"
                                            promptText="Nhập lại mật khẩu"
@@ -131,6 +201,7 @@
                         </HBox>
                     </VBox>
 
+                    <!-- Register -->
                     <Button fx:id="registerButton"
                             defaultButton="true"
                             prefHeight="46"
@@ -138,6 +209,7 @@
                             styleClass="register-button"
                             text="ĐĂNG KÝ   →"/>
 
+                    <!-- Separator -->
                     <HBox alignment="CENTER"
                           maxWidth="410"
                           prefWidth="410"
@@ -153,7 +225,10 @@
                                 styleClass="separator"/>
                     </HBox>
 
-                    <HBox alignment="CENTER" spacing="5">
+                    <!-- Login -->
+                    <HBox alignment="CENTER"
+                          spacing="5">
+
                         <Label fx:id="loginText"
                                styleClass="login-text"
                                text="Đã có tài khoản?"/>
@@ -166,5 +241,7 @@
                 </VBox>
             </VBox>
         </right>
+
     </BorderPane>
+
 </StackPane>

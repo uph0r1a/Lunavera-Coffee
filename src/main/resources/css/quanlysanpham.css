@@ -1,0 +1,553 @@
+/* =========================================================
+   ROOT
+   ========================================================= */
+
+.root {
+    -fx-font-family: "Georgia";
+    -fx-background-color: #f8f7ef;
+}
+
+.content {
+    -fx-background-color: rgba(248, 247, 239, 0.96);
+}
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.sidebar {
+    -fx-background-color: rgba(236, 241, 224, 0.96);
+    -fx-border-color: #e0e3d3;
+    -fx-border-width: 0 1px 0 0;
+}
+
+.logo-section {
+    -fx-padding: 10 10 8 10;
+    -fx-background-color: transparent;
+}
+
+.logo-section ImageView {
+    -fx-opacity: 0.95;
+}
+
+
+/* =========================================================
+   MENU
+   ========================================================= */
+
+.menu-container {
+    -fx-padding: 4 10 0 10;
+}
+
+.menu-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 9px;
+    -fx-border-color: transparent;
+    -fx-border-radius: 9px;
+    -fx-text-fill: #61705b;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 13px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 0 14px;
+    -fx-cursor: hand;
+}
+
+.menu-button:hover {
+    -fx-background-color: rgba(113, 131, 106, 0.12);
+    -fx-text-fill: #50634f;
+}
+
+.menu-button:pressed {
+    -fx-background-color: rgba(113, 131, 106, 0.20);
+}
+
+.menu-button-active {
+    -fx-background-color: #71836a;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.menu-button-active:hover {
+    -fx-background-color: #65785f;
+    -fx-text-fill: white;
+}
+
+
+/* =========================================================
+   SIDEBAR BOTTOM
+   ========================================================= */
+
+.sidebar-bottom {
+    -fx-padding: 10 10 18 10;
+}
+
+.logout-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 9px;
+    -fx-border-color: transparent;
+    -fx-text-fill: #71836a;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 13px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 0 14px;
+    -fx-cursor: hand;
+}
+
+.logout-button:hover {
+    -fx-background-color: rgba(113, 131, 106, 0.12);
+    -fx-text-fill: #50634f;
+}
+
+.coffee-slogan {
+    -fx-text-fill: #9a9d88;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 11px;
+    -fx-font-style: italic;
+    -fx-line-spacing: 2px;
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
+
+.content {
+    -fx-padding: 0;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.page-header {
+    -fx-background-color: rgba(250, 249, 243, 0.96);
+    -fx-border-color: #e6e4d9;
+    -fx-border-width: 0 0 1px 0;
+    -fx-padding: 16px 24px;
+}
+
+.page-title {
+    -fx-text-fill: #50634f;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.page-description {
+    -fx-text-fill: #929987;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 12px;
+}
+
+.header-icon {
+    -fx-text-fill: #71836a;
+    -fx-font-size: 17px;
+    -fx-padding: 0 3px 0 0;
+}
+
+.admin-name {
+    -fx-text-fill: #50634f;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.admin-role {
+    -fx-text-fill: #9a9d88;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 10px;
+}
+
+.profile-icon {
+    -fx-text-fill: #71836a;
+    -fx-font-size: 15px;
+}
+
+
+/* =========================================================
+   CATEGORY TABS
+   ========================================================= */
+
+.category-tabs {
+    -fx-background-color: transparent;
+    -fx-padding: 14px 22px 8px 22px;
+}
+
+.category-button {
+    -fx-background-color: rgba(250, 249, 243, 0.90);
+    -fx-background-radius: 18px;
+    -fx-border-color: #dedfd3;
+    -fx-border-radius: 18px;
+    -fx-border-width: 1px;
+    -fx-text-fill: #71806b;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 12px;
+    -fx-padding: 8px 17px;
+    -fx-cursor: hand;
+}
+
+.category-button:hover {
+    -fx-background-color: #edf0e5;
+    -fx-border-color: #b9c2ad;
+    -fx-text-fill: #50634f;
+}
+
+.category-button-active {
+    -fx-background-color: #71836a;
+    -fx-border-color: #71836a;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.category-button-active:hover {
+    -fx-background-color: #65785f;
+    -fx-border-color: #65785f;
+}
+
+
+/* =========================================================
+   PRODUCT AREA
+   ========================================================= */
+
+.category-card,
+.table-card {
+    -fx-background-color: rgba(250, 249, 243, 0.96);
+    -fx-background-radius: 13px;
+    -fx-border-color: #e2e3d8;
+    -fx-border-radius: 13px;
+    -fx-border-width: 1px;
+}
+
+.category-card {
+    -fx-padding: 16px;
+}
+
+.table-card {
+    -fx-padding: 16px;
+}
+
+
+/* =========================================================
+   CARD TITLE
+   ========================================================= */
+
+.card-title {
+    -fx-text-fill: #50634f;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 6px 0;
+}
+
+
+/* =========================================================
+   CATEGORY LIST
+   ========================================================= */
+
+.category-list-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8px;
+    -fx-border-color: transparent;
+    -fx-text-fill: #71806b;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 12px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 0 10px;
+    -fx-cursor: hand;
+}
+
+.category-list-button:hover {
+    -fx-background-color: rgba(113, 131, 106, 0.10);
+    -fx-text-fill: #50634f;
+}
+
+.category-list-active {
+    -fx-background-color: #e5ebdd;
+    -fx-text-fill: #50634f;
+    -fx-font-weight: bold;
+}
+
+.category-list-active:hover {
+    -fx-background-color: #dce5d3;
+}
+
+.add-category-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8px;
+    -fx-border-color: #c8cfbf;
+    -fx-border-radius: 8px;
+    -fx-text-fill: #71836a;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 11px;
+    -fx-padding: 8px 10px;
+    -fx-cursor: hand;
+}
+
+.add-category-button:hover {
+    -fx-background-color: #edf1e8;
+    -fx-border-color: #71836a;
+    -fx-text-fill: #50634f;
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+.search-field {
+    -fx-background-color: #fbfaf5;
+    -fx-background-radius: 9px;
+    -fx-border-color: #dedfd5;
+    -fx-border-radius: 9px;
+    -fx-border-width: 1px;
+    -fx-text-fill: #50634f;
+    -fx-prompt-text-fill: #aaaE9d;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 11px;
+    -fx-padding: 9px 12px;
+}
+
+.search-field:focused {
+    -fx-background-color: white;
+    -fx-border-color: #aab8a0;
+    -fx-effect: dropshadow(gaussian, rgba(113, 131, 106, 0.16), 7, 0, 0, 1);
+}
+
+
+/* =========================================================
+   COMBO BOX
+   ========================================================= */
+
+.filter-combo {
+    -fx-background-color: #fbfaf5;
+    -fx-background-radius: 9px;
+    -fx-border-color: #dedfd5;
+    -fx-border-radius: 9px;
+    -fx-border-width: 1px;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 11px;
+    -fx-text-fill: #65745f;
+}
+
+.filter-combo:hover {
+    -fx-border-color: #aab8a0;
+}
+
+.filter-combo:focused {
+    -fx-border-color: #71836a;
+}
+
+.filter-combo .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #65745f;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 11px;
+}
+
+
+/* =========================================================
+   PRIMARY BUTTON
+   ========================================================= */
+
+.primary-button {
+    -fx-background-color: #71836a;
+    -fx-background-radius: 9px;
+    -fx-border-color: #71836a;
+    -fx-border-radius: 9px;
+    -fx-text-fill: white;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 9px 15px;
+    -fx-cursor: hand;
+}
+
+.primary-button:hover {
+    -fx-background-color: #61745b;
+    -fx-border-color: #61745b;
+}
+
+.primary-button:pressed {
+    -fx-background-color: #50634f;
+    -fx-border-color: #50634f;
+}
+
+
+/* =========================================================
+   PRODUCT TABLE
+   ========================================================= */
+
+.product-table {
+    -fx-background-color: transparent;
+    -fx-border-color: #e0e2d7;
+    -fx-border-radius: 9px;
+    -fx-background-radius: 9px;
+    -fx-padding: 0;
+}
+
+.product-table .column-header-background {
+    -fx-background-color: #eef1e8;
+    -fx-background-radius: 8px 8px 0 0;
+}
+
+.product-table .column-header {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent #dfe2d8 transparent transparent;
+    -fx-border-width: 0 1px 0 0;
+    -fx-padding: 9px 7px;
+}
+
+.product-table .column-header .label {
+    -fx-text-fill: #65745f;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.product-table .table-row-cell {
+    -fx-background-color: #fbfaf6;
+    -fx-border-color: transparent transparent #ecece4 transparent;
+    -fx-border-width: 0 0 1px 0;
+    -fx-cell-size: 48px;
+}
+
+.product-table .table-row-cell:odd {
+    -fx-background-color: #f8f8f2;
+}
+
+.product-table .table-row-cell:hover {
+    -fx-background-color: #f0f3eb;
+}
+
+.product-table .table-row-cell:selected {
+    -fx-background-color: #e3eadd;
+}
+
+.product-table .table-cell {
+    -fx-text-fill: #687563;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 11px;
+    -fx-border-color: transparent;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 5px 8px;
+}
+
+.product-table .placeholder .label {
+    -fx-text-fill: #a3a796;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 12px;
+}
+
+
+/* =========================================================
+   TABLE SCROLL BAR
+   ========================================================= */
+
+.product-table .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 8px;
+}
+
+.product-table .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+}
+
+.product-table .scroll-bar:vertical .thumb {
+    -fx-background-color: #c5ccbd;
+    -fx-background-radius: 8px;
+}
+
+.product-table .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #aeb8a4;
+}
+
+.product-table .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+    -fx-pref-height: 8px;
+}
+
+.product-table .scroll-bar:horizontal .track {
+    -fx-background-color: transparent;
+}
+
+.product-table .scroll-bar:horizontal .thumb {
+    -fx-background-color: #c5ccbd;
+    -fx-background-radius: 8px;
+}
+
+
+/* =========================================================
+   EMPTY LABEL
+   ========================================================= */
+
+.empty-label {
+    -fx-text-fill: #a1a595;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 12px;
+}
+
+
+/* =========================================================
+   TABLE FOOTER
+   ========================================================= */
+
+.table-footer {
+    -fx-text-fill: #8b9282;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 11px;
+}
+
+
+/* =========================================================
+   PAGINATION
+   ========================================================= */
+
+.page-button {
+    -fx-background-color: #f8f8f2;
+    -fx-background-radius: 7px;
+    -fx-border-color: #dfe1d7;
+    -fx-border-radius: 7px;
+    -fx-text-fill: #71806b;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 11px;
+    -fx-min-width: 30px;
+    -fx-min-height: 28px;
+    -fx-padding: 5px 8px;
+    -fx-cursor: hand;
+}
+
+.page-button:hover {
+    -fx-background-color: #e9eee3;
+    -fx-border-color: #b8c2ae;
+}
+
+.page-button-active {
+    -fx-background-color: #71836a;
+    -fx-border-color: #71836a;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.page-button-active:hover {
+    -fx-background-color: #61745b;
+}
+
+
+/* =========================================================
+   FOCUS
+   ========================================================= */
+
+.button:focused,
+.combo-box:focused {
+    -fx-effect: none;
+}
+
+.menu-button:focused {
+    -fx-border-color: transparent;
+}
+
+.primary-button:focused {
+    -fx-effect: dropshadow(gaussian, rgba(113, 131, 106, 0.25), 6, 0, 0, 1);
+}

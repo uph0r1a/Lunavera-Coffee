@@ -1,0 +1,551 @@
+/* =========================================================
+   ROOT
+========================================================= */
+
+.root {
+    -fx-font-family: "System";
+    -fx-background-color: #F4F1E8;
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.sidebar {
+    -fx-background-color: #EEF1DF;
+    -fx-border-color: #D9DDC9;
+    -fx-border-width: 0 1px 0 0;
+    -fx-padding: 20px 10px 20px 10px;
+}
+
+.logo-section {
+    -fx-padding: 5px 0 20px 0;
+}
+
+.menu-container {
+    -fx-padding: 5px 0 0 0;
+}
+
+
+/* =========================================================
+   MENU
+========================================================= */
+
+.menu-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8px;
+    -fx-text-fill: #5D6A58;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 14px;
+    -fx-font-weight: normal;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10px 14px;
+    -fx-cursor: hand;
+}
+
+.menu-button:hover {
+    -fx-background-color: #DDE5D2;
+    -fx-text-fill: #435542;
+}
+
+.menu-button:pressed {
+    -fx-background-color: #D2DBC8;
+}
+
+.menu-button-active {
+    -fx-background-color: #6F8068;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.menu-button-active:hover {
+    -fx-background-color: #61735B;
+    -fx-text-fill: white;
+}
+
+
+/* =========================================================
+   SIDEBAR BOTTOM
+========================================================= */
+
+.sidebar-bottom {
+    -fx-border-color: #D0D5C2;
+    -fx-border-width: 1px 0 0 0;
+    -fx-padding: 18px 0 0 0;
+}
+
+.logout-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8px;
+    -fx-text-fill: #6C7864;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 14px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10px 14px;
+    -fx-cursor: hand;
+}
+
+.logout-button:hover {
+    -fx-background-color: #DDE5D2;
+    -fx-text-fill: #435542;
+}
+
+.coffee-slogan {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 11px;
+    -fx-font-style: italic;
+    -fx-text-fill: #71806B;
+    -fx-line-spacing: 2px;
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+
+.content {
+    -fx-background-color: #F7F5EE;
+    -fx-padding: 18px 22px 22px 22px;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.page-header {
+    -fx-background-color: #FAF9F4;
+    -fx-background-radius: 10px;
+    -fx-border-color: #E4E3D8;
+    -fx-border-radius: 10px;
+    -fx-border-width: 1px;
+    -fx-padding: 14px 18px;
+    -fx-effect: dropshadow(gaussian, rgba(70,80,60,0.07), 8, 0.1, 0, 2);
+}
+
+.page-title {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 25px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #354D3B;
+}
+
+.page-description {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 12px;
+    -fx-text-fill: #9A9B8B;
+}
+
+.header-icon {
+    -fx-background-color: #E8EBDD;
+    -fx-background-radius: 50%;
+    -fx-min-width: 34px;
+    -fx-min-height: 34px;
+    -fx-max-width: 34px;
+    -fx-max-height: 34px;
+    -fx-alignment: CENTER;
+    -fx-text-fill: #65745E;
+    -fx-font-size: 17px;
+}
+
+.admin-name {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #435540;
+}
+
+.admin-role {
+    -fx-font-size: 10px;
+    -fx-text-fill: #999D8C;
+}
+
+.profile-icon {
+    -fx-background-color: #E2E7DA;
+    -fx-background-radius: 50%;
+    -fx-min-width: 34px;
+    -fx-min-height: 34px;
+    -fx-max-width: 34px;
+    -fx-max-height: 34px;
+    -fx-alignment: CENTER;
+    -fx-text-fill: #596954;
+    -fx-font-size: 16px;
+}
+
+
+/* =========================================================
+   STATISTICS
+========================================================= */
+
+.statistics {
+    -fx-padding: 0;
+}
+
+.stat-card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 10px;
+    -fx-border-color: #E0E3D7;
+    -fx-border-radius: 10px;
+    -fx-padding: 12px 15px;
+    -fx-spacing: 3px;
+    -fx-effect: dropshadow(gaussian, rgba(70,80,60,0.10), 10, 0.12, 0, 2);
+}
+
+.stat-card:hover {
+    -fx-border-color: #CBD4C1;
+}
+
+.stat-icon {
+    -fx-text-fill: #6F8068;
+    -fx-font-size: 18px;
+}
+
+.stat-icon-star {
+    -fx-text-fill: #C99A3B;
+    -fx-font-size: 18px;
+}
+
+.stat-title {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 12px;
+    -fx-text-fill: #6F8068;
+}
+
+.stat-value {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 25px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #405541;
+}
+
+.stat-description {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 10px;
+    -fx-text-fill: #A0A495;
+}
+
+
+/* =========================================================
+   REVIEW CARD
+========================================================= */
+
+.review-card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 10px;
+    -fx-border-color: #E0E3D7;
+    -fx-border-radius: 10px;
+    -fx-padding: 14px;
+    -fx-effect: dropshadow(gaussian, rgba(70,80,60,0.10), 10, 0.1, 0, 2);
+}
+
+.section-title {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #405741;
+}
+
+.section-description {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 10px;
+    -fx-text-fill: #9A9D8E;
+}
+
+
+/* =========================================================
+   FEEDBACK CARD
+========================================================= */
+
+.feedback-card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 10px;
+    -fx-border-color: #E0E3D7;
+    -fx-border-radius: 10px;
+    -fx-padding: 14px;
+    -fx-effect: dropshadow(gaussian, rgba(70,80,60,0.10), 10, 0.1, 0, 2);
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.search-field {
+    -fx-background-color: #F9F9F5;
+    -fx-background-radius: 7px;
+    -fx-border-color: #E0E2D6;
+    -fx-border-radius: 7px;
+    -fx-padding: 9px 12px;
+    -fx-font-family: "System";
+    -fx-font-size: 12px;
+    -fx-text-fill: #4E5C4D;
+    -fx-prompt-text-fill: #A4A79B;
+}
+
+.search-field:hover {
+    -fx-border-color: #C9D1C2;
+}
+
+.search-field:focused {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #8B9B80;
+    -fx-border-width: 1.5px;
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.primary-button {
+    -fx-background-color: #6F8068;
+    -fx-background-radius: 7px;
+    -fx-text-fill: white;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 15px;
+    -fx-cursor: hand;
+}
+
+.primary-button:hover {
+    -fx-background-color: #596B54;
+}
+
+.secondary-button {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 7px;
+    -fx-border-color: #D8DDD1;
+    -fx-border-radius: 7px;
+    -fx-text-fill: #5C6A57;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 9px 13px;
+    -fx-cursor: hand;
+}
+
+.secondary-button:hover {
+    -fx-background-color: #F1F3EB;
+    -fx-border-color: #C5CEC0;
+}
+
+.danger-button {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 7px;
+    -fx-border-color: #E2C9C7;
+    -fx-border-radius: 7px;
+    -fx-text-fill: #B85E58;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 9px 13px;
+    -fx-cursor: hand;
+}
+
+.danger-button:hover {
+    -fx-background-color: #FAF0EF;
+    -fx-border-color: #D9B0AC;
+}
+
+
+/* =========================================================
+   REVIEW TABLE
+========================================================= */
+
+.review-table,
+.feedback-table {
+    -fx-background-color: transparent;
+    -fx-background-radius: 6px;
+    -fx-border-color: #E0E3D7;
+    -fx-border-radius: 6px;
+    -fx-table-cell-border-color: #EEF0E9;
+    -fx-fixed-cell-size: 48px;
+}
+
+.review-table .virtual-flow,
+.feedback-table .virtual-flow {
+    -fx-background-color: transparent;
+}
+
+.review-table .column-header-background,
+.feedback-table .column-header-background {
+    -fx-background-color: #EEF1E7;
+}
+
+.review-table .column-header,
+.feedback-table .column-header {
+    -fx-background-color: #EEF1E7;
+    -fx-border-color: #DEE2D7;
+    -fx-border-width: 0 1px 1px 0;
+    -fx-size: 38px;
+}
+
+.review-table .column-header .label,
+.feedback-table .column-header .label {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #526250;
+}
+
+.review-table .filler,
+.feedback-table .filler {
+    -fx-background-color: #EEF1E7;
+}
+
+.review-table .table-row-cell,
+.feedback-table .table-row-cell {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #EEF0E9;
+}
+
+.review-table .table-row-cell:odd,
+.feedback-table .table-row-cell:odd {
+    -fx-background-color: #FCFCF9;
+}
+
+.review-table .table-row-cell:hover,
+.feedback-table .table-row-cell:hover {
+    -fx-background-color: #F2F5EC;
+}
+
+.review-table .table-row-cell:selected,
+.feedback-table .table-row-cell:selected {
+    -fx-background-color: #E6ECDD;
+}
+
+.review-table .table-row-cell:selected .table-cell,
+.feedback-table .table-row-cell:selected .table-cell {
+    -fx-text-fill: #435542;
+}
+
+.review-table .table-cell,
+.feedback-table .table-cell {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 10px;
+    -fx-text-fill: #596557;
+    -fx-alignment: CENTER_LEFT;
+    -fx-border-color: transparent;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.empty-box {
+    -fx-padding: 20px;
+}
+
+.empty-icon {
+    -fx-text-fill: #BFC8B8;
+    -fx-font-size: 30px;
+}
+
+.empty-title {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #788372;
+}
+
+.empty-description {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 10px;
+    -fx-text-fill: #A3A89D;
+}
+
+
+/* =========================================================
+   TABLE FOOTER
+========================================================= */
+
+.table-footer {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 10px;
+    -fx-text-fill: #8C9385;
+}
+
+
+/* =========================================================
+   PAGINATION
+========================================================= */
+
+.page-button {
+    -fx-background-color: #F8F8F3;
+    -fx-background-radius: 6px;
+    -fx-border-color: #DEE2D6;
+    -fx-border-radius: 6px;
+    -fx-min-width: 32px;
+    -fx-min-height: 30px;
+    -fx-max-height: 30px;
+    -fx-padding: 5px 9px;
+    -fx-text-fill: #64705E;
+    -fx-font-size: 11px;
+    -fx-cursor: hand;
+}
+
+.page-button:hover {
+    -fx-background-color: #EEF2E8;
+    -fx-border-color: #C9D1C2;
+}
+
+.page-button:pressed {
+    -fx-background-color: #E2E9DA;
+}
+
+.page-button-active {
+    -fx-background-color: #E2E9DA;
+    -fx-border-color: #CBD6C3;
+    -fx-text-fill: #4F604A;
+    -fx-font-weight: bold;
+}
+
+
+/* =========================================================
+   TABLE SCROLLBAR
+========================================================= */
+
+.review-table .scroll-bar:vertical,
+.review-table .scroll-bar:horizontal,
+.feedback-table .scroll-bar:vertical,
+.feedback-table .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+.review-table .scroll-bar .track,
+.feedback-table .scroll-bar .track {
+    -fx-background-color: transparent;
+}
+
+.review-table .scroll-bar .thumb,
+.feedback-table .scroll-bar .thumb {
+    -fx-background-color: #C7CEC0;
+    -fx-background-radius: 5px;
+}
+
+.review-table .scroll-bar .thumb:hover,
+.feedback-table .scroll-bar .thumb:hover {
+    -fx-background-color: #AEB9A5;
+}
+
+.review-table .scroll-bar .increment-button,
+.review-table .scroll-bar .decrement-button,
+.feedback-table .scroll-bar .increment-button,
+.feedback-table .scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+
+/* =========================================================
+   GENERAL FOCUS
+========================================================= */
+
+.button:focused,
+.text-field:focused {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}

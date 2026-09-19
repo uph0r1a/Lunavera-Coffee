@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="adminRoot" maxHeight="1000" maxWidth="1600" prefHeight="1000" prefWidth="1600" stylesheets="@../css/admin-trangchu.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.AdminController">
+    <!-- ================= THANH BEN ================= -->
+
+    <left>
+
+        <VBox fx:id="sidebar" maxWidth="230" minWidth="230" prefWidth="230" styleClass="sidebar">
+
+            <!-- ================= LOGO ================= -->
+
+            <VBox alignment="CENTER" prefHeight="115" styleClass="logo-section">
+
+                <ImageView fx:id="logoImage" fitHeight="90" fitWidth="155" preserveRatio="true">
+
+                    <image>
+                        <Image url="@../images/LunaveraLogo.png" />
+                    </image>
+
+                </ImageView>
+
+            </VBox>
+
+
+            <!-- ================= MENU ================= -->
+
+            <VBox fx:id="menuContainer" spacing="5" styleClass="menu-container">
+
+                <Button fx:id="homeButton" maxHeight="38" maxWidth="1.7976931348623157E308" minHeight="38" mnemonicParsing="false" prefHeight="38" styleClass="menu-button menu-button-active" text="⌂   Trang chủ" />
+
+                <Button fx:id="productButton" maxHeight="38" maxWidth="1.7976931348623157E308" minHeight="38" mnemonicParsing="false" prefHeight="38" styleClass="menu-button" text="▣   Quản lý sản phẩm" />
+
+                <Button fx:id="orderButton" maxHeight="38" maxWidth="1.7976931348623157E308" minHeight="38" mnemonicParsing="false" prefHeight="38" styleClass="menu-button" text="🛒   Quản lý đơn hàng" />
+
+                <Button fx:id="accountButton" maxHeight="38" maxWidth="1.7976931348623157E308" minHeight="38" mnemonicParsing="false" prefHeight="38" styleClass="menu-button" text="♙   Quản lý tài khoản" />
+
+                <Button fx:id="categoryButton" maxHeight="38" maxWidth="1.7976931348623157E308" minHeight="38" mnemonicParsing="false" prefHeight="38" styleClass="menu-button" text="▦   Quản lý danh mục" />
+
+                <Button fx:id="reviewButton" maxHeight="38" maxWidth="1.7976931348623157E308" minHeight="38" mnemonicParsing="false" prefHeight="38" styleClass="menu-button" text="☆   Quản lý đánh giá" />
+
+                <Button fx:id="blogButton" maxHeight="38" maxWidth="1.7976931348623157E308" minHeight="38" mnemonicParsing="false" prefHeight="38" styleClass="menu-button" text="▤   Tin tức &amp; Blog" />
+
+            </VBox>
+
+
+            <!-- ================= PHAN CUOI THANH BEN ================= -->
+
+            <Region VBox.vgrow="ALWAYS" />
+
+            <VBox alignment="CENTER" spacing="6" styleClass="sidebar-bottom">
+
+                <Button fx:id="logoutButton" maxHeight="38" maxWidth="1.7976931348623157E308" minHeight="38" mnemonicParsing="false" prefHeight="38" styleClass="logout-button" text="←   Đăng xuất" />
+
+                <Label styleClass="coffee-slogan" text="Cà phê ngon&#10;Ngày thêm tốt đẹp" textAlignment="CENTER" />
+
+            </VBox>
+
+        </VBox>
+
+    </left>
+
+    <center>
+        <BorderPane fx:id="contentRoot">
+
+            <top>
+                <HBox fx:id="topBar" alignment="CENTER_LEFT" prefHeight="78" spacing="15" styleClass="top-bar">
+
+                    <VBox spacing="3">
+                        <Label fx:id="welcomeLabel" styleClass="welcome-title" text="Chào mừng, Admin!" />
+
+                        <Label fx:id="welcomeDescription" styleClass="welcome-description" text="Chúc bạn có một ngày làm việc hiệu quả!" />
+                    </VBox>
+
+                    <Region HBox.hgrow="ALWAYS" />
+
+                    <Button fx:id="notificationButton" mnemonicParsing="false" styleClass="icon-button" text="♧" />
+
+                    <VBox alignment="CENTER_RIGHT" spacing="2">
+
+                        <Label fx:id="adminNameLabel" styleClass="admin-name" text="Admin" />
+
+                        <Label fx:id="adminRoleLabel" styleClass="admin-role" text="Quản trị viên" />
+
+                    </VBox>
+
+                    <Button fx:id="profileMenuButton" mnemonicParsing="false" styleClass="profile-arrow" text="⌄" />
+
+                </HBox>
+            </top>
+
+            <center>
+                <ScrollPane fx:id="dashboardScrollPane" fitToWidth="true" hbarPolicy="NEVER" styleClass="dashboard-scroll" vbarPolicy="AS_NEEDED">
+
+                    <content>
+                        <VBox fx:id="dashboardContent" spacing="18" styleClass="dashboard-content">
+
+                            <padding>
+                                <Insets bottom="25" left="25" right="25" top="20" />
+                            </padding>
+
+                            <GridPane fx:id="statisticsGrid" hgap="16" vgap="16">
+
+                                <columnConstraints>
+                                    <ColumnConstraints hgrow="ALWAYS" />
+                                    <ColumnConstraints hgrow="ALWAYS" />
+                                    <ColumnConstraints hgrow="ALWAYS" />
+                                    <ColumnConstraints hgrow="ALWAYS" />
+                                </columnConstraints>
+
+                                <VBox prefHeight="140" styleClass="stat-card" GridPane.columnIndex="0">
+
+                                    <Label styleClass="stat-icon" text="▣" />
+
+                                    <Label styleClass="stat-title" text="Tổng số bàn" />
+
+                                    <Label fx:id="totalTablesLabel" styleClass="stat-value" text="0" />
+
+                                    <HBox spacing="8">
+                                        <Label styleClass="stat-subtitle" text="Đã sử dụng:" />
+
+                                        <Label fx:id="usedTablesLabel" styleClass="stat-subtitle" text="0" />
+
+                                        <Label styleClass="stat-dot" text="•" />
+
+                                        <Label styleClass="stat-subtitle" text="Còn trống:" />
+
+                                        <Label fx:id="emptyTablesLabel" styleClass="stat-subtitle" text="0" />
+                                    </HBox>
+                                </VBox>
+
+                                <VBox prefHeight="140" styleClass="stat-card" GridPane.columnIndex="1">
+
+                                    <Label styleClass="stat-icon" text="▤" />
+
+                                    <Label styleClass="stat-title" text="Đơn hàng hôm nay" />
+
+                                    <Label fx:id="todayOrdersLabel" styleClass="stat-value" text="0" />
+
+                                    <Label styleClass="stat-subtitle" text="Đơn hàng phát sinh hôm nay" />
+                                </VBox>
+
+                                <VBox prefHeight="140" styleClass="stat-card " GridPane.columnIndex="2">
+
+                                    <Label styleClass="stat-icon" text="◎" />
+
+                                    <Label styleClass="stat-title" text="Doanh thu hôm nay" />
+
+                                    <Label fx:id="todayRevenueLabel" styleClass="stat-value" text="0đ" />
+
+                                    <Label styleClass="stat-subtitle" text="Tổng doanh thu trong ngày" />
+                                </VBox>
+
+                                <VBox prefHeight="140" styleClass="stat-card" GridPane.columnIndex="3">
+
+                                    <Label styleClass="stat-icon" text="♙" />
+
+                                    <Label styleClass="stat-title" text="Khách hàng hôm nay" />
+
+                                    <Label fx:id="todayCustomersLabel" styleClass="stat-value" text="0" />
+
+                                    <Label styleClass="stat-subtitle" text="Số khách hàng đã phục vụ" />
+                                </VBox>
+                                <rowConstraints>
+                                    <RowConstraints />
+                                </rowConstraints>
+
+                            </GridPane>
+
+                            <GridPane fx:id="chartsGrid" hgap="16">
+
+                                <columnConstraints>
+                                    <ColumnConstraints hgrow="ALWAYS" percentWidth="68" />
+                                    <ColumnConstraints hgrow="ALWAYS" percentWidth="32" />
+                                </columnConstraints>
+
+                                <VBox prefHeight="320" styleClass="dashboard-card" GridPane.columnIndex="0">
+
+                                    <HBox alignment="CENTER_LEFT" spacing="10">
+
+                                        <Label styleClass="section-icon" text="▣" />
+
+                                        <Label styleClass="section-title" text="Doanh thu 7 ngày gần đây" />
+
+                                        <Region HBox.hgrow="ALWAYS" />
+
+                                        <Button fx:id="revenueFilterButton" mnemonicParsing="false" styleClass="filter-button" text="7 ngày qua   ⌄" />
+                                    </HBox>
+
+                                    <LineChart fx:id="revenueChart" animated="false" createSymbols="true" horizontalGridLinesVisible="true" legendVisible="false" verticalGridLinesVisible="false" VBox.vgrow="ALWAYS">
+
+                                        <xAxis>
+                                            <CategoryAxis />
+                                        </xAxis>
+
+                                        <yAxis>
+                                            <NumberAxis forceZeroInRange="true" />
+                                        </yAxis>
+
+                                    </LineChart>
+
+                                </VBox>
+
+                                <VBox prefHeight="320" styleClass="dashboard-card" GridPane.columnIndex="1">
+
+                                    <HBox alignment="CENTER_LEFT" spacing="10">
+
+                                        <Label styleClass="section-icon" text="🛒" />
+
+                                        <Label styleClass="section-title" text="Thống kê đơn hàng" />
+
+                                        <Region HBox.hgrow="ALWAYS" />
+
+                                        <Button fx:id="orderFilterButton" mnemonicParsing="false" styleClass="filter-button" text="Hôm nay   ⌄" />
+                                    </HBox>
+
+                                    <PieChart fx:id="orderChart" animated="false" labelsVisible="false" legendVisible="false" VBox.vgrow="ALWAYS" />
+
+                                </VBox>
+                                <rowConstraints>
+                                    <RowConstraints />
+                                </rowConstraints>
+
+                            </GridPane>
+
+                            <GridPane fx:id="tableQuickGrid" hgap="16">
+                                <VBox.margin>
+                                    <Insets top="30" />
+                                </VBox.margin>
+
+                                <columnConstraints>
+                                    <ColumnConstraints hgrow="ALWAYS" percentWidth="70" />
+                                    <ColumnConstraints hgrow="ALWAYS" percentWidth="30" />
+                                </columnConstraints>
+
+                                <VBox prefHeight="372.0" prefWidth="903.0" spacing="15" styleClass="dashboard-card" GridPane.columnIndex="0">
+
+                                    <HBox alignment="CENTER_LEFT">
+
+                                        <Label styleClass="section-icon" text="▣" />
+
+                                        <Label styleClass="section-title" text="Danh sách bàn" />
+
+                                        <Region HBox.hgrow="ALWAYS" />
+
+                                        <Button fx:id="viewAllTablesButton" mnemonicParsing="false" styleClass="text-button" text="Xem tất cả  →" />
+                                    </HBox>
+
+                                    <FlowPane fx:id="tableContainer" hgap="14" prefWrapLength="900" vgap="12" />
+
+                                </VBox>
+
+                                <VBox spacing="15" styleClass="dashboard-card" GridPane.columnIndex="1">
+
+                                    <HBox alignment="CENTER_LEFT" spacing="10">
+
+                                        <Label styleClass="section-icon" text="ϟ" />
+
+                                        <Label styleClass="section-title" text="Thao tác nhanh" />
+
+                                    </HBox>
+
+                                    <GridPane hgap="12" vgap="12" VBox.vgrow="ALWAYS">
+
+                                        <columnConstraints>
+                                            <ColumnConstraints hgrow="ALWAYS" />
+                                            <ColumnConstraints hgrow="ALWAYS" />
+                                        </columnConstraints>
+
+                                        <Button fx:id="addProductButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="182.0" styleClass="quick-action-button" text="▣&#10;Thêm sản phẩm" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+
+                                        <Button fx:id="viewOrdersButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="quick-action-button" text="🛒&#10;Xem đơn hàng" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                                        <Button fx:id="manageAccountsButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="quick-action-button" text="♙&#10;Quản lý tài khoản" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+
+                                        <Button fx:id="viewReportsButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="quick-action-button" text="▥&#10;Xem báo cáo" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                        <rowConstraints>
+                                            <RowConstraints />
+                                            <RowConstraints />
+                                        </rowConstraints>
+
+                                    </GridPane>
+
+                                </VBox>
+                                <rowConstraints>
+                                    <RowConstraints />
+                                </rowConstraints>
+
+                            </GridPane>
+
+                        </VBox>
+                    </content>
+
+                </ScrollPane>
+            </center>
+
+        </BorderPane>
+    </center>
+
+</BorderPane>

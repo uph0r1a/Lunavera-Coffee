@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="QuanLyBlogRoot"
+            prefWidth="1600"
+            prefHeight="1000"
+            stylesheets="@../css/quanlyblog.css"
+            xmlns="http://javafx.com/javafx/26"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.controller.AdminController">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <left>
+        <VBox fx:id="sidebar"
+              prefWidth="230"
+              minWidth="230"
+              maxWidth="230"
+              styleClass="sidebar">
+
+            <!-- ================= LOGO ================= -->
+
+            <VBox alignment="CENTER"
+                  prefHeight="115"
+                  styleClass="logo-section">
+
+                <ImageView fx:id="logoImage"
+                           fitHeight="90"
+                           fitWidth="155"
+                           preserveRatio="true">
+                    <image>
+                        <Image url="@../images/LunaveraLogo.png"/>
+                    </image>
+                </ImageView>
+
+            </VBox>
+
+            <!-- ================= MENU ================= -->
+
+            <VBox fx:id="menuContainer"
+                  spacing="5"
+                  styleClass="menu-container">
+
+                <Button fx:id="homeButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        onAction="#handleHome"
+                        styleClass="menu-button"
+                        text="⌂   Trang chủ"/>
+
+                <Button fx:id="productButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        onAction="#handleProducts"
+                        styleClass="menu-button"
+                        text="▣   Quản lý sản phẩm"/>
+
+                <Button fx:id="orderButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        onAction="#handleOrders"
+                        styleClass="menu-button"
+                        text="🛒   Quản lý đơn hàng"/>
+
+                <Button fx:id="accountButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        onAction="#handleAccounts"
+                        styleClass="menu-button"
+                        text="♙   Quản lý tài khoản"/>
+
+                <Button fx:id="categoryButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        onAction="#handleCategories"
+                        styleClass="menu-button"
+                        text="▦   Quản lý danh mục"/>
+
+                <Button fx:id="reviewButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        onAction="#handleReviews"
+                        styleClass="menu-button"
+                        text="☆   Quản lý đánh giá"/>
+
+                <Button fx:id="feedbackButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        onAction="#handleFeedback"
+                        styleClass="menu-button"
+                        text="▢   Quản lý phản hồi"/>
+
+                <Button fx:id="blogButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        onAction="#handleBlog"
+                        styleClass="menu-button,menu-button-active"
+                        text="▤   Tin tức &amp; Blog"/>
+
+            </VBox>
+
+            <!-- ================= BOTTOM ================= -->
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <VBox alignment="CENTER"
+                  spacing="6"
+                  styleClass="sidebar-bottom">
+
+                <Button fx:id="logoutButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        onAction="#handleLogout"
+                        styleClass="logout-button"
+                        text="←   Đăng xuất"/>
+
+                <Label styleClass="coffee-slogan"
+                       text="Good Coffee&#10;Better Days"
+                       textAlignment="CENTER"/>
+
+            </VBox>
+
+        </VBox>
+    </left>
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <center>
+        <VBox styleClass="content">
+
+            <!-- ================= HEADER ================= -->
+
+            <HBox alignment="CENTER_LEFT"
+                  spacing="10"
+                  prefHeight="72"
+                  styleClass="page-header">
+
+                <VBox HBox.hgrow="ALWAYS"
+                      spacing="3">
+
+                    <Label text="Tin tức &amp; Blog"
+                           styleClass="page-title"/>
+
+                    <Label text="Quản lý các bài viết tin tức, blog về cà phê và các hoạt động của cửa hàng"
+                           styleClass="page-description"/>
+
+                </VBox>
+
+                <Label text="▤"
+                       styleClass="header-icon"/>
+
+                <VBox alignment="CENTER_RIGHT"
+                      spacing="2">
+
+                    <Label text="Admin"
+                           styleClass="admin-name"/>
+
+                    <Label text="Quản trị viên"
+                           styleClass="admin-role"/>
+
+                </VBox>
+
+                <Label text="◎"
+                       styleClass="profile-icon"/>
+
+            </HBox>
+
+            <!-- ================= STATISTICS ================= -->
+
+            <HBox spacing="12"
+                  styleClass="statistics">
+
+                <!-- Tổng số bài viết -->
+
+                <VBox HBox.hgrow="ALWAYS"
+                      styleClass="stat-card">
+
+                    <Label text="▤"
+                           styleClass="stat-icon"/>
+
+                    <Label text="Tổng số bài viết"
+                           styleClass="stat-title"/>
+
+                    <Label fx:id="totalPostLabel"
+                           text="0"
+                           styleClass="stat-value"/>
+
+                    <Label text="Bài viết tin tức &amp; blog"
+                           styleClass="stat-description"/>
+
+                </VBox>
+
+                <!-- Đang hiển thị -->
+
+                <VBox HBox.hgrow="ALWAYS"
+                      styleClass="stat-card">
+
+                    <Label text="◉"
+                           styleClass="stat-icon-active"/>
+
+                    <Label text="Bài viết đang hiển thị"
+                           styleClass="stat-title"/>
+
+                    <Label fx:id="publishedPostLabel"
+                           text="0"
+                           styleClass="stat-value"/>
+
+                    <Label text="Đang được công khai"
+                           styleClass="stat-description"/>
+
+                </VBox>
+
+                <!-- Bài viết nháp -->
+
+                <VBox HBox.hgrow="ALWAYS"
+                      styleClass="stat-card">
+
+                    <Label text="Ⅱ"
+                           styleClass="stat-icon-draft"/>
+
+                    <Label text="Bài viết nháp"
+                           styleClass="stat-title"/>
+
+                    <Label fx:id="draftPostLabel"
+                           text="0"
+                           styleClass="stat-value"/>
+
+                    <Label text="Chưa được xuất bản"
+                           styleClass="stat-description"/>
+
+                </VBox>
+
+                <!-- Bài viết đã xóa -->
+
+                <VBox HBox.hgrow="ALWAYS"
+                      styleClass="stat-card">
+
+                    <Label text="▣"
+                           styleClass="stat-icon-deleted"/>
+
+                    <Label text="Bài viết đã xóa"
+                           styleClass="stat-title"/>
+
+                    <Label fx:id="deletedPostLabel"
+                           text="0"
+                           styleClass="stat-value"/>
+
+                    <Label text="Đã xóa, có thể khôi phục"
+                           styleClass="stat-description"/>
+
+                </VBox>
+
+            </HBox>
+
+            <!-- ================= BLOG LIST ================= -->
+
+            <VBox VBox.vgrow="ALWAYS"
+                  spacing="10"
+                  styleClass="blog-card">
+
+                <!-- ================= BLOG HEADER ================= -->
+
+                <HBox alignment="CENTER_LEFT"
+                      spacing="10">
+
+                    <Label text="▤   Danh sách tin tức &amp; blog"
+                           styleClass="section-title"/>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <TextField fx:id="blogSearchField"
+                               prefWidth="320"
+                               promptText="Tìm kiếm tiêu đề, nội dung..."
+                               styleClass="search-field"/>
+
+                    <Button fx:id="addPostButton"
+                            mnemonicParsing="false"
+                            onAction="#handleAddPost"
+                            styleClass="primary-button"
+                            text="+   Thêm bài viết"/>
+
+                </HBox>
+
+                <!-- ================= BLOG TABLE ================= -->
+
+                <TableView fx:id="blogTable"
+                           VBox.vgrow="ALWAYS"
+                           styleClass="blog-table">
+
+                    <columns>
+
+                        <TableColumn fx:id="postIndexColumn"
+                                     text="STT"
+                                     prefWidth="55"
+                                     minWidth="45"/>
+
+                        <TableColumn fx:id="postImageColumn"
+                                     text="Ảnh đại diện"
+                                     prefWidth="125"
+                                     minWidth="100"/>
+
+                        <TableColumn fx:id="postTitleColumn"
+                                     text="Tiêu đề"
+                                     prefWidth="330"
+                                     minWidth="250"/>
+
+                        <TableColumn fx:id="postCategoryColumn"
+                                     text="Danh mục"
+                                     prefWidth="150"
+                                     minWidth="120"/>
+
+                        <TableColumn fx:id="postAuthorColumn"
+                                     text="Tác giả"
+                                     prefWidth="150"
+                                     minWidth="120"/>
+
+                        <TableColumn fx:id="postDateColumn"
+                                     text="Ngày đăng"
+                                     prefWidth="155"
+                                     minWidth="120"/>
+
+                        <TableColumn fx:id="postStatusColumn"
+                                     text="Trạng thái"
+                                     prefWidth="145"
+                                     minWidth="120"/>
+
+                        <TableColumn fx:id="postActionColumn"
+                                     text="Thao tác"
+                                     prefWidth="150"
+                                     minWidth="130"/>
+
+                    </columns>
+
+                    <!-- ================= EMPTY DATA ================= -->
+
+                    <placeholder>
+                        <VBox alignment="CENTER"
+                              spacing="7"
+                              styleClass="empty-box">
+
+                            <Label text="▤"
+                                   styleClass="empty-icon"/>
+
+                            <Label text="Chưa có bài viết nào"
+                                   styleClass="empty-title"/>
+
+                            <Label text="Các bài viết tin tức và blog sẽ hiển thị tại đây."
+                                   styleClass="empty-description"/>
+
+                        </VBox>
+                    </placeholder>
+
+                </TableView>
+
+                <!-- ================= PAGINATION ================= -->
+
+                <HBox alignment="CENTER_LEFT"
+                      spacing="8">
+
+                    <Label fx:id="postPaginationLabel"
+                           text="Hiển thị 0 – 0 trong tổng số 0 bài viết"
+                           styleClass="table-footer"/>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <Button fx:id="previousPostPageButton"
+                            mnemonicParsing="false"
+                            text="‹"
+                            styleClass="page-button"/>
+
+                    <Button fx:id="postPageOneButton"
+                            mnemonicParsing="false"
+                            text="1"
+                            styleClass="page-button,page-button-active"/>
+
+                    <Button fx:id="nextPostPageButton"
+                            mnemonicParsing="false"
+                            text="›"
+                            styleClass="page-button"/>
+
+                </HBox>
+
+            </VBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

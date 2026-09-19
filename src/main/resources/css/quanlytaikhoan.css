@@ -1,0 +1,723 @@
+/* =========================================================
+   ROOT
+========================================================= */
+
+.root {
+    -fx-font-family: "System";
+    -fx-background-color: #F4F1E8;
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.sidebar {
+    -fx-background-color: #EEF1DF;
+    -fx-border-color: #D9DDC9;
+    -fx-border-width: 0 1px 0 0;
+    -fx-padding: 20px 10px 20px 10px;
+}
+
+.logo-section {
+    -fx-padding: 5px 0 20px 0;
+}
+
+.menu-container {
+    -fx-padding: 5px 0 0 0;
+}
+
+
+/* =========================================================
+   MENU BUTTON
+========================================================= */
+
+.menu-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8px;
+    -fx-text-fill: #5D6A58;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 14px;
+    -fx-font-weight: normal;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10px 14px;
+    -fx-cursor: hand;
+}
+
+.menu-button:hover {
+    -fx-background-color: #DDE5D2;
+    -fx-text-fill: #435542;
+}
+
+.menu-button:pressed {
+    -fx-background-color: #D2DBC8;
+}
+
+.menu-button-active {
+    -fx-background-color: #6F8068;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.menu-button-active:hover {
+    -fx-background-color: #61735B;
+    -fx-text-fill: white;
+}
+
+
+/* =========================================================
+   SIDEBAR BOTTOM
+========================================================= */
+
+.sidebar-bottom {
+    -fx-border-color: #D0D5C2;
+    -fx-border-width: 1px 0 0 0;
+    -fx-padding: 18px 0 0 0;
+}
+
+.logout-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8px;
+    -fx-text-fill: #6C7864;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 14px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10px 14px;
+    -fx-cursor: hand;
+}
+
+.logout-button:hover {
+    -fx-background-color: #DDE5D2;
+    -fx-text-fill: #435542;
+}
+
+.coffee-slogan {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 11px;
+    -fx-font-style: italic;
+    -fx-text-fill: #71806B;
+    -fx-line-spacing: 2px;
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+
+.content {
+    -fx-background-color: #F7F5EE;
+    -fx-padding: 18px 22px 22px 22px;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.page-header {
+    -fx-background-color: #FAF9F4;
+    -fx-background-radius: 10px;
+    -fx-border-color: #E4E3D8;
+    -fx-border-radius: 10px;
+    -fx-border-width: 1px;
+    -fx-padding: 14px 18px;
+    -fx-effect: dropshadow(gaussian, rgba(70,80,60,0.07), 8, 0.1, 0, 2);
+}
+
+.page-title {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 25px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #354D3B;
+}
+
+.page-description {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 12px;
+    -fx-text-fill: #9A9B8B;
+}
+
+.header-icon {
+    -fx-background-color: #E8EBDD;
+    -fx-background-radius: 50%;
+    -fx-min-width: 34px;
+    -fx-min-height: 34px;
+    -fx-max-width: 34px;
+    -fx-max-height: 34px;
+    -fx-alignment: CENTER;
+    -fx-text-fill: #65745E;
+    -fx-font-size: 15px;
+}
+
+.admin-name {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #435540;
+}
+
+.admin-role {
+    -fx-font-size: 10px;
+    -fx-text-fill: #999D8C;
+}
+
+.profile-icon {
+    -fx-background-color: #E2E7DA;
+    -fx-background-radius: 50%;
+    -fx-min-width: 34px;
+    -fx-min-height: 34px;
+    -fx-max-width: 34px;
+    -fx-max-height: 34px;
+    -fx-alignment: CENTER;
+    -fx-text-fill: #596954;
+    -fx-font-size: 16px;
+}
+
+
+/* =========================================================
+   STATISTICS
+========================================================= */
+
+.statistics {
+    -fx-padding: 0;
+}
+
+.stat-card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 10px;
+    -fx-border-color: #E0E3D7;
+    -fx-border-radius: 10px;
+    -fx-padding: 12px 15px;
+    -fx-spacing: 3px;
+    -fx-effect: dropshadow(gaussian, rgba(70,80,60,0.10), 10, 0.12, 0, 2);
+}
+
+.stat-card:hover {
+    -fx-border-color: #CBD4C1;
+}
+
+.stat-icon {
+    -fx-text-fill: #6F8068;
+    -fx-font-size: 17px;
+}
+
+.stat-icon-active {
+    -fx-text-fill: #45A864;
+    -fx-font-size: 17px;
+}
+
+.stat-icon-locked {
+    -fx-text-fill: #D96D68;
+    -fx-font-size: 17px;
+}
+
+.stat-title {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 12px;
+    -fx-text-fill: #6F8068;
+}
+
+.stat-value {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 25px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #405541;
+}
+
+.stat-description {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 10px;
+    -fx-text-fill: #A0A495;
+}
+
+
+/* =========================================================
+   SEARCH + FILTER
+========================================================= */
+
+.search-bar {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 10px;
+    -fx-border-color: #E0E3D7;
+    -fx-border-radius: 10px;
+    -fx-padding: 9px;
+    -fx-effect: dropshadow(gaussian, rgba(70,80,60,0.07), 8, 0.1, 0, 2);
+}
+
+.search-field {
+    -fx-background-color: #F9F9F5;
+    -fx-background-radius: 7px;
+    -fx-border-color: #E0E2D6;
+    -fx-border-radius: 7px;
+    -fx-padding: 9px 12px;
+    -fx-font-family: "System";
+    -fx-font-size: 12px;
+    -fx-text-fill: #4E5C4D;
+    -fx-prompt-text-fill: #A4A79B;
+}
+
+.search-field:focused {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #8B9B80;
+    -fx-border-width: 1.5px;
+}
+
+.filter-combo {
+    -fx-background-color: #F9F9F5;
+    -fx-background-radius: 7px;
+    -fx-border-color: #E0E2D6;
+    -fx-border-radius: 7px;
+    -fx-font-size: 12px;
+}
+
+.filter-combo:hover {
+    -fx-border-color: #B9C4B0;
+}
+
+.filter-combo:focused {
+    -fx-border-color: #8B9B80;
+}
+
+.filter-combo .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #596557;
+    -fx-font-size: 12px;
+}
+
+
+/* =========================================================
+   PRIMARY BUTTON
+========================================================= */
+
+.primary-button {
+    -fx-background-color: #6F8068;
+    -fx-background-radius: 7px;
+    -fx-text-fill: white;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 15px;
+    -fx-cursor: hand;
+}
+
+.primary-button:hover {
+    -fx-background-color: #596B54;
+}
+
+.primary-button:pressed {
+    -fx-background-color: #4F604A;
+}
+
+
+/* =========================================================
+   ACCOUNT AREA
+========================================================= */
+
+.account-area {
+    -fx-padding: 0;
+}
+
+
+/* =========================================================
+   TABLE CARD
+========================================================= */
+
+.table-card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 10px;
+    -fx-border-color: #E0E3D7;
+    -fx-border-radius: 10px;
+    -fx-padding: 14px;
+    -fx-effect: dropshadow(gaussian, rgba(70,80,60,0.10), 10, 0.1, 0, 2);
+}
+
+.section-title {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #405741;
+}
+
+.account-count {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 11px;
+    -fx-text-fill: #8D9585;
+}
+
+
+/* =========================================================
+   ACCOUNT TABLE
+========================================================= */
+
+.account-table {
+    -fx-background-color: transparent;
+    -fx-background-radius: 6px;
+    -fx-border-color: #E0E3D7;
+    -fx-border-radius: 6px;
+    -fx-table-cell-border-color: #EEF0E9;
+    -fx-fixed-cell-size: 42px;
+}
+
+.account-table .virtual-flow {
+    -fx-background-color: transparent;
+}
+
+.account-table .column-header-background {
+    -fx-background-color: #EEF1E7;
+}
+
+.account-table .column-header {
+    -fx-background-color: #EEF1E7;
+    -fx-border-color: #DEE2D7;
+    -fx-border-width: 0 1px 1px 0;
+    -fx-size: 38px;
+}
+
+.account-table .column-header .label {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #526250;
+}
+
+.account-table .filler {
+    -fx-background-color: #EEF1E7;
+}
+
+.account-table .table-row-cell {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #EEF0E9;
+}
+
+.account-table .table-row-cell:odd {
+    -fx-background-color: #FCFCF9;
+}
+
+.account-table .table-row-cell:hover {
+    -fx-background-color: #F2F5EC;
+}
+
+.account-table .table-row-cell:selected {
+    -fx-background-color: #E6ECDD;
+}
+
+.account-table .table-row-cell:selected .table-cell {
+    -fx-text-fill: #435542;
+}
+
+.account-table .table-cell {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 11px;
+    -fx-text-fill: #596557;
+    -fx-alignment: CENTER_LEFT;
+    -fx-border-color: transparent;
+}
+
+.account-table .placeholder {
+    -fx-background-color: #FFFFFF;
+}
+
+.empty-label {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 12px;
+    -fx-text-fill: #A0A495;
+}
+
+
+/* =========================================================
+   TABLE SCROLLBAR
+========================================================= */
+
+.account-table .scroll-bar:vertical,
+.account-table .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+.account-table .scroll-bar .track {
+    -fx-background-color: transparent;
+}
+
+.account-table .scroll-bar .thumb {
+    -fx-background-color: #C7CEC0;
+    -fx-background-radius: 5px;
+}
+
+.account-table .scroll-bar .thumb:hover {
+    -fx-background-color: #AEB9A5;
+}
+
+.account-table .scroll-bar .increment-button,
+.account-table .scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+
+/* =========================================================
+   PAGINATION
+========================================================= */
+
+.table-footer {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 11px;
+    -fx-text-fill: #8C9385;
+}
+
+.page-button {
+    -fx-background-color: #F8F8F3;
+    -fx-background-radius: 6px;
+    -fx-border-color: #DEE2D6;
+    -fx-border-radius: 6px;
+    -fx-min-width: 32px;
+    -fx-min-height: 30px;
+    -fx-max-height: 30px;
+    -fx-padding: 5px 9px;
+    -fx-text-fill: #64705E;
+    -fx-font-size: 11px;
+    -fx-cursor: hand;
+}
+
+.page-button:hover {
+    -fx-background-color: #EEF2E8;
+    -fx-border-color: #C9D1C2;
+}
+
+.page-button:pressed {
+    -fx-background-color: #E2E9DA;
+}
+
+.page-button-active {
+    -fx-background-color: #E2E9DA;
+    -fx-border-color: #CBD6C3;
+    -fx-text-fill: #4F604A;
+    -fx-font-weight: bold;
+}
+
+
+/* =========================================================
+   DETAIL CARD
+========================================================= */
+
+.detail-card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 10px;
+    -fx-border-color: #E0E3D7;
+    -fx-border-radius: 10px;
+    -fx-padding: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(60,70,50,0.12), 12, 0.12, 0, 3);
+}
+
+.close-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 5px;
+    -fx-text-fill: #75806F;
+    -fx-font-size: 18px;
+    -fx-padding: 2px 6px;
+    -fx-cursor: hand;
+}
+
+.close-button:hover {
+    -fx-background-color: #EEF1E7;
+    -fx-text-fill: #4F604A;
+}
+
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+.profile-box {
+    -fx-background-color: #F8F8F3;
+    -fx-background-radius: 8px;
+    -fx-border-color: #E5E6DC;
+    -fx-border-radius: 8px;
+    -fx-padding: 13px;
+}
+
+.avatar {
+    -fx-background-color: #E4E7DC;
+    -fx-background-radius: 50%;
+    -fx-min-width: 58px;
+    -fx-min-height: 58px;
+    -fx-max-width: 58px;
+    -fx-max-height: 58px;
+    -fx-alignment: CENTER;
+    -fx-text-fill: #65725E;
+    -fx-font-size: 26px;
+}
+
+.profile-name {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #435542;
+}
+
+.role-badge {
+    -fx-background-color: #F1E7D2;
+    -fx-background-radius: 15px;
+    -fx-padding: 4px 10px;
+    -fx-text-fill: #9A7742;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+}
+
+
+/* =========================================================
+   INFORMATION
+========================================================= */
+
+.info-box {
+    -fx-padding: 4px 2px;
+}
+
+.info-label {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 10px;
+    -fx-text-fill: #7A8375;
+}
+
+.info-value {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 10px;
+    -fx-text-fill: #4E5C4D;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.status-active {
+    -fx-background-color: #DDEEDB;
+    -fx-background-radius: 15px;
+    -fx-padding: 4px 9px;
+    -fx-text-fill: #42814F;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+}
+
+
+/* =========================================================
+   PERMISSION
+========================================================= */
+
+.permission-title {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #526250;
+}
+
+.permission-box {
+    -fx-background-color: #F5F6EF;
+    -fx-background-radius: 7px;
+    -fx-border-color: #E4E6DB;
+    -fx-border-radius: 7px;
+    -fx-padding: 10px;
+}
+
+.permission-item {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 10px;
+    -fx-text-fill: #63705F;
+}
+
+
+/* =========================================================
+   ACTION BUTTONS
+========================================================= */
+
+.secondary-button {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 7px;
+    -fx-border-color: #D8DDD1;
+    -fx-border-radius: 7px;
+    -fx-text-fill: #5C6A57;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-padding: 9px 8px;
+    -fx-cursor: hand;
+}
+
+.secondary-button:hover {
+    -fx-background-color: #F1F3EB;
+    -fx-border-color: #C5CEC0;
+}
+
+.secondary-button:pressed {
+    -fx-background-color: #E7EBE1;
+}
+
+.danger-button {
+    -fx-background-color: #6F8068;
+    -fx-background-radius: 7px;
+    -fx-text-fill: white;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-padding: 9px 8px;
+    -fx-cursor: hand;
+}
+
+.danger-button:hover {
+    -fx-background-color: #596B54;
+}
+
+.danger-button:pressed {
+    -fx-background-color: #4F604A;
+}
+
+
+/* =========================================================
+   GENERAL FOCUS
+========================================================= */
+
+.button:focused,
+.text-field:focused,
+.combo-box:focused {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+
+/* =========================================================
+   COMBO BOX POPUP
+========================================================= */
+
+.combo-box-popup .list-view {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #DDE1D5;
+}
+
+.combo-box-popup .list-cell {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #596557;
+    -fx-font-size: 12px;
+    -fx-padding: 8px 10px;
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: #EEF2E8;
+}
+
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: #E2E9DA;
+    -fx-text-fill: #4F604A;
+}
+
+
+/* =========================================================
+   TOOLTIP
+========================================================= */
+
+.tooltip {
+    -fx-background-color: #435542;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 11px;
+    -fx-background-radius: 5px;
+    -fx-padding: 6px 9px;
+}

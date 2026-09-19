@@ -1,0 +1,520 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<BorderPane fx:id="QuanLyTaiKhoanRoot"
+            prefWidth="1600"
+            prefHeight="1000"
+            stylesheets="@../css/quanlytaikhoan.css"
+            xmlns="http://javafx.com/javafx/26"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.controller.AdminController">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <left>
+        <VBox fx:id="sidebar"
+              prefWidth="230"
+              minWidth="230"
+              maxWidth="230"
+              styleClass="sidebar">
+
+            <!-- ================= LOGO ================= -->
+
+            <VBox alignment="CENTER"
+                  prefHeight="115"
+                  styleClass="logo-section">
+
+                <ImageView fx:id="logoImage"
+                           fitHeight="90"
+                           fitWidth="155"
+                           preserveRatio="true">
+                    <image>
+                        <Image url="@../images/LunaveraLogo.png"/>
+                    </image>
+                </ImageView>
+
+            </VBox>
+
+            <!-- ================= MENU ================= -->
+
+            <VBox fx:id="menuContainer"
+                  spacing="5"
+                  styleClass="menu-container">
+
+                <Button fx:id="homeButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        styleClass="menu-button"
+                        text="⌂   Trang chủ"/>
+
+                <Button fx:id="productButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        styleClass="menu-button"
+                        text="▣   Quản lý sản phẩm"/>
+
+                <Button fx:id="orderButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        styleClass="menu-button"
+                        text="🛒   Quản lý đơn hàng"/>
+
+                <Button fx:id="accountButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        styleClass="menu-button,menu-button-active"
+                        text="♙   Quản lý tài khoản"/>
+
+                <Button fx:id="categoryButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        styleClass="menu-button"
+                        text="▦   Quản lý danh mục"/>
+
+                <Button fx:id="reviewButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        styleClass="menu-button"
+                        text="☆   Quản lý đánh giá"/>
+
+                <Button fx:id="blogButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        styleClass="menu-button"
+                        text="▤   Tin tức &amp; Blog"/>
+
+            </VBox>
+
+            <!-- ================= BOTTOM ================= -->
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <VBox alignment="CENTER"
+                  spacing="6"
+                  styleClass="sidebar-bottom">
+
+                <Button fx:id="logoutButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        styleClass="logout-button"
+                        text="←   Đăng xuất"/>
+
+                <Label styleClass="coffee-slogan"
+                       text="Good Coffee&#10;Better Days"
+                       textAlignment="CENTER"/>
+
+            </VBox>
+
+        </VBox>
+    </left>
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <center>
+        <VBox styleClass="content">
+
+            <!-- ================= HEADER ================= -->
+
+            <HBox alignment="CENTER_LEFT"
+                  spacing="10"
+                  prefHeight="72"
+                  styleClass="page-header">
+
+                <VBox HBox.hgrow="ALWAYS"
+                      spacing="3">
+
+                    <Label text="Quản lý tài khoản"
+                           styleClass="page-title"/>
+
+                    <Label text="Quản lý tài khoản nhân viên và phân quyền hệ thống"
+                           styleClass="page-description"/>
+
+                </VBox>
+
+                <Label text="♧"
+                       styleClass="header-icon"/>
+
+                <VBox alignment="CENTER_RIGHT"
+                      spacing="2">
+
+                    <Label text="Admin"
+                           styleClass="admin-name"/>
+
+                    <Label text="Quản trị viên"
+                           styleClass="admin-role"/>
+
+                </VBox>
+
+                <Label text="◎"
+                       styleClass="profile-icon"/>
+
+            </HBox>
+
+            <!-- ================= STATISTICS ================= -->
+
+            <HBox spacing="12"
+                  styleClass="statistics">
+
+                <VBox HBox.hgrow="ALWAYS"
+                      styleClass="stat-card">
+
+                    <Label text="●"
+                           styleClass="stat-icon"/>
+
+                    <Label text="Tổng tài khoản"
+                           styleClass="stat-title"/>
+
+                    <Label fx:id="totalAccountLabel"
+                           text="0"
+                           styleClass="stat-value"/>
+
+                    <Label text="Tài khoản"
+                           styleClass="stat-description"/>
+
+                </VBox>
+
+                <VBox HBox.hgrow="ALWAYS"
+                      styleClass="stat-card">
+
+                    <Label text="●"
+                           styleClass="stat-icon-active"/>
+
+                    <Label text="Đang hoạt động"
+                           styleClass="stat-title"/>
+
+                    <Label fx:id="activeAccountLabel"
+                           text="0"
+                           styleClass="stat-value"/>
+
+                    <Label text="Tài khoản"
+                           styleClass="stat-description"/>
+
+                </VBox>
+
+                <VBox HBox.hgrow="ALWAYS"
+                      styleClass="stat-card">
+
+                    <Label text="●"
+                           styleClass="stat-icon-locked"/>
+
+                    <Label text="Đã khóa"
+                           styleClass="stat-title"/>
+
+                    <Label fx:id="lockedAccountLabel"
+                           text="0"
+                           styleClass="stat-value"/>
+
+                    <Label text="Tài khoản"
+                           styleClass="stat-description"/>
+
+                </VBox>
+
+                <VBox HBox.hgrow="ALWAYS"
+                      styleClass="stat-card">
+
+                    <Label text="⬟"
+                           styleClass="stat-icon"/>
+
+                    <Label text="Quản trị viên"
+                           styleClass="stat-title"/>
+
+                    <Label fx:id="adminAccountLabel"
+                           text="0"
+                           styleClass="stat-value"/>
+
+                    <Label text="Tài khoản"
+                           styleClass="stat-description"/>
+
+                </VBox>
+
+            </HBox>
+
+            <!-- ================= SEARCH + FILTER ================= -->
+
+            <HBox spacing="8"
+                  alignment="CENTER_LEFT"
+                  styleClass="search-bar">
+
+                <TextField fx:id="accountSearchField"
+                           promptText="Tìm kiếm username, số điện thoại..."
+                           HBox.hgrow="ALWAYS"
+                           styleClass="search-field"/>
+
+                <ComboBox fx:id="roleFilter"
+                          prefWidth="135"
+                          promptText="Tất cả quyền"
+                          styleClass="filter-combo"/>
+
+                <ComboBox fx:id="accountStatusFilter"
+                          prefWidth="145"
+                          promptText="Tất cả trạng thái"
+                          styleClass="filter-combo"/>
+
+                <Button fx:id="addAccountButton"
+                        mnemonicParsing="false"
+                        styleClass="primary-button"
+                        text="+   Thêm tài khoản"/>
+
+            </HBox>
+
+            <!-- ================= ACCOUNT AREA ================= -->
+
+            <HBox spacing="12"
+                  VBox.vgrow="ALWAYS"
+                  styleClass="account-area">
+
+                <!-- ================= ACCOUNT TABLE ================= -->
+
+                <VBox spacing="10"
+                      HBox.hgrow="ALWAYS"
+                      styleClass="table-card">
+
+                    <HBox alignment="CENTER_LEFT">
+
+                        <Label text="●   Danh sách tài khoản"
+                               styleClass="section-title"/>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <Label fx:id="accountCountLabel"
+                               text="0 tài khoản"
+                               styleClass="account-count"/>
+
+                    </HBox>
+
+                    <TableView fx:id="accountTable"
+                               VBox.vgrow="ALWAYS"
+                               styleClass="account-table">
+
+                        <columns>
+
+                            <TableColumn fx:id="accountIndexColumn"
+                                         text="#"
+                                         prefWidth="45"/>
+
+                            <TableColumn fx:id="usernameColumn"
+                                         text="Tài khoản"
+                                         prefWidth="150"/>
+
+                            <TableColumn fx:id="phoneColumn"
+                                         text="Số điện thoại"
+                                         prefWidth="130"/>
+
+                            <TableColumn fx:id="roleColumn"
+                                         text="Quyền"
+                                         prefWidth="120"/>
+
+                            <TableColumn fx:id="statusColumn"
+                                         text="Trạng thái"
+                                         prefWidth="130"/>
+
+                            <TableColumn fx:id="createdDateColumn"
+                                         text="Ngày tạo"
+                                         prefWidth="125"/>
+
+                            <TableColumn fx:id="accountActionColumn"
+                                         text="Thao tác"
+                                         prefWidth="120"/>
+
+                        </columns>
+
+                        <placeholder>
+                            <Label text="Chưa có tài khoản"
+                                   styleClass="empty-label"/>
+                        </placeholder>
+
+                    </TableView>
+
+                    <!-- ================= PAGINATION ================= -->
+
+                    <HBox alignment="CENTER_LEFT"
+                          spacing="5">
+
+                        <Label fx:id="accountPaginationLabel"
+                               text="Hiển thị 0 – 0 / 0 tài khoản"
+                               styleClass="table-footer"/>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <Button fx:id="previousPageButton"
+                                text="‹"
+                                styleClass="page-button"/>
+
+                        <Button fx:id="pageOneButton"
+                                text="1"
+                                styleClass="page-button,page-button-active"/>
+
+                        <Button fx:id="nextPageNumberButton"
+                                text="2"
+                                styleClass="page-button"/>
+
+                        <Button fx:id="nextPageButton"
+                                text="›"
+                                styleClass="page-button"/>
+
+                    </HBox>
+
+                </VBox>
+
+                <!-- ================= ACCOUNT DETAIL ================= -->
+
+                <VBox fx:id="accountDetailCard"
+                      prefWidth="280"
+                      minWidth="280"
+                      maxWidth="280"
+                      spacing="12"
+                      styleClass="detail-card">
+
+                    <HBox alignment="CENTER_LEFT">
+
+                        <Label text="▣   Chi tiết tài khoản"
+                               styleClass="section-title"/>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <Button fx:id="closeDetailButton"
+                                text="×"
+                                styleClass="close-button"/>
+
+                    </HBox>
+
+                    <!-- ================= PROFILE ================= -->
+
+                    <VBox alignment="CENTER"
+                          spacing="5"
+                          styleClass="profile-box">
+
+                        <Label fx:id="detailAvatar"
+                               text="●"
+                               styleClass="avatar"/>
+
+                        <Label fx:id="detailUsername"
+                               text="Chưa chọn"
+                               styleClass="profile-name"/>
+
+                        <Label fx:id="detailRole"
+                               text="Chưa có"
+                               styleClass="role-badge"/>
+
+                    </VBox>
+
+                    <!-- ================= INFORMATION ================= -->
+
+                    <VBox spacing="10"
+                          styleClass="info-box">
+
+                        <HBox>
+                            <Label text="Tên đăng nhập"
+                                   styleClass="info-label"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Label fx:id="detailUsernameLabel"
+                                   text="-"
+                                   styleClass="info-value"/>
+                        </HBox>
+
+                        <HBox>
+                            <Label text="Số điện thoại"
+                                   styleClass="info-label"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Label fx:id="detailPhoneLabel"
+                                   text="-"
+                                   styleClass="info-value"/>
+                        </HBox>
+
+                        <HBox>
+                            <Label text="Quyền"
+                                   styleClass="info-label"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Label fx:id="detailRoleLabel"
+                                   text="-"
+                                   styleClass="role-badge"/>
+                        </HBox>
+
+                        <HBox>
+                            <Label text="Trạng thái"
+                                   styleClass="info-label"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Label fx:id="detailStatusLabel"
+                                   text="-"
+                                   styleClass="status-active"/>
+                        </HBox>
+
+                        <HBox>
+                            <Label text="Ngày tạo"
+                                   styleClass="info-label"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Label fx:id="detailCreatedDateLabel"
+                                   text="-"
+                                   styleClass="info-value"/>
+                        </HBox>
+
+                    </VBox>
+
+                    <!-- ================= PERMISSION ================= -->
+
+                    <Label text="⬟   Phân quyền"
+                           styleClass="permission-title"/>
+
+                    <VBox fx:id="permissionBox"
+                          spacing="6"
+                          styleClass="permission-box">
+
+                        <Label text="Chưa chọn tài khoản"
+                               styleClass="permission-item"/>
+
+                    </VBox>
+
+                    <Region VBox.vgrow="ALWAYS"/>
+
+                    <!-- ================= ACTIONS ================= -->
+
+                    <HBox spacing="8">
+
+                        <Button fx:id="editAccountButton"
+                                text="✎   Chỉnh sửa"
+                                HBox.hgrow="ALWAYS"
+                                styleClass="secondary-button"/>
+
+                        <Button fx:id="lockAccountButton"
+                                text="▣   Khóa"
+                                HBox.hgrow="ALWAYS"
+                                styleClass="danger-button"/>
+
+                    </HBox>
+
+                </VBox>
+
+            </HBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

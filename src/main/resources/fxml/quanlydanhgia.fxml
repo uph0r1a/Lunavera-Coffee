@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="QuanLyDanhGiaRoot"
+            prefWidth="1600"
+            prefHeight="1000"
+            stylesheets="@../css/quanlydanhgia.css"
+            xmlns="http://javafx.com/javafx/26"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.controller.AdminController">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <left>
+        <VBox fx:id="sidebar"
+              prefWidth="230"
+              minWidth="230"
+              maxWidth="230"
+              styleClass="sidebar">
+
+            <!-- ================= LOGO ================= -->
+
+            <VBox alignment="CENTER"
+                  prefHeight="115"
+                  styleClass="logo-section">
+
+                <ImageView fx:id="logoImage"
+                           fitHeight="90"
+                           fitWidth="155"
+                           preserveRatio="true">
+                    <image>
+                        <Image url="@../images/LunaveraLogo.png"/>
+                    </image>
+                </ImageView>
+
+            </VBox>
+
+            <!-- ================= MENU ================= -->
+
+            <VBox fx:id="menuContainer"
+                  spacing="5"
+                  styleClass="menu-container">
+
+                <Button fx:id="homeButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        onAction="#handleHome"
+                        styleClass="menu-button"
+                        text="⌂   Trang chủ"/>
+
+                <Button fx:id="productButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        onAction="#handleProducts"
+                        styleClass="menu-button"
+                        text="▣   Quản lý sản phẩm"/>
+
+                <Button fx:id="orderButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        onAction="#handleOrders"
+                        styleClass="menu-button"
+                        text="🛒   Quản lý đơn hàng"/>
+
+                <Button fx:id="accountButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        onAction="#handleAccounts"
+                        styleClass="menu-button"
+                        text="♙   Quản lý tài khoản"/>
+
+                <Button fx:id="categoryButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        onAction="#handleCategories"
+                        styleClass="menu-button"
+                        text="▦   Quản lý danh mục"/>
+
+                <Button fx:id="reviewButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        onAction="#handleReviews"
+                        styleClass="menu-button,menu-button-active"
+                        text="☆   Quản lý đánh giá"/>
+
+                <Button fx:id="feedbackButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        onAction="#handleFeedback"
+                        styleClass="menu-button"
+                        text="▢   Quản lý phản hồi"/>
+
+                <Button fx:id="blogButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        onAction="#handleBlog"
+                        styleClass="menu-button"
+                        text="▤   Tin tức &amp; Blog"/>
+
+            </VBox>
+
+            <!-- ================= BOTTOM ================= -->
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <VBox alignment="CENTER"
+                  spacing="6"
+                  styleClass="sidebar-bottom">
+
+                <Button fx:id="logoutButton"
+                        maxWidth="1.7976931348623157E308"
+                        prefHeight="38"
+                        minHeight="38"
+                        maxHeight="38"
+                        mnemonicParsing="false"
+                        onAction="#handleLogout"
+                        styleClass="logout-button"
+                        text="←   Đăng xuất"/>
+
+                <Label styleClass="coffee-slogan"
+                       text="Good Coffee&#10;Better Days"
+                       textAlignment="CENTER"/>
+
+            </VBox>
+
+        </VBox>
+    </left>
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <center>
+        <VBox styleClass="content">
+
+            <!-- ================= HEADER ================= -->
+
+            <HBox alignment="CENTER_LEFT"
+                  spacing="10"
+                  prefHeight="72"
+                  styleClass="page-header">
+
+                <VBox HBox.hgrow="ALWAYS"
+                      spacing="3">
+
+                    <Label text="Quản lý đánh giá"
+                           styleClass="page-title"/>
+
+                    <Label text="Xem thông tin đánh giá và phản hồi của khách hàng về sản phẩm và dịch vụ"
+                           styleClass="page-description"/>
+
+                </VBox>
+
+                <Label text="☆"
+                       styleClass="header-icon"/>
+
+                <VBox alignment="CENTER_RIGHT"
+                      spacing="2">
+
+                    <Label text="Admin"
+                           styleClass="admin-name"/>
+
+                    <Label text="Quản trị viên"
+                           styleClass="admin-role"/>
+
+                </VBox>
+
+                <Label text="◎"
+                       styleClass="profile-icon"/>
+
+            </HBox>
+
+            <!-- ================= REVIEW STATISTICS ================= -->
+
+            <HBox spacing="12"
+                  styleClass="statistics">
+
+                <!-- Tổng số đánh giá -->
+
+                <VBox HBox.hgrow="ALWAYS"
+                      styleClass="stat-card">
+
+                    <Label text="☷"
+                           styleClass="stat-icon"/>
+
+                    <Label text="Tổng số đánh giá"
+                           styleClass="stat-title"/>
+
+                    <Label fx:id="totalReviewLabel"
+                           text="0"
+                           styleClass="stat-value"/>
+
+                    <Label text="Tất cả đánh giá từ khách hàng"
+                           styleClass="stat-description"/>
+
+                </VBox>
+
+                <!-- 5 sao -->
+
+                <VBox HBox.hgrow="ALWAYS"
+                      styleClass="stat-card">
+
+                    <Label text="★"
+                           styleClass="stat-icon-star"/>
+
+                    <Label text="Đánh giá 5 sao"
+                           styleClass="stat-title"/>
+
+                    <Label fx:id="fiveStarReviewLabel"
+                           text="0"
+                           styleClass="stat-value"/>
+
+                    <Label fx:id="fiveStarPercentLabel"
+                           text="0%"
+                           styleClass="stat-description"/>
+
+                </VBox>
+
+                <!-- 4 sao -->
+
+                <VBox HBox.hgrow="ALWAYS"
+                      styleClass="stat-card">
+
+                    <Label text="★"
+                           styleClass="stat-icon-star"/>
+
+                    <Label text="Đánh giá 4 sao"
+                           styleClass="stat-title"/>
+
+                    <Label fx:id="fourStarReviewLabel"
+                           text="0"
+                           styleClass="stat-value"/>
+
+                    <Label fx:id="fourStarPercentLabel"
+                           text="0%"
+                           styleClass="stat-description"/>
+
+                </VBox>
+
+                <!-- 1 - 3 sao -->
+
+                <VBox HBox.hgrow="ALWAYS"
+                      styleClass="stat-card">
+
+                    <Label text="★"
+                           styleClass="stat-icon-star"/>
+
+                    <Label text="Đánh giá 1 - 3 sao"
+                           styleClass="stat-title"/>
+
+                    <Label fx:id="lowStarReviewLabel"
+                           text="0"
+                           styleClass="stat-value"/>
+
+                    <Label fx:id="lowStarPercentLabel"
+                           text="0%"
+                           styleClass="stat-description"/>
+
+                </VBox>
+
+            </HBox>
+
+            <!-- ================= REVIEW LIST ================= -->
+
+            <VBox VBox.vgrow="ALWAYS"
+                  spacing="10"
+                  styleClass="review-card">
+
+                <!-- ================= REVIEW HEADER ================= -->
+
+                <HBox alignment="CENTER_LEFT"
+                      spacing="10">
+
+                    <Label text="▣   Danh sách đánh giá"
+                           styleClass="section-title"/>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <TextField fx:id="reviewSearchField"
+                               prefWidth="330"
+                               promptText="Tìm kiếm theo tên khách hàng, sản phẩm..."
+                               styleClass="search-field"/>
+
+                    <Button fx:id="viewReviewButton"
+                            mnemonicParsing="false"
+                            onAction="#handleViewReview"
+                            styleClass="secondary-button"
+                            text="⊙   Xem chi tiết"/>
+
+                </HBox>
+
+                <!-- ================= REVIEW TABLE ================= -->
+
+                <TableView fx:id="reviewTable"
+                           VBox.vgrow="ALWAYS"
+                           styleClass="review-table">
+
+                    <columns>
+
+                        <TableColumn fx:id="reviewIndexColumn"
+                                     text="STT"
+                                     prefWidth="55"
+                                     minWidth="45"/>
+
+                        <TableColumn fx:id="reviewCustomerColumn"
+                                     text="Khách hàng"
+                                     prefWidth="180"
+                                     minWidth="140"/>
+
+                        <TableColumn fx:id="reviewProductColumn"
+                                     text="Sản phẩm"
+                                     prefWidth="190"
+                                     minWidth="150"/>
+
+                        <TableColumn fx:id="reviewRatingColumn"
+                                     text="Đánh giá"
+                                     prefWidth="160"
+                                     minWidth="130"/>
+
+                        <TableColumn fx:id="reviewContentColumn"
+                                     text="Nội dung đánh giá"
+                                     prefWidth="350"
+                                     minWidth="250"/>
+
+                        <TableColumn fx:id="reviewDateColumn"
+                                     text="Thời gian"
+                                     prefWidth="160"
+                                     minWidth="130"/>
+
+                        <TableColumn fx:id="reviewStatusColumn"
+                                     text="Trạng thái"
+                                     prefWidth="140"
+                                     minWidth="120"/>
+
+                        <TableColumn fx:id="reviewActionColumn"
+                                     text="Thao tác"
+                                     prefWidth="140"
+                                     minWidth="120"/>
+
+                    </columns>
+
+                    <placeholder>
+                        <VBox alignment="CENTER"
+                              spacing="6"
+                              styleClass="empty-box">
+
+                            <Label text="☆"
+                                   styleClass="empty-icon"/>
+
+                            <Label text="Chưa có đánh giá nào"
+                                   styleClass="empty-title"/>
+
+                            <Label text="Các đánh giá của khách hàng sẽ hiển thị tại đây."
+                                   styleClass="empty-description"/>
+
+                        </VBox>
+                    </placeholder>
+
+                </TableView>
+
+                <!-- ================= REVIEW PAGINATION ================= -->
+
+                <HBox alignment="CENTER_LEFT"
+                      spacing="8">
+
+                    <Label fx:id="reviewPaginationLabel"
+                           text="Hiển thị 0 – 0 trong tổng số 0 đánh giá"
+                           styleClass="table-footer"/>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <Button fx:id="previousReviewPageButton"
+                            mnemonicParsing="false"
+                            text="‹"
+                            styleClass="page-button"/>
+
+                    <Button fx:id="reviewPageOneButton"
+                            mnemonicParsing="false"
+                            text="1"
+                            styleClass="page-button,page-button-active"/>
+
+                    <Button fx:id="nextReviewPageButton"
+                            mnemonicParsing="false"
+                            text="›"
+                            styleClass="page-button"/>
+
+                </HBox>
+
+            </VBox>
+
+            <!-- ================= FEEDBACK MANAGEMENT ================= -->
+
+            <VBox VBox.vgrow="ALWAYS"
+                  spacing="10"
+                  styleClass="feedback-card">
+
+                <!-- ================= FEEDBACK HEADER ================= -->
+
+                <HBox alignment="CENTER_LEFT"
+                      spacing="10">
+
+                    <VBox spacing="2">
+
+                        <Label text="◯   Quản lý phản hồi"
+                               styleClass="section-title"/>
+
+                        <Label text="Xem và quản lý các phản hồi của khách hàng"
+                               styleClass="section-description"/>
+
+                    </VBox>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <TextField fx:id="feedbackSearchField"
+                               prefWidth="330"
+                               promptText="Tìm kiếm theo tên khách hàng, nội dung..."
+                               styleClass="search-field"/>
+
+                    <Button fx:id="deleteFeedbackButton"
+                            mnemonicParsing="false"
+                            onAction="#handleDeleteFeedback"
+                            styleClass="danger-button"
+                            text="▣   Xóa phản hồi"/>
+
+                </HBox>
+
+                <!-- ================= FEEDBACK TABLE ================= -->
+
+                <TableView fx:id="feedbackTable"
+                           VBox.vgrow="ALWAYS"
+                           styleClass="feedback-table">
+
+                    <columns>
+
+                        <TableColumn fx:id="feedbackIndexColumn"
+                                     text="STT"
+                                     prefWidth="55"
+                                     minWidth="45"/>
+
+                        <TableColumn fx:id="feedbackCustomerColumn"
+                                     text="Khách hàng"
+                                     prefWidth="200"
+                                     minWidth="150"/>
+
+                        <TableColumn fx:id="feedbackContentColumn"
+                                     text="Nội dung phản hồi"
+                                     prefWidth="500"
+                                     minWidth="300"/>
+
+                        <TableColumn fx:id="feedbackDateColumn"
+                                     text="Thời gian"
+                                     prefWidth="170"
+                                     minWidth="130"/>
+
+                        <TableColumn fx:id="feedbackStatusColumn"
+                                     text="Trạng thái"
+                                     prefWidth="150"
+                                     minWidth="120"/>
+
+                        <TableColumn fx:id="feedbackActionColumn"
+                                     text="Thao tác"
+                                     prefWidth="140"
+                                     minWidth="120"/>
+
+                    </columns>
+
+                    <placeholder>
+                        <VBox alignment="CENTER"
+                              spacing="6"
+                              styleClass="empty-box">
+
+                            <Label text="◯"
+                                   styleClass="empty-icon"/>
+
+                            <Label text="Chưa có phản hồi nào"
+                                   styleClass="empty-title"/>
+
+                            <Label text="Các phản hồi của khách hàng sẽ hiển thị tại đây."
+                                   styleClass="empty-description"/>
+
+                        </VBox>
+                    </placeholder>
+
+                </TableView>
+
+                <!-- ================= FEEDBACK PAGINATION ================= -->
+
+                <HBox alignment="CENTER_LEFT"
+                      spacing="8">
+
+                    <Label fx:id="feedbackPaginationLabel"
+                           text="Hiển thị 0 – 0 trong tổng số 0 phản hồi"
+                           styleClass="table-footer"/>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <Button fx:id="previousFeedbackPageButton"
+                            mnemonicParsing="false"
+                            text="‹"
+                            styleClass="page-button"/>
+
+                    <Button fx:id="feedbackPageOneButton"
+                            mnemonicParsing="false"
+                            text="1"
+                            styleClass="page-button,page-button-active"/>
+
+                    <Button fx:id="nextFeedbackPageButton"
+                            mnemonicParsing="false"
+                            text="›"
+                            styleClass="page-button"/>
+
+                </HBox>
+
+            </VBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

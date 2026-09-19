@@ -11,7 +11,7 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(
-                HelloApplication.class.getResource("/fxml/login.fxml")
+                HelloApplication.class.getResource("/fxml/admin-trangchu.fxml")
         );
 
         Scene scene = new Scene(loader.load());
