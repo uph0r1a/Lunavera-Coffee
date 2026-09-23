@@ -8,95 +8,114 @@
 }
 
 
-/* =========================================================
-   SIDEBAR
-========================================================= */
+/* ==================== SIDEBAR ==================== */
 
 .sidebar {
-    -fx-background-color: #EEF1DF;
-    -fx-border-color: #D9DDC9;
+    -fx-background-color: #e4eed6;
+    -fx-border-color: #cbdbba;
     -fx-border-width: 0 1px 0 0;
-    -fx-padding: 20px 10px 20px 10px;
 }
 
 .logo-section {
-    -fx-padding: 5px 0 20px 0;
+    -fx-background-color: transparent;
+    -fx-padding: 18px 15px 12px 15px;
+}
+
+.logo-title {
+    -fx-text-fill: #224416;
+    -fx-font-family: "Serif";
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(34, 68, 22, 0.15), 4, 0, 0, 1);
+}
+
+.logo-subtitle {
+    -fx-text-fill: #4b7833;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-letter-spacing: 3px;
+}
+
+.sidebar-separator {
+    -fx-background-color: #d1dfc1;
+    -fx-padding: 0 15px;
+}
+
+.sidebar-separator .line {
+    -fx-border-color: #d1dfc1;
+    -fx-border-width: 0.5px;
 }
 
 .menu-container {
-    -fx-padding: 5px 0 0 0;
+    -fx-padding: 8px 12px;
 }
 
-
-/* =========================================================
-   MENU BUTTON
-========================================================= */
-
+/* Menu Button */
 .menu-button {
     -fx-background-color: transparent;
-    -fx-background-radius: 8px;
-    -fx-text-fill: #5D6A58;
-    -fx-font-family: "Georgia";
+    -fx-background-radius: 9px;
+    -fx-border-radius: 9px;
+    -fx-text-fill: #345823;
+    -fx-font-family: "Segoe UI", "Serif", sans-serif;
     -fx-font-size: 14px;
-    -fx-font-weight: normal;
+    -fx-font-weight: 600;
     -fx-alignment: CENTER_LEFT;
-    -fx-padding: 10px 14px;
+    -fx-padding: 10px 18px;
     -fx-cursor: hand;
 }
 
 .menu-button:hover {
-    -fx-background-color: #DDE5D2;
-    -fx-text-fill: #435542;
+    -fx-background-color: #d5e6bf;
+    -fx-text-fill: #1c380f;
 }
 
-.menu-button:pressed {
-    -fx-background-color: #D2DBC8;
-}
-
+/* Menu Active: Xanh lá mạ non đậm, tương phản cao */
 .menu-button-active {
-    -fx-background-color: #6F8068;
-    -fx-text-fill: white;
+    -fx-background-color: #3e7728;
+    -fx-background-radius: 9px;
+    -fx-text-fill: #ffffff;
     -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(45, 85, 25, 0.28), 8, 0, 0, 2);
 }
 
 .menu-button-active:hover {
-    -fx-background-color: #61735B;
-    -fx-text-fill: white;
+    -fx-background-color: #356722;
+    -fx-text-fill: #ffffff;
 }
 
-
-/* =========================================================
-   SIDEBAR BOTTOM
-========================================================= */
-
 .sidebar-bottom {
-    -fx-border-color: #D0D5C2;
-    -fx-border-width: 1px 0 0 0;
-    -fx-padding: 18px 0 0 0;
+    -fx-padding: 10px 16px 20px 16px;
 }
 
 .logout-button {
-    -fx-background-color: transparent;
+    -fx-background-color: #d9e8c6;
     -fx-background-radius: 8px;
-    -fx-text-fill: #6C7864;
-    -fx-font-family: "Georgia";
-    -fx-font-size: 14px;
+    -fx-border-color: #c4d9ab;
+    -fx-border-radius: 8px;
+    -fx-border-width: 1px;
+    -fx-text-fill: #395f26;
+    -fx-font-family: "Segoe UI", "Serif", sans-serif;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
     -fx-alignment: CENTER_LEFT;
-    -fx-padding: 10px 14px;
+    -fx-padding: 9px 14px;
     -fx-cursor: hand;
 }
 
 .logout-button:hover {
-    -fx-background-color: #DDE5D2;
-    -fx-text-fill: #435542;
+    -fx-background-color: #cce0b5;
+    -fx-text-fill: #1d3a10;
+    -fx-border-color: #b0cb93;
 }
 
-.coffee-slogan {
-    -fx-font-family: "Georgia";
-    -fx-font-size: 11px;
+.sidebar-footer, .coffee-slogan {
+    -fx-text-fill: #5b7e45;
+    -fx-font-family: "Serif";
+    -fx-font-size: 12px;
     -fx-font-style: italic;
-    -fx-text-fill: #71806B;
-    -fx-line-spacing: 2px;
+    -fx-line-spacing: 4px;
+    -fx-padding: 6px 0 0 0;
 }
 
 

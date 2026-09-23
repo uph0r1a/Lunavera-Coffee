@@ -1,209 +1,288 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 
-<BorderPane fx:id="QuanLySanPhamRoot"
-            prefWidth="1600"
+
+<BorderPane fx:id="quanLyDonHangRoot"
+            maxHeight="1000"
+            maxWidth="1600"
             prefHeight="1000"
-            stylesheets="@../css/quanlysanpham.css"
+            prefWidth="1600"
+            stylesheets="@../css/quanlydonhang.css"
             xmlns="http://javafx.com/javafx/26"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.example.controller.AdminController">
 
-    <!-- ================= SIDEBAR ================= -->
-
+    <!-- SIDEBAR -->
     <left>
-        <VBox fx:id="sidebar"
-              prefWidth="230"
-              minWidth="230"
-              maxWidth="230"
+        <VBox prefWidth="270.0"
+              maxWidth="270.0"
               styleClass="sidebar">
 
-            <!-- ================= LOGO ================= -->
-
-            <VBox alignment="CENTER"
-                  prefHeight="115"
-                  styleClass="logo-section">
-                <ImageView fx:id="logoImage"
-                           fitHeight="90"
-                           fitWidth="155"
-                           preserveRatio="true">
+            <VBox alignment="CENTER" prefHeight="150.0">
+                <ImageView fitHeight="100.0" fitWidth="180.0" preserveRatio="true">
                     <image>
                         <Image url="@../images/LunaveraLogo.png"/>
                     </image>
                 </ImageView>
             </VBox>
 
-            <!-- ================= MENU ================= -->
+            <Separator styleClass="sidebar-separator"/>
 
-            <VBox fx:id="menuContainer"
-                  spacing="5"
-                  styleClass="menu-container">
-
-                <Button fx:id="homeButton"
+            <VBox spacing="6.0" VBox.vgrow="NEVER">
+                <Button text="⌂   Trang chủ"
+                        prefHeight="48.0"
                         maxWidth="1.7976931348623157E308"
-                        prefHeight="38"
-                        minHeight="38"
-                        maxHeight="38"
-                        mnemonicParsing="false"
                         styleClass="menu-button"
-                        text="⌂   Trang chủ"
-                        onAction="#handleNavigation"/>
+                        onAction="#openDashboard"/>
 
-                <Button fx:id="productButton"
+                <Button text="▣   Quản lý sản phẩm"
+                        prefHeight="48.0"
                         maxWidth="1.7976931348623157E308"
-                        prefHeight="38"
-                        minHeight="38"
-                        maxHeight="38"
-                        mnemonicParsing="false"
-                        styleClass="menu-button,menu-button-active"
-                        text="▣   Quản lý sản phẩm"
-                        onAction="#handleNavigation"/>
-
-                <Button fx:id="orderButton"
-                        maxWidth="1.7976931348623157E308"
-                        prefHeight="38"
-                        minHeight="38"
-                        maxHeight="38"
-                        mnemonicParsing="false"
                         styleClass="menu-button"
-                        text="🛒   Quản lý đơn hàng"
-                        onAction="#handleNavigation"/>
+                        onAction="#openProductManagement"/>
 
-                <Button fx:id="accountButton"
+                <Button text="▤   Quản lý đơn hàng"
+                        prefHeight="48.0"
                         maxWidth="1.7976931348623157E308"
-                        prefHeight="38"
-                        minHeight="38"
-                        maxHeight="38"
-                        mnemonicParsing="false"
-                        styleClass="menu-button"
-                        text="♙   Quản lý tài khoản"
-                        onAction="#handleNavigation"/>
+                        styleClass="menu-button,menu-button-active"/>
 
-                <Button fx:id="categoryButton"
+                <Button text="♙   Quản lý khách hàng"
+                        prefHeight="48.0"
                         maxWidth="1.7976931348623157E308"
-                        prefHeight="38"
-                        minHeight="38"
-                        maxHeight="38"
-                        mnemonicParsing="false"
                         styleClass="menu-button"
-                        text="▦   Quản lý danh mục"
-                        onAction="#handleNavigation"/>
-
-                <Button fx:id="reviewButton"
-                        maxWidth="1.7976931348623157E308"
-                        prefHeight="38"
-                        minHeight="38"
-                        maxHeight="38"
-                        mnemonicParsing="false"
-                        styleClass="menu-button"
-                        text="☆   Quản lý đánh giá"
-                        onAction="#handleNavigation"/>
-
-                <Button fx:id="blogButton"
-                        maxWidth="1.7976931348623157E308"
-                        prefHeight="38"
-                        minHeight="38"
-                        maxHeight="38"
-                        mnemonicParsing="false"
-                        styleClass="menu-button"
-                        text="▤   Tin tức &amp; Blog"
-                        onAction="#handleNavigation"/>
+                        onAction="#openCustomerManagement"/>
             </VBox>
 
-            <!-- ================= BOTTOM ================= -->
+            <Separator styleClass="sidebar-separator"/>
+
+            <VBox spacing="6.0">
+                <Button text="▦   Quản lý danh mục"
+                        prefHeight="48.0"
+                        maxWidth="1.7976931348623157E308"
+                        styleClass="menu-button"
+                        onAction="#openCategoryManagement"/>
+
+                <Button text="▣   Quản lý kho"
+                        prefHeight="48.0"
+                        maxWidth="1.7976931348623157E308"
+                        styleClass="menu-button"
+                        onAction="#openInventoryManagement"/>
+            </VBox>
+
+            <Separator styleClass="sidebar-separator"/>
+
+            <VBox spacing="6.0">
+                <Button text="♙   Quản lý nhân viên"
+                        prefHeight="48.0"
+                        maxWidth="1.7976931348623157E308"
+                        styleClass="menu-button"
+                        onAction="#openEmployeeManagement"/>
+
+                <Button text="♙   Quản lý tài khoản"
+                        prefHeight="48.0"
+                        maxWidth="1.7976931348623157E308"
+                        styleClass="menu-button"
+                        onAction="#openAccountManagement"/>
+            </VBox>
 
             <Region VBox.vgrow="ALWAYS"/>
 
-            <VBox alignment="CENTER"
-                  spacing="6"
-                  styleClass="sidebar-bottom">
-
-                <Button fx:id="logoutButton"
+            <VBox alignment="CENTER_LEFT" spacing="8.0">
+                <padding>
+                    <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
+                </padding>
+                <Button text="←   Đăng xuất"
+                        prefHeight="42.0"
                         maxWidth="1.7976931348623157E308"
-                        prefHeight="38"
-                        minHeight="38"
-                        maxHeight="38"
-                        mnemonicParsing="false"
                         styleClass="logout-button"
-                        text="←   Đăng xuất"
-                        onAction="#handleLogout"/>
+                        onAction="#logout"/>
 
-                <Label styleClass="coffee-slogan"
-                       text="Good Coffee&#10;Better Days"
-                       textAlignment="CENTER"/>
+                <Label text="Cà phê ngon&#10;Ngày thêm tốt đẹp"
+                       styleClass="sidebar-footer"/>
             </VBox>
-
         </VBox>
     </left>
 
     <!-- ================= MAIN CONTENT ================= -->
-
     <center>
         <VBox styleClass="content">
 
-            <HBox alignment="CENTER_LEFT" spacing="10" prefHeight="72" styleClass="page-header">
+            <!-- HEADER -->
+            <HBox alignment="CENTER_LEFT"
+                  spacing="10"
+                  prefHeight="72"
+                  styleClass="page-header">
+
                 <VBox HBox.hgrow="ALWAYS" spacing="3">
-                    <Label text="Quản lý đơn hàng" styleClass="page-title"/>
-                    <Label text="Danh sách và quản lý các đơn hàng trong cửa hàng" styleClass="page-description"/>
+                    <Label text="Quản lý đơn hàng"
+                           styleClass="page-title"/>
+                    <Label text="Theo dõi và quản lý các đơn hàng của cửa hàng"
+                           styleClass="page-description"/>
                 </VBox>
-                <Label text="🛒" styleClass="header-icon"/>
+
+                <Label text="♧" styleClass="header-icon"/>
+
                 <VBox alignment="CENTER_RIGHT" spacing="2">
-                    <Label text="Admin" styleClass="admin-name"/>
-                    <Label text="Quản trị viên" styleClass="admin-role"/>
+                    <Label fx:id="adminNameLabel"
+                           text="Admin"
+                           styleClass="admin-name"/>
+                    <Label fx:id="adminRoleLabel"
+                           text="Quản trị viên"
+                           styleClass="admin-role"/>
                 </VBox>
+
                 <Label text="◎" styleClass="profile-icon"/>
             </HBox>
 
-            <!-- ================= ORDER FILTER ================= -->
-            <HBox spacing="8" styleClass="category-tabs">
-                <Button fx:id="allOrderButton" text="▦   Tất cả" onAction="#handleAllOrders" styleClass="category-button,category-button-active"/>
-                <Button fx:id="openOrderButton" text="◷   Đang xử lý" onAction="#handleOpenOrders" styleClass="category-button"/>
-                <Button fx:id="paidOrderButton" text="✓   Đã thanh toán" onAction="#handlePaidOrders" styleClass="category-button"/>
-                <Button fx:id="cancelledOrderButton" text="✕   Đã hủy" onAction="#handleCancelledOrders" styleClass="category-button"/>
+            <!-- ================= ORDER STATUS ================= -->
+            <HBox spacing="8" styleClass="order-status-tabs">
+
+                <Button fx:id="allOrderButton"
+                        text="Tất cả"
+                        styleClass="order-status-button,order-status-button-active"
+                        onAction="#handleAllOrders"/>
+
+                <Button fx:id="openOrderButton"
+                        text="Đang xử lý"
+                        styleClass="order-status-button"
+                        onAction="#handleOpenOrders"/>
+
+                <Button fx:id="paidOrderButton"
+                        text="Đã thanh toán"
+                        styleClass="order-status-button"
+                        onAction="#handlePaidOrders"/>
+
+                <Button fx:id="cancelledOrderButton"
+                        text="Đã hủy"
+                        styleClass="order-status-button"
+                        onAction="#handleCancelledOrders"/>
             </HBox>
 
-            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="search-filter-bar">
-                <TextField fx:id="searchOrderField" promptText="Tìm mã đơn hoặc khách hàng..." prefWidth="300" onAction="#handleSearchOrder"/>
-                <ComboBox fx:id="orderStatusFilter" prefWidth="150" promptText="Trạng thái" onAction="#handleStatusFilter"/>
-                <DatePicker fx:id="orderDateFilter" promptText="Ngày đặt" onAction="#handleDateFilter"/>
-                <Button fx:id="clearOrderFilterButton" text="Xóa lọc" onAction="#handleClearOrderFilter" styleClass="secondary-button"/>
-                <Region HBox.hgrow="ALWAYS"/>
-                <Button fx:id="refreshOrderButton" text="↻   Làm mới" onAction="#handleRefreshOrders" styleClass="secondary-button"/>
+            <!-- ================= FILTER ================= -->
+            <HBox spacing="8" styleClass="filter-bar">
+
+                <TextField fx:id="searchOrderField"
+                           promptText="Tìm theo mã đơn hoặc khách hàng..."
+                           HBox.hgrow="ALWAYS"
+                           styleClass="search-field"
+                           onKeyReleased="#handleSearchOrder"/>
+
+                <ComboBox fx:id="orderStatusFilter"
+                          prefWidth="145"
+                          promptText="Trạng thái đơn"
+                          styleClass="filter-combo"
+                          onAction="#handleOrderStatusFilter"/>
+
+                <DatePicker fx:id="orderDateFilter"
+                            prefWidth="145"
+                            promptText="Ngày đặt"
+                            styleClass="filter-date"
+                            onAction="#handleOrderDateFilter"/>
+
+                <Button fx:id="clearOrderFilterButton"
+                        text="Xóa lọc"
+                        styleClass="secondary-button"
+                        onAction="#handleClearOrderFilter"/>
+
+                <Button fx:id="refreshOrderButton"
+                        text="↻"
+                        styleClass="secondary-button"
+                        onAction="#handleRefreshOrders"/>
             </HBox>
 
             <!-- ================= ORDER TABLE ================= -->
-            <VBox spacing="10" VBox.vgrow="ALWAYS" styleClass="product-card">
-                <HBox alignment="CENTER_LEFT">
-                    <Label text="Danh sách đơn hàng" styleClass="card-title"/>
-                    <Region HBox.hgrow="ALWAYS"/>
-                    <Label fx:id="orderCountLabel" text="0 đơn" styleClass="count-label"/>
-                </HBox>
+            <VBox VBox.vgrow="ALWAYS"
+                  spacing="10"
+                  styleClass="table-card">
 
-                <TableView fx:id="orderTable" VBox.vgrow="ALWAYS" styleClass="product-table">
+                <TableView fx:id="orderTable"
+                           VBox.vgrow="ALWAYS"
+                           styleClass="order-table">
+
                     <columns>
-                        <TableColumn fx:id="orderIdColumn" text="Mã đơn" prefWidth="90"/>
-                        <TableColumn fx:id="customerColumn" text="Khách hàng" prefWidth="180"/>
-                        <TableColumn fx:id="tableColumn" text="Bàn" prefWidth="80"/>
-                        <TableColumn fx:id="employeeColumn" text="Nhân viên" prefWidth="150"/>
-                        <TableColumn fx:id="orderTimeColumn" text="Thời gian" prefWidth="170"/>
-                        <TableColumn fx:id="statusColumn" text="Trạng thái" prefWidth="130"/>
-                        <TableColumn fx:id="totalAmountColumn" text="Tổng tiền" prefWidth="130"/>
-                        <TableColumn fx:id="actionColumn" text="Thao tác" prefWidth="160"/>
+
+                        <!-- Order.order_id -->
+                        <TableColumn fx:id="orderIdColumn"
+                                     text="Mã đơn"
+                                     prefWidth="85"/>
+
+                        <!-- Order.customer_id -> Customer -->
+                        <TableColumn fx:id="customerColumn"
+                                     text="Khách hàng"
+                                     prefWidth="170"/>
+
+                        <!-- Table.table_id / table_number -->
+                        <TableColumn fx:id="tableColumn"
+                                     text="Bàn"
+                                     prefWidth="80"/>
+
+                        <!-- Order.user_id -> User -->
+                        <TableColumn fx:id="employeeColumn"
+                                     text="Nhân viên"
+                                     prefWidth="150"/>
+
+                        <!-- Order.order_time -->
+                        <TableColumn fx:id="orderTimeColumn"
+                                     text="Thời gian"
+                                     prefWidth="155"/>
+
+                        <!-- Order.status -->
+                        <TableColumn fx:id="statusColumn"
+                                     text="Trạng thái"
+                                     prefWidth="130"/>
+
+                        <!-- Order.total_amount -->
+                        <TableColumn fx:id="totalAmountColumn"
+                                     text="Tổng tiền"
+                                     prefWidth="130"/>
+
+                        <!-- UI action -->
+                        <TableColumn fx:id="actionColumn"
+                                     text="Thao tác"
+                                     prefWidth="150"/>
                     </columns>
+
+                    <placeholder>
+                        <Label text="Chưa có đơn hàng"
+                               styleClass="empty-label"/>
+                    </placeholder>
                 </TableView>
 
-                <HBox alignment="CENTER" spacing="8">
-                    <Button fx:id="previousOrderPageButton" text="‹" onAction="#handlePreviousOrderPage"/>
-                    <Button fx:id="orderPageOneButton" text="1" onAction="#handleOrderPageOne"/>
-                    <Button fx:id="orderPageTwoButton" text="2" onAction="#handleOrderPageTwo"/>
-                    <Button fx:id="nextOrderPageButton" text="›" onAction="#handleNextOrderPage"/>
+                <!-- FOOTER -->
+                <HBox alignment="CENTER_LEFT" spacing="5">
+
+                    <Label fx:id="totalOrderLabel"
+                           text="Tổng cộng: 0 đơn hàng"
+                           styleClass="table-footer"/>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <Button fx:id="previousOrderPageButton"
+                            text="‹"
+                            styleClass="page-button"
+                            onAction="#handlePreviousOrderPage"/>
+
+                    <Button fx:id="orderPageOneButton"
+                            text="1"
+                            styleClass="page-button,page-button-active"
+                            onAction="#handleOrderPageOne"/>
+
+                    <Button fx:id="orderPageTwoButton"
+                            text="2"
+                            styleClass="page-button"
+                            onAction="#handleOrderPageTwo"/>
+
+                    <Button fx:id="nextOrderPageButton"
+                            text="›"
+                            styleClass="page-button"
+                            onAction="#handleNextOrderPage"/>
                 </HBox>
             </VBox>
         </VBox>
     </center>
-
 </BorderPane>

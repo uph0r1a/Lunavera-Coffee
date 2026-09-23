@@ -23,10 +23,10 @@
             minHeight="1000.0"
             maxWidth="1600.0"
             maxHeight="1000.0"
-            stylesheets="@../css/admin-trangchu.css"
+            stylesheets="@../css/employee-trangchu.css"
             xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.example.controller.AdminController"
+            fx:controller="org.example.controller.EmployeeController"
             styleClass="dashboard">
 
     <!-- SIDEBAR -->
@@ -89,11 +89,6 @@
             <Separator styleClass="sidebar-separator"/>
 
             <VBox spacing="6.0">
-                <Button text="♙   Quản lý nhân viên"
-                        prefHeight="48.0"
-                        maxWidth="1.7976931348623157E308"
-                        styleClass="menu-button"
-                        onAction="#openEmployeeManagement"/>
 
                 <Button text="♙   Quản lý tài khoản"
                         prefHeight="48.0"
@@ -127,7 +122,7 @@
             <!-- HEADER -->
             <HBox alignment="CENTER_LEFT" prefHeight="70.0">
                 <VBox spacing="4.0">
-                    <Label text="Chào mừng, Admin!" styleClass="page-title"/>
+                    <Label text="Chào mừng, Employee!" styleClass="page-title"/>
                     <Label text="Chúc bạn có một ngày làm việc hiệu quả!"
                            styleClass="page-subtitle"/>
                 </VBox>
@@ -135,8 +130,8 @@
                 <Region HBox.hgrow="ALWAYS"/>
 
                 <VBox alignment="CENTER_RIGHT" spacing="3.0">
-                    <Label text="Admin" styleClass="account-name"/>
-                    <Label text="Quản trị viên" styleClass="account-role"/>
+                    <Label text="Employee" styleClass="account-name"/>
+                    <Label text="Nhân viên" styleClass="account-role"/>
                 </VBox>
             </HBox>
 
@@ -194,92 +189,6 @@
                            styleClass="stat-description"/>
                 </VBox>
             </GridPane>
-
-            <!-- CHART + ORDER STATISTICS -->
-            <HBox spacing="16.0" VBox.vgrow="NEVER">
-
-                <VBox prefWidth="850.0"
-                      prefHeight="300.0"
-                      spacing="12.0"
-                      styleClass="content-card"
-                      HBox.hgrow="ALWAYS">
-
-                    <HBox alignment="CENTER_LEFT">
-                        <Label text="Doanh thu 7 ngày gần đây"
-                               styleClass="section-title"/>
-
-                        <Region HBox.hgrow="ALWAYS"/>
-
-                        <Label text="7 ngày qua"
-                               styleClass="filter-label"/>
-                    </HBox>
-
-                    <LineChart fx:id="revenueChart"
-                               animated="false"
-                               legendVisible="false"
-                               createSymbols="true"
-                               verticalGridLinesVisible="false"
-                               horizontalGridLinesVisible="true"
-                               VBox.vgrow="ALWAYS">
-
-                        <xAxis>
-                            <CategoryAxis fx:id="revenueXAxis"
-                                          label="Ngày"/>
-                        </xAxis>
-
-                        <yAxis>
-                            <NumberAxis fx:id="revenueYAxis"
-                                        label="Doanh thu"/>
-                        </yAxis>
-                    </LineChart>
-                </VBox>
-
-                <VBox prefWidth="350.0"
-                      prefHeight="300.0"
-                      spacing="15.0"
-                      styleClass="content-card">
-
-                    <Label text="Thống kê đơn hàng"
-                           styleClass="section-title"/>
-
-                    <VBox spacing="14.0">
-                        <HBox alignment="CENTER_LEFT">
-                            <Label text="Đã thanh toán"
-                                   styleClass="order-status-label"/>
-                            <Region HBox.hgrow="ALWAYS"/>
-                            <Label fx:id="paidOrderLabel"
-                                   text="0"
-                                   styleClass="order-status-value"/>
-                        </HBox>
-
-                        <HBox alignment="CENTER_LEFT">
-                            <Label text="Đang mở"
-                                   styleClass="order-status-label"/>
-                            <Region HBox.hgrow="ALWAYS"/>
-                            <Label fx:id="openOrderLabel"
-                                   text="0"
-                                   styleClass="order-status-value"/>
-                        </HBox>
-
-                        <HBox alignment="CENTER_LEFT">
-                            <Label text="Đã hủy"
-                                   styleClass="order-status-label"/>
-                            <Region HBox.hgrow="ALWAYS"/>
-                            <Label fx:id="cancelledOrderLabel"
-                                   text="0"
-                                   styleClass="order-status-value"/>
-                        </HBox>
-                    </VBox>
-
-                    <Region VBox.vgrow="ALWAYS"/>
-
-                    <Button text="Xem tất cả đơn hàng →"
-                            maxWidth="1.7976931348623157E308"
-                            prefHeight="42.0"
-                            styleClass="secondary-button"
-                            onAction="#openOrderManagement"/>
-                </VBox>
-            </HBox>
 
             <!-- TABLE + INVENTORY -->
             <HBox spacing="16.0" VBox.vgrow="ALWAYS">

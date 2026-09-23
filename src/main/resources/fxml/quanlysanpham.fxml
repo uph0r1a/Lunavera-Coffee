@@ -1,142 +1,109 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 
 <BorderPane fx:id="QuanLySanPhamRoot"
-            prefWidth="1600"
+            maxHeight="1000"
+            maxWidth="1600"
             prefHeight="1000"
+            prefWidth="1600"
             stylesheets="@../css/quanlysanpham.css"
             xmlns="http://javafx.com/javafx/26"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.example.controller.AdminController">
 
-    <!-- ================= SIDEBAR ================= -->
-
+    <!-- SIDEBAR -->
     <left>
-        <VBox fx:id="sidebar"
-              prefWidth="230"
-              minWidth="230"
-              maxWidth="230"
+        <VBox prefWidth="270.0"
+              maxWidth="270.0"
               styleClass="sidebar">
 
-            <!-- ================= LOGO ================= -->
-
-            <VBox alignment="CENTER"
-                  prefHeight="115"
-                  styleClass="logo-section">
-                <ImageView fx:id="logoImage"
-                           fitHeight="90"
-                           fitWidth="155"
-                           preserveRatio="true">
+            <VBox alignment="CENTER" prefHeight="150.0">
+                <ImageView fitHeight="100.0" fitWidth="180.0" preserveRatio="true">
                     <image>
                         <Image url="@../images/LunaveraLogo.png"/>
                     </image>
                 </ImageView>
             </VBox>
 
-            <!-- ================= MENU ================= -->
+            <Separator styleClass="sidebar-separator"/>
 
-            <VBox fx:id="menuContainer"
-                  spacing="5"
-                  styleClass="menu-container">
-
-                <Button fx:id="homeButton"
+            <VBox spacing="6.0" VBox.vgrow="NEVER">
+                <Button text="⌂   Trang chủ"
+                        prefHeight="48.0"
                         maxWidth="1.7976931348623157E308"
-                        prefHeight="38"
-                        minHeight="38"
-                        maxHeight="38"
-                        mnemonicParsing="false"
                         styleClass="menu-button"
-                        text="⌂   Trang chủ"
-                        onAction="#handleNavigation"/>
+                        onAction="#openDashboard"/>
 
-                <Button fx:id="productButton"
+                <Button text="▣   Quản lý sản phẩm"
+                        prefHeight="48.0"
                         maxWidth="1.7976931348623157E308"
-                        prefHeight="38"
-                        minHeight="38"
-                        maxHeight="38"
-                        mnemonicParsing="false"
-                        styleClass="menu-button,menu-button-active"
-                        text="▣   Quản lý sản phẩm"
-                        onAction="#handleNavigation"/>
+                        styleClass="menu-button,menu-button-active"/>
 
-                <Button fx:id="orderButton"
+                <Button text="▤   Quản lý đơn hàng"
+                        prefHeight="48.0"
                         maxWidth="1.7976931348623157E308"
-                        prefHeight="38"
-                        minHeight="38"
-                        maxHeight="38"
-                        mnemonicParsing="false"
                         styleClass="menu-button"
-                        text="🛒   Quản lý đơn hàng"
-                        onAction="#handleNavigation"/>
+                        onAction="#openOrderManagement"/>
 
-                <Button fx:id="accountButton"
+                <Button text="♙   Quản lý khách hàng"
+                        prefHeight="48.0"
                         maxWidth="1.7976931348623157E308"
-                        prefHeight="38"
-                        minHeight="38"
-                        maxHeight="38"
-                        mnemonicParsing="false"
                         styleClass="menu-button"
-                        text="♙   Quản lý tài khoản"
-                        onAction="#handleNavigation"/>
-
-                <Button fx:id="categoryButton"
-                        maxWidth="1.7976931348623157E308"
-                        prefHeight="38"
-                        minHeight="38"
-                        maxHeight="38"
-                        mnemonicParsing="false"
-                        styleClass="menu-button"
-                        text="▦   Quản lý danh mục"
-                        onAction="#handleNavigation"/>
-
-                <Button fx:id="reviewButton"
-                        maxWidth="1.7976931348623157E308"
-                        prefHeight="38"
-                        minHeight="38"
-                        maxHeight="38"
-                        mnemonicParsing="false"
-                        styleClass="menu-button"
-                        text="☆   Quản lý đánh giá"
-                        onAction="#handleNavigation"/>
-
-                <Button fx:id="blogButton"
-                        maxWidth="1.7976931348623157E308"
-                        prefHeight="38"
-                        minHeight="38"
-                        maxHeight="38"
-                        mnemonicParsing="false"
-                        styleClass="menu-button"
-                        text="▤   Tin tức &amp; Blog"
-                        onAction="#handleNavigation"/>
+                        onAction="#openCustomerManagement"/>
             </VBox>
 
-            <!-- ================= BOTTOM ================= -->
+            <Separator styleClass="sidebar-separator"/>
+
+            <VBox spacing="6.0">
+                <Button text="▦   Quản lý danh mục"
+                        prefHeight="48.0"
+                        maxWidth="1.7976931348623157E308"
+                        styleClass="menu-button"
+                        onAction="#openCategoryManagement"/>
+
+                <Button text="▣   Quản lý kho"
+                        prefHeight="48.0"
+                        maxWidth="1.7976931348623157E308"
+                        styleClass="menu-button"
+                        onAction="#openInventoryManagement"/>
+            </VBox>
+
+            <Separator styleClass="sidebar-separator"/>
+
+            <VBox spacing="6.0">
+                <Button text="♙   Quản lý nhân viên"
+                        prefHeight="48.0"
+                        maxWidth="1.7976931348623157E308"
+                        styleClass="menu-button"
+                        onAction="#openEmployeeManagement"/>
+
+                <Button text="♙   Quản lý tài khoản"
+                        prefHeight="48.0"
+                        maxWidth="1.7976931348623157E308"
+                        styleClass="menu-button"
+                        onAction="#openAccountManagement"/>
+            </VBox>
 
             <Region VBox.vgrow="ALWAYS"/>
 
-            <VBox alignment="CENTER"
-                  spacing="6"
-                  styleClass="sidebar-bottom">
-
-                <Button fx:id="logoutButton"
+            <VBox alignment="CENTER_LEFT" spacing="8.0">
+                <padding>
+                    <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
+                </padding>
+                <Button text="←   Đăng xuất"
+                        prefHeight="42.0"
                         maxWidth="1.7976931348623157E308"
-                        prefHeight="38"
-                        minHeight="38"
-                        maxHeight="38"
-                        mnemonicParsing="false"
                         styleClass="logout-button"
-                        text="←   Đăng xuất"
-                        onAction="#handleLogout"/>
+                        onAction="#logout"/>
 
-                <Label styleClass="coffee-slogan"
-                       text="Good Coffee&#10;Better Days"
-                       textAlignment="CENTER"/>
+                <Label text="Cà phê ngon&#10;Ngày thêm tốt đẹp"
+                       styleClass="sidebar-footer"/>
             </VBox>
-
         </VBox>
     </left>
 

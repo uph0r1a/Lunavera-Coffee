@@ -70,9 +70,9 @@
                 <VBox fx:id="registerCard"
                       alignment="TOP_CENTER"
                       maxWidth="510"
-                      maxHeight="700"
+                      maxHeight="750"
                       prefWidth="510"
-                      prefHeight="700"
+                      prefHeight="750"
                       spacing="10"
                       styleClass="register-card">
 
@@ -84,9 +84,13 @@
                     </padding>
 
                     <!-- Logo -->
-                    <Label fx:id="moonIcon"
-                           styleClass="moon-icon"
-                           text="☾"/>
+                    <VBox alignment="CENTER" prefHeight="100.0">
+                        <ImageView fitHeight="100.0" fitWidth="130.0" preserveRatio="true">
+                            <image>
+                                <Image url="@../images/LunaveraLogo.png"/>
+                            </image>
+                        </ImageView>
+                    </VBox>
 
                     <!-- Title -->
                     <Label fx:id="registerTitle"
@@ -202,6 +206,8 @@
                     </VBox>
 
                     <!-- Register -->
+                    <Region prefHeight="15"/>
+
                     <Button fx:id="registerButton"
                             defaultButton="true"
                             prefHeight="46"
@@ -213,7 +219,7 @@
                     <HBox alignment="CENTER"
                           maxWidth="410"
                           prefWidth="410"
-                          spacing="12">
+                          spacing="15">
 
                         <Region HBox.hgrow="ALWAYS"
                                 styleClass="separator"/>
