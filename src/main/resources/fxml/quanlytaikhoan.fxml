@@ -1,513 +1,288 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
-<?import javafx.scene.image.ImageView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.image.Image?>
-<BorderPane fx:id="QuanLyTaiKhoanRoot"
-            prefWidth="1600"
-            prefHeight="1000"
-            stylesheets="@../css/quanlytaikhoan.css"
-            xmlns="http://javafx.com/javafx/26"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.example.controller.AdminController">
+<?import javafx.scene.image.ImageView?>
 
-    <!-- ================= SIDEBAR ================= -->
+<BorderPane fx:id="QuanLyTaiKhoanRoot" maxHeight="1000" maxWidth="1600" prefHeight="1000" prefWidth="1600" stylesheets="@../css/quanlytaikhoan.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.AdminController">
 
+    <!-- SIDEBAR -->
     <left>
-        <VBox fx:id="sidebar"
-              prefWidth="230"
-              minWidth="230"
-              maxWidth="230"
+        <VBox prefWidth="270.0"
+              maxWidth="270.0"
               styleClass="sidebar">
 
-            <!-- ================= LOGO ================= -->
-
-            <VBox alignment="CENTER"
-                  prefHeight="115"
-                  styleClass="logo-section">
-
-                <ImageView fx:id="logoImage"
-                           fitHeight="90"
-                           fitWidth="155"
-                           preserveRatio="true">
+            <VBox alignment="CENTER" prefHeight="150.0">
+                <ImageView fitHeight="100.0" fitWidth="180.0" preserveRatio="true">
                     <image>
                         <Image url="@../images/LunaveraLogo.png"/>
                     </image>
                 </ImageView>
-
             </VBox>
 
-            <!-- ================= MENU ================= -->
+            <Separator styleClass="sidebar-separator"/>
 
-            <VBox fx:id="menuContainer"
-                  spacing="5"
-                  styleClass="menu-container">
-
-                <Button fx:id="homeButton"
+            <VBox spacing="6.0" VBox.vgrow="NEVER">
+                <Button text="⌂   Trang chủ"
+                        prefHeight="48.0"
                         maxWidth="1.7976931348623157E308"
-                        prefHeight="38"
-                        minHeight="38"
-                        maxHeight="38"
-                        mnemonicParsing="false"
                         styleClass="menu-button"
-                        text="⌂   Trang chủ"/>
+                        onAction="#openDashboard"/>
 
-                <Button fx:id="productButton"
+                <Button text="▣   Quản lý sản phẩm"
+                        prefHeight="48.0"
                         maxWidth="1.7976931348623157E308"
-                        prefHeight="38"
-                        minHeight="38"
-                        maxHeight="38"
-                        mnemonicParsing="false"
                         styleClass="menu-button"
-                        text="▣   Quản lý sản phẩm"/>
+                        onAction="#openProductManagement"/>
 
-                <Button fx:id="orderButton"
+                <Button text="▤   Quản lý đơn hàng"
+                        prefHeight="48.0"
                         maxWidth="1.7976931348623157E308"
-                        prefHeight="38"
-                        minHeight="38"
-                        maxHeight="38"
-                        mnemonicParsing="false"
                         styleClass="menu-button"
-                        text="🛒   Quản lý đơn hàng"/>
+                        onAction="#openOrderManagement"/>
 
-                <Button fx:id="accountButton"
+                <Button text="♙   Quản lý khách hàng"
+                        prefHeight="48.0"
                         maxWidth="1.7976931348623157E308"
-                        prefHeight="38"
-                        minHeight="38"
-                        maxHeight="38"
-                        mnemonicParsing="false"
-                        styleClass="menu-button,menu-button-active"
-                        text="♙   Quản lý tài khoản"/>
-
-                <Button fx:id="categoryButton"
-                        maxWidth="1.7976931348623157E308"
-                        prefHeight="38"
-                        minHeight="38"
-                        maxHeight="38"
-                        mnemonicParsing="false"
                         styleClass="menu-button"
-                        text="▦   Quản lý danh mục"/>
-
-                <Button fx:id="reviewButton"
-                        maxWidth="1.7976931348623157E308"
-                        prefHeight="38"
-                        minHeight="38"
-                        maxHeight="38"
-                        mnemonicParsing="false"
-                        styleClass="menu-button"
-                        text="☆   Quản lý đánh giá"/>
-
-                <Button fx:id="blogButton"
-                        maxWidth="1.7976931348623157E308"
-                        prefHeight="38"
-                        minHeight="38"
-                        maxHeight="38"
-                        mnemonicParsing="false"
-                        styleClass="menu-button"
-                        text="▤   Tin tức &amp; Blog"/>
-
+                        onAction="#openCustomerManagement"/>
             </VBox>
 
-            <!-- ================= BOTTOM ================= -->
+            <Separator styleClass="sidebar-separator"/>
+
+            <VBox spacing="6.0">
+                <Button text="▦   Quản lý danh mục"
+                        prefHeight="48.0"
+                        maxWidth="1.7976931348623157E308"
+                        styleClass="menu-button"
+                        onAction="#openCategoryManagement"/>
+
+                <Button text="▣   Quản lý kho"
+                        prefHeight="48.0"
+                        maxWidth="1.7976931348623157E308"
+                        styleClass="menu-button"
+                        onAction="#openInventoryManagement"/>
+            </VBox>
+
+            <Separator styleClass="sidebar-separator"/>
+
+            <VBox spacing="6.0">
+                <Button text="♙   Quản lý nhân viên"
+                        prefHeight="48.0"
+                        maxWidth="1.7976931348623157E308"
+                        styleClass="menu-button"
+                        onAction="#openEmployeeManagement"/>
+
+                <Button text="♙   Quản lý tài khoản"
+                        prefHeight="48.0"
+                        maxWidth="1.7976931348623157E308"
+                        styleClass="menu-button,menu-button-active"/>
+            </VBox>
 
             <Region VBox.vgrow="ALWAYS"/>
 
-            <VBox alignment="CENTER"
-                  spacing="6"
-                  styleClass="sidebar-bottom">
-
-                <Button fx:id="logoutButton"
+            <VBox alignment="CENTER_LEFT" spacing="8.0">
+                <padding>
+                    <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
+                </padding>
+                <Button text="←   Đăng xuất"
+                        prefHeight="42.0"
                         maxWidth="1.7976931348623157E308"
-                        prefHeight="38"
-                        minHeight="38"
-                        maxHeight="38"
-                        mnemonicParsing="false"
                         styleClass="logout-button"
-                        text="←   Đăng xuất"/>
+                        onAction="#logout"/>
 
-                <Label styleClass="coffee-slogan"
-                       text="Good Coffee&#10;Better Days"
-                       textAlignment="CENTER"/>
-
+                <Label text="Cà phê ngon&#10;Ngày thêm tốt đẹp"
+                       styleClass="sidebar-footer"/>
             </VBox>
-
         </VBox>
     </left>
 
     <!-- ================= MAIN CONTENT ================= -->
-
     <center>
         <VBox styleClass="content">
 
             <!-- ================= HEADER ================= -->
+            <HBox alignment="CENTER_LEFT" prefHeight="72" spacing="10" styleClass="page-header">
 
-            <HBox alignment="CENTER_LEFT"
-                  spacing="10"
-                  prefHeight="72"
-                  styleClass="page-header">
-
-                <VBox HBox.hgrow="ALWAYS"
-                      spacing="3">
-
-                    <Label text="Quản lý tài khoản"
-                           styleClass="page-title"/>
-
-                    <Label text="Quản lý tài khoản nhân viên và phân quyền hệ thống"
-                           styleClass="page-description"/>
-
+                <VBox spacing="3" HBox.hgrow="ALWAYS">
+                    <Label styleClass="page-title" text="Quản lý tài khoản" />
+                    <Label styleClass="page-description" text="Quản lý tài khoản nhân viên và phân quyền hệ thống" />
                 </VBox>
 
-                <Label text="♧"
-                       styleClass="header-icon"/>
+                <Label styleClass="header-icon" text="♧" />
 
-                <VBox alignment="CENTER_RIGHT"
-                      spacing="2">
-
-                    <Label text="Admin"
-                           styleClass="admin-name"/>
-
-                    <Label text="Quản trị viên"
-                           styleClass="admin-role"/>
-
+                <VBox alignment="CENTER_RIGHT" spacing="2">
+                    <Label styleClass="admin-name" text="Admin" />
+                    <Label styleClass="admin-role" text="Quản trị viên" />
                 </VBox>
 
-                <Label text="◎"
-                       styleClass="profile-icon"/>
-
+                <Label styleClass="profile-icon" text="◎" />
             </HBox>
 
             <!-- ================= STATISTICS ================= -->
-
-            <HBox spacing="12"
-                  styleClass="statistics">
-
-                <VBox HBox.hgrow="ALWAYS"
-                      styleClass="stat-card">
-
-                    <Label text="●"
-                           styleClass="stat-icon"/>
-
-                    <Label text="Tổng tài khoản"
-                           styleClass="stat-title"/>
-
-                    <Label fx:id="totalAccountLabel"
-                           text="0"
-                           styleClass="stat-value"/>
-
-                    <Label text="Tài khoản"
-                           styleClass="stat-description"/>
-
+            <HBox spacing="12" styleClass="statistics">
+                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                    <Label styleClass="stat-icon" text="●" />
+                    <Label styleClass="stat-title" text="Tổng tài khoản" />
+                    <Label fx:id="totalAccountLabel" styleClass="stat-value" text="0" />
+                    <Label styleClass="stat-description" text="Tài khoản hệ thống" />
                 </VBox>
 
-                <VBox HBox.hgrow="ALWAYS"
-                      styleClass="stat-card">
-
-                    <Label text="●"
-                           styleClass="stat-icon-active"/>
-
-                    <Label text="Đang hoạt động"
-                           styleClass="stat-title"/>
-
-                    <Label fx:id="activeAccountLabel"
-                           text="0"
-                           styleClass="stat-value"/>
-
-                    <Label text="Tài khoản"
-                           styleClass="stat-description"/>
-
+                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                    <Label styleClass="stat-icon-active" text="●" />
+                    <Label styleClass="stat-title" text="Đang hoạt động" />
+                    <Label fx:id="activeAccountLabel" styleClass="stat-value" text="0" />
+                    <Label styleClass="stat-description" text="Tài khoản sẵn sàng" />
                 </VBox>
 
-                <VBox HBox.hgrow="ALWAYS"
-                      styleClass="stat-card">
-
-                    <Label text="●"
-                           styleClass="stat-icon-locked"/>
-
-                    <Label text="Đã khóa"
-                           styleClass="stat-title"/>
-
-                    <Label fx:id="lockedAccountLabel"
-                           text="0"
-                           styleClass="stat-value"/>
-
-                    <Label text="Tài khoản"
-                           styleClass="stat-description"/>
-
+                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                    <Label styleClass="stat-icon-locked" text="●" />
+                    <Label styleClass="stat-title" text="Đã khóa" />
+                    <Label fx:id="lockedAccountLabel" styleClass="stat-value" text="0" />
+                    <Label styleClass="stat-description" text="Tài khoản ngưng kích hoạt" />
                 </VBox>
 
-                <VBox HBox.hgrow="ALWAYS"
-                      styleClass="stat-card">
-
-                    <Label text="⬟"
-                           styleClass="stat-icon"/>
-
-                    <Label text="Quản trị viên"
-                           styleClass="stat-title"/>
-
-                    <Label fx:id="adminAccountLabel"
-                           text="0"
-                           styleClass="stat-value"/>
-
-                    <Label text="Tài khoản"
-                           styleClass="stat-description"/>
-
+                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                    <Label styleClass="stat-icon" text="⬟" />
+                    <Label styleClass="stat-title" text="Quản trị viên (Owner)" />
+                    <Label fx:id="adminAccountLabel" styleClass="stat-value" text="0" />
+                    <Label styleClass="stat-description" text="Tài khoản toàn quyền" />
                 </VBox>
-
             </HBox>
 
             <!-- ================= SEARCH + FILTER ================= -->
+            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="search-bar">
+                <TextField fx:id="accountSearchField" onAction="#handleAccountSearch" promptText="Tìm kiếm username, họ tên, số điện thoại..." styleClass="search-field" HBox.hgrow="ALWAYS" />
 
-            <HBox spacing="8"
-                  alignment="CENTER_LEFT"
-                  styleClass="search-bar">
+                <ComboBox fx:id="roleFilter" onAction="#handleFilterChange" prefWidth="145" promptText="Tất cả quyền" styleClass="filter-combo" />
 
-                <TextField fx:id="accountSearchField"
-                           promptText="Tìm kiếm username, số điện thoại..."
-                           HBox.hgrow="ALWAYS"
-                           styleClass="search-field"/>
+                <ComboBox fx:id="accountStatusFilter" onAction="#handleFilterChange" prefWidth="150" promptText="Tất cả trạng thái" styleClass="filter-combo" />
 
-                <ComboBox fx:id="roleFilter"
-                          prefWidth="135"
-                          promptText="Tất cả quyền"
-                          styleClass="filter-combo"/>
-
-                <ComboBox fx:id="accountStatusFilter"
-                          prefWidth="145"
-                          promptText="Tất cả trạng thái"
-                          styleClass="filter-combo"/>
-
-                <Button fx:id="addAccountButton"
-                        mnemonicParsing="false"
-                        styleClass="primary-button"
-                        text="+   Thêm tài khoản"/>
-
+                <Button fx:id="addAccountButton" mnemonicParsing="false" onAction="#handleAddAccount" styleClass="primary-button" text="+   Thêm tài khoản" />
             </HBox>
 
             <!-- ================= ACCOUNT AREA ================= -->
-
-            <HBox spacing="12"
-                  VBox.vgrow="ALWAYS"
-                  styleClass="account-area">
+            <HBox spacing="12" styleClass="account-area" VBox.vgrow="ALWAYS">
 
                 <!-- ================= ACCOUNT TABLE ================= -->
-
-                <VBox spacing="10"
-                      HBox.hgrow="ALWAYS"
-                      styleClass="table-card">
-
+                <VBox spacing="10" styleClass="table-card" HBox.hgrow="ALWAYS">
                     <HBox alignment="CENTER_LEFT">
-
-                        <Label text="●   Danh sách tài khoản"
-                               styleClass="section-title"/>
-
-                        <Region HBox.hgrow="ALWAYS"/>
-
-                        <Label fx:id="accountCountLabel"
-                               text="0 tài khoản"
-                               styleClass="account-count"/>
-
+                        <Label styleClass="section-title" text="●   Danh sách tài khoản" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Label fx:id="accountCountLabel" styleClass="account-count" text="0 tài khoản" />
                     </HBox>
 
-                    <TableView fx:id="accountTable"
-                               VBox.vgrow="ALWAYS"
-                               styleClass="account-table">
-
+                    <!-- Table: Đã thêm cột fullNameColumn và sự kiện onMouseClicked -->
+                    <TableView fx:id="accountTable" onMouseClicked="#handleSelectAccount" styleClass="account-table" VBox.vgrow="ALWAYS">
                         <columns>
-
-                            <TableColumn fx:id="accountIndexColumn"
-                                         text="#"
-                                         prefWidth="45"/>
-
-                            <TableColumn fx:id="usernameColumn"
-                                         text="Tài khoản"
-                                         prefWidth="150"/>
-
-                            <TableColumn fx:id="phoneColumn"
-                                         text="Số điện thoại"
-                                         prefWidth="130"/>
-
-                            <TableColumn fx:id="roleColumn"
-                                         text="Quyền"
-                                         prefWidth="120"/>
-
-                            <TableColumn fx:id="statusColumn"
-                                         text="Trạng thái"
-                                         prefWidth="130"/>
-
-                            <TableColumn fx:id="createdDateColumn"
-                                         text="Ngày tạo"
-                                         prefWidth="125"/>
-
-                            <TableColumn fx:id="accountActionColumn"
-                                         text="Thao tác"
-                                         prefWidth="120"/>
-
+                            <TableColumn fx:id="accountIndexColumn" prefWidth="45" text="#" />
+                            <TableColumn fx:id="usernameColumn" prefWidth="130" text="Tài khoản" />
+                            <TableColumn fx:id="fullNameColumn" prefWidth="150" text="Họ và tên" />
+                            <TableColumn fx:id="phoneColumn" prefWidth="120" text="Số điện thoại" />
+                            <TableColumn fx:id="roleColumn" prefWidth="105" text="Quyền" />
+                            <TableColumn fx:id="statusColumn" prefWidth="110" text="Trạng thái" />
+                            <TableColumn fx:id="createdDateColumn" prefWidth="125" text="Ngày tạo" />
+                            <TableColumn fx:id="accountActionColumn" prefWidth="110" text="Thao tác" />
                         </columns>
-
                         <placeholder>
-                            <Label text="Chưa có tài khoản"
-                                   styleClass="empty-label"/>
+                            <Label styleClass="empty-label" text="Chưa có tài khoản" />
                         </placeholder>
-
+                        <columnResizePolicy>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                        </columnResizePolicy>
                     </TableView>
 
                     <!-- ================= PAGINATION ================= -->
-
-                    <HBox alignment="CENTER_LEFT"
-                          spacing="5">
-
-                        <Label fx:id="accountPaginationLabel"
-                               text="Hiển thị 0 – 0 / 0 tài khoản"
-                               styleClass="table-footer"/>
-
-                        <Region HBox.hgrow="ALWAYS"/>
-
-                        <Button fx:id="previousPageButton"
-                                text="‹"
-                                styleClass="page-button"/>
-
-                        <Button fx:id="pageOneButton"
-                                text="1"
-                                styleClass="page-button,page-button-active"/>
-
-                        <Button fx:id="nextPageNumberButton"
-                                text="2"
-                                styleClass="page-button"/>
-
-                        <Button fx:id="nextPageButton"
-                                text="›"
-                                styleClass="page-button"/>
-
+                    <HBox alignment="CENTER_LEFT" spacing="5">
+                        <Label fx:id="accountPaginationLabel" styleClass="table-footer" text="Hiển thị 0 – 0 / 0 tài khoản" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button fx:id="previousPageButton" mnemonicParsing="false" onAction="#handlePreviousAccountPage" styleClass="page-button" text="‹" />
+                        <Button fx:id="pageOneButton" mnemonicParsing="false" onAction="#handleAccountPageOne" styleClass="page-button,page-button-active" text="1" />
+                        <Button fx:id="nextPageNumberButton" mnemonicParsing="false" onAction="#handleAccountPageTwo" styleClass="page-button" text="2" />
+                        <Button fx:id="nextPageButton" mnemonicParsing="false" onAction="#handleNextAccountPage" styleClass="page-button" text="›" />
                     </HBox>
-
                 </VBox>
 
                 <!-- ================= ACCOUNT DETAIL ================= -->
-
-                <VBox fx:id="accountDetailCard"
-                      prefWidth="280"
-                      minWidth="280"
-                      maxWidth="280"
-                      spacing="12"
-                      styleClass="detail-card">
+                <VBox fx:id="accountDetailCard" maxWidth="300" minWidth="300" prefWidth="300" spacing="12" styleClass="detail-card">
 
                     <HBox alignment="CENTER_LEFT">
-
-                        <Label text="▣   Chi tiết tài khoản"
-                               styleClass="section-title"/>
-
-                        <Region HBox.hgrow="ALWAYS"/>
-
-                        <Button fx:id="closeDetailButton"
-                                text="×"
-                                styleClass="close-button"/>
-
+                        <Label styleClass="section-title" text="▣   Chi tiết tài khoản" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button fx:id="closeDetailButton" mnemonicParsing="false" onAction="#handleCloseDetail" styleClass="close-button" text="×" />
                     </HBox>
 
                     <!-- ================= PROFILE ================= -->
-
-                    <VBox alignment="CENTER"
-                          spacing="5"
-                          styleClass="profile-box">
-
-                        <Label fx:id="detailAvatar"
-                               text="●"
-                               styleClass="avatar"/>
-
-                        <Label fx:id="detailUsername"
-                               text="Chưa chọn"
-                               styleClass="profile-name"/>
-
-                        <Label fx:id="detailRole"
-                               text="Chưa có"
-                               styleClass="role-badge"/>
-
+                    <VBox alignment="CENTER" spacing="5" styleClass="profile-box">
+                        <Label fx:id="detailAvatar" styleClass="avatar" text="●" />
+                        <Label fx:id="detailUsername" styleClass="profile-name" text="Chưa chọn" />
+                        <Label fx:id="detailRole" styleClass="role-badge" text="Chưa có" />
                     </VBox>
 
                     <!-- ================= INFORMATION ================= -->
-
-                    <VBox spacing="10"
-                          styleClass="info-box">
-
+                    <VBox spacing="10" styleClass="info-box">
                         <HBox>
-                            <Label text="Tên đăng nhập"
-                                   styleClass="info-label"/>
-                            <Region HBox.hgrow="ALWAYS"/>
-                            <Label fx:id="detailUsernameLabel"
-                                   text="-"
-                                   styleClass="info-value"/>
+                            <Label styleClass="info-label" text="Tên đăng nhập" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="detailUsernameLabel" styleClass="info-value" text="-" />
+                        </HBox>
+
+                        <!-- Đã bổ sung Họ và tên -->
+                        <HBox>
+                            <Label styleClass="info-label" text="Họ và tên" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="detailFullNameLabel" styleClass="info-value" text="-" />
                         </HBox>
 
                         <HBox>
-                            <Label text="Số điện thoại"
-                                   styleClass="info-label"/>
-                            <Region HBox.hgrow="ALWAYS"/>
-                            <Label fx:id="detailPhoneLabel"
-                                   text="-"
-                                   styleClass="info-value"/>
+                            <Label styleClass="info-label" text="Số điện thoại" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="detailPhoneLabel" styleClass="info-value" text="-" />
                         </HBox>
 
                         <HBox>
-                            <Label text="Quyền"
-                                   styleClass="info-label"/>
-                            <Region HBox.hgrow="ALWAYS"/>
-                            <Label fx:id="detailRoleLabel"
-                                   text="-"
-                                   styleClass="role-badge"/>
+                            <Label styleClass="info-label" text="Quyền hạn" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="detailRoleLabel" styleClass="role-badge" text="-" />
                         </HBox>
 
                         <HBox>
-                            <Label text="Trạng thái"
-                                   styleClass="info-label"/>
-                            <Region HBox.hgrow="ALWAYS"/>
-                            <Label fx:id="detailStatusLabel"
-                                   text="-"
-                                   styleClass="status-active"/>
+                            <Label styleClass="info-label" text="Trạng thái" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="detailStatusLabel" styleClass="status-active" text="-" />
                         </HBox>
 
                         <HBox>
-                            <Label text="Ngày tạo"
-                                   styleClass="info-label"/>
-                            <Region HBox.hgrow="ALWAYS"/>
-                            <Label fx:id="detailCreatedDateLabel"
-                                   text="-"
-                                   styleClass="info-value"/>
+                            <Label styleClass="info-label" text="Ngày tạo" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="detailCreatedDateLabel" styleClass="info-value" text="-" />
                         </HBox>
-
                     </VBox>
 
                     <!-- ================= PERMISSION ================= -->
-
-                    <Label text="⬟   Phân quyền"
-                           styleClass="permission-title"/>
-
-                    <VBox fx:id="permissionBox"
-                          spacing="6"
-                          styleClass="permission-box">
-
-                        <Label text="Chưa chọn tài khoản"
-                               styleClass="permission-item"/>
-
+                    <Label styleClass="permission-title" text="⬟   Phân quyền" />
+                    <VBox fx:id="permissionBox" spacing="6" styleClass="permission-box">
+                        <Label styleClass="permission-item" text="Chưa chọn tài khoản" />
                     </VBox>
 
-                    <Region VBox.vgrow="ALWAYS"/>
+                    <Region VBox.vgrow="ALWAYS" />
 
                     <!-- ================= ACTIONS ================= -->
-
                     <HBox spacing="8">
+                        <Button fx:id="editAccountButton" mnemonicParsing="false" onAction="#handleEditAccount" styleClass="secondary-button" text="✎   Chỉnh sửa" HBox.hgrow="ALWAYS" />
 
-                        <Button fx:id="editAccountButton"
-                                text="✎   Chỉnh sửa"
-                                HBox.hgrow="ALWAYS"
-                                styleClass="secondary-button"/>
-
-                        <Button fx:id="lockAccountButton"
-                                text="▣   Khóa"
-                                HBox.hgrow="ALWAYS"
-                                styleClass="danger-button"/>
-
+                        <Button fx:id="lockAccountButton" mnemonicParsing="false" onAction="#handleLockAccount" styleClass="danger-button" text="▣   Khóa" HBox.hgrow="ALWAYS" />
                     </HBox>
 
                 </VBox>

@@ -20,33 +20,42 @@ public class LoginController {
     @FXML
     private Button signInButton;
     @FXML
+    private Button loginButton;
+    @FXML
     private Hyperlink registerLink;
+
     @FXML
     private void initialize() {
-        signInButton.setOnAction(event -> handleLogin());
-        registerLink.setOnAction(event -> handleRegister());
-        forgotPasswordLink.setOnAction(event -> handleForgotPassword());
-        showPasswordButton.setOnAction(event -> handleShowPassword());
+        if (signInButton != null) signInButton.setOnAction(event -> handleLogin());
+        if (loginButton != null) loginButton.setOnAction(event -> handleLogin());
+        if (registerLink != null) registerLink.setOnAction(event -> handleRegister());
+        if (forgotPasswordLink != null) forgotPasswordLink.setOnAction(event -> handleForgotPassword());
+        if (showPasswordButton != null) showPasswordButton.setOnAction(event -> handleShowPassword());
     }
-    private void handleLogin() {
-        String username = usernameField.getText();
-        String password = passwordField.getText();
-        if (username.isBlank()) {
-            showAlert("Thông báo", "Vui lòng nhập đầy đủ thông tin.");
-            return;
-        } else if (password.isBlank()) {
+
+    @FXML
+    public void handleLogin() {
+        String username = usernameField != null ? usernameField.getText() : "";
+        String password = passwordField != null ? passwordField.getText() : "";
+        if (username.isBlank() || password.isBlank()) {
             showAlert("Thông báo", "Vui lòng nhập đầy đủ thông tin.");
             return;
         }
         System.out.println("Login: " + username);
     }
-    private void handleRegister() {
+
+    @FXML
+    public void handleRegister() {
         System.out.println("Open register screen");
     }
-    private void handleForgotPassword() {
+
+    @FXML
+    public void handleForgotPassword() {
         System.out.println("Forgot password");
     }
-    private void handleShowPassword() {
+
+    @FXML
+    public void handleShowPassword() {
         System.out.println("Show / hide password");
     }
     private void showAlert(String title, String message) {

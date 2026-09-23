@@ -6,9 +6,8 @@
    BACKGROUND
    ========================================================= */
 
-.background-overlay {
-    /* Nền rất nhẹ để giữ nguyên texture của background */
-    -fx-background-color: rgba(244, 241, 232, 0.08);
+.login-overlay {
+    -fx-background-color: rgba(70, 85, 65, 0.04);
 }
 
 
@@ -17,16 +16,29 @@
    ========================================================= */
 
 .login-card {
-    -fx-background-color: rgba(255, 255, 255, 0.94);
+    /*
+     * Xanh sage nhạt thay cho màu trắng.
+     * Giữ độ trong nhẹ để hòa với background.
+     */
+    -fx-background-color: rgba(226, 232, 218, 0.97);
+
     -fx-background-radius: 24px;
 
-    -fx-border-color: rgba(200, 168, 120, 0.45);
+    /*
+     * Viền vàng nhạt lấy từ các đường trang trí trên background.
+     */
+    -fx-border-color: rgba(181, 139, 84, 0.65);
     -fx-border-width: 1px;
     -fx-border-radius: 24px;
 
+    /*
+     * Dịch toàn bộ card sang phải.
+     */
+    -fx-translate-x: 120px;
+
     -fx-effect: dropshadow(
             gaussian,
-            rgba(79, 96, 74, 0.15),
+            rgba(55, 70, 53, 0.28),
             25,
             0.20,
             0,
@@ -36,14 +48,18 @@
 
 
 /* =========================================================
-   MOON
+   LOGO
    ========================================================= */
 
-.moon-icon {
-    -fx-text-fill: #C8A878;
-    -fx-font-family: "Georgia";
-    -fx-font-size: 42px;
-    -fx-font-weight: normal;
+#logoImage {
+    -fx-effect: dropshadow(
+            gaussian,
+            rgba(55, 70, 53, 0.12),
+            8,
+            0.15,
+            0,
+            2
+    );
 }
 
 
@@ -52,29 +68,28 @@
    ========================================================= */
 
 .login-title {
-    -fx-text-fill: #4F604A;
+    -fx-text-fill: #3F5140;
+
     -fx-font-family: "Georgia";
     -fx-font-size: 27px;
     -fx-font-weight: bold;
 }
 
-.login-description {
-    -fx-text-fill: #6F8068;
+.login-subtitle {
+    -fx-text-fill: #687866;
+
     -fx-font-size: 13px;
-    -fx-padding: 0 0 10px 0;
+    -fx-alignment: CENTER;
 }
 
 
 /* =========================================================
-   INPUT GROUP
+   FIELD LABEL
    ========================================================= */
 
-.input-group {
-    -fx-padding: 0;
-}
+.field-label {
+    -fx-text-fill: #435443;
 
-.input-label {
-    -fx-text-fill: #4F604A;
     -fx-font-size: 12px;
     -fx-font-weight: bold;
 }
@@ -84,35 +99,43 @@
    INPUT FIELD
    ========================================================= */
 
-.input-field {
-    -fx-background-color: #FFFFFF;
+.login-field {
+    /*
+     * Không dùng trắng tinh.
+     * Màu kem giúp hợp với background.
+     */
+    -fx-background-color: #F7F4E9;
 
     -fx-background-radius: 22px;
 
-    -fx-border-color: #D8D8CE;
+    -fx-border-color: #B8C2AE;
     -fx-border-radius: 22px;
     -fx-border-width: 1px;
 
-    -fx-text-fill: #4F604A;
-    -fx-prompt-text-fill: #9AA095;
+    -fx-text-fill: #435443;
+    -fx-prompt-text-fill: #98A091;
 
     -fx-font-size: 13px;
     -fx-padding: 0 15px;
+
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 
-.input-field:hover {
-    -fx-border-color: #B8C2B1;
+.login-field:hover {
+    -fx-background-color: #FAF8F0;
+    -fx-border-color: #8E9E86;
 }
 
-.input-field:focused {
-    -fx-border-color: #6F8068;
+.login-field:focused {
+    -fx-background-color: #FAF8F0;
+
+    -fx-border-color: #657A63;
     -fx-border-width: 1.5px;
-
-    -fx-background-color: #FFFFFF;
 
     -fx-effect: dropshadow(
             gaussian,
-            rgba(111, 128, 104, 0.20),
+            rgba(82, 105, 78, 0.22),
             9,
             0.25,
             0,
@@ -122,68 +145,11 @@
 
 
 /* =========================================================
-   PASSWORD BUTTON
-   ========================================================= */
-
-.password-button {
-    -fx-background-color: #FFFFFF;
-
-    -fx-background-radius: 22px;
-
-    -fx-border-color: #D8D8CE;
-    -fx-border-radius: 22px;
-    -fx-border-width: 1px;
-
-    -fx-text-fill: #6F8068;
-
-    -fx-font-size: 13px;
-    -fx-cursor: hand;
-}
-
-.password-button:hover {
-    -fx-background-color: #F4F1E8;
-    -fx-border-color: #B8C2B1;
-    -fx-text-fill: #4F604A;
-}
-
-
-/* =========================================================
-   REMEMBER LOGIN
-   ========================================================= */
-
-.remember-check {
-    -fx-text-fill: #596556;
-    -fx-font-size: 11px;
-}
-
-.remember-check .box {
-    -fx-background-color: #FFFFFF;
-
-    -fx-border-color: #AEB7A8;
-    -fx-border-radius: 4px;
-    -fx-background-radius: 4px;
-}
-
-.remember-check:hover .box {
-    -fx-border-color: #6F8068;
-}
-
-.remember-check:selected .box {
-    -fx-background-color: #6F8068;
-    -fx-border-color: #6F8068;
-}
-
-.remember-check:selected .mark {
-    -fx-background-color: #FFFFFF;
-}
-
-
-/* =========================================================
    FORGOT PASSWORD
    ========================================================= */
 
 .forgot-password {
-    -fx-text-fill: #B18B54;
+    -fx-text-fill: #9A7444;
 
     -fx-font-size: 11px;
 
@@ -191,10 +157,13 @@
     -fx-padding: 0;
 
     -fx-cursor: hand;
+
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 
 .forgot-password:hover {
-    -fx-text-fill: #C8A878;
+    -fx-text-fill: #B18B54;
 }
 
 
@@ -203,7 +172,10 @@
    ========================================================= */
 
 .login-button {
-    -fx-background-color: #6F8068;
+    /*
+     * Xanh đậm hơn card để tạo điểm nhấn.
+     */
+    -fx-background-color: #62765F;
 
     -fx-background-radius: 24px;
     -fx-border-radius: 24px;
@@ -215,9 +187,12 @@
 
     -fx-cursor: hand;
 
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+
     -fx-effect: dropshadow(
             gaussian,
-            rgba(79, 96, 74, 0.20),
+            rgba(55, 70, 53, 0.22),
             8,
             0.20,
             0,
@@ -226,38 +201,20 @@
 }
 
 .login-button:hover {
-    -fx-background-color: #4F604A;
+    -fx-background-color: #4F644D;
 
     -fx-effect: dropshadow(
             gaussian,
-            rgba(45, 58, 43, 0.48),
-            32,
-            0.25,
+            rgba(55, 70, 53, 0.30),
+            12,
+            0.20,
             0,
-            10
+            4
     );
 }
 
 .login-button:pressed {
-    -fx-background-color: #43523F;
-}
-
-
-/* =========================================================
-   SEPARATOR
-   ========================================================= */
-
-.separator {
-    -fx-background-color: rgba(200, 168, 120, 0.35);
-
-    -fx-pref-height: 1px;
-    -fx-min-height: 1px;
-    -fx-max-height: 1px;
-}
-
-.separator-star {
-    -fx-text-fill: #C8A878;
-    -fx-font-size: 13px;
+    -fx-background-color: #40533F;
 }
 
 
@@ -265,13 +222,14 @@
    REGISTER
    ========================================================= */
 
-.register-text {
-    -fx-text-fill: #899187;
+.register-question {
+    -fx-text-fill: #71806E;
+
     -fx-font-size: 11px;
 }
 
 .register-link {
-    -fx-text-fill: #B18B54;
+    -fx-text-fill: #9A7444;
 
     -fx-font-size: 11px;
     -fx-font-weight: bold;
@@ -280,8 +238,24 @@
     -fx-padding: 0;
 
     -fx-cursor: hand;
+
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 
 .register-link:hover {
-    -fx-text-fill: #C8A878;
+    -fx-text-fill: #B18B54;
+}
+
+
+/* =========================================================
+   GENERAL FOCUS
+   ========================================================= */
+
+.button:focused,
+.text-field:focused,
+.password-field:focused,
+.hyperlink:focused {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }

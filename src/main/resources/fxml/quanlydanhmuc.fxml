@@ -1,238 +1,219 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 
-<BorderPane fx:id="QuanLyDanhMucRoot" prefHeight="1000" prefWidth="1600" stylesheets="@../css/quanlydanhmuc.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.AdminController">
+<BorderPane fx:id="QuanLyDanhMucRoot" maxHeight="1000" maxWidth="1600" prefHeight="1000" prefWidth="1600" stylesheets="@../css/quanlydanhmuc.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.AdminController">
 
-    <!-- ================= SIDEBAR ================= -->
-
+    <!-- SIDEBAR -->
     <left>
-        <VBox fx:id="sidebar" maxWidth="230" minWidth="230" prefWidth="230" styleClass="sidebar">
+        <VBox prefWidth="270.0"
+              maxWidth="270.0"
+              styleClass="sidebar">
 
-            <!-- ================= LOGO ================= -->
-
-            <VBox alignment="CENTER" prefHeight="115" styleClass="logo-section">
-
-                <ImageView fx:id="logoImage" fitHeight="90" fitWidth="155" preserveRatio="true">
+            <VBox alignment="CENTER" prefHeight="150.0">
+                <ImageView fitHeight="100.0" fitWidth="180.0" preserveRatio="true">
                     <image>
-                        <Image url="@../images/LunaveraLogo.png" />
+                        <Image url="@../images/LunaveraLogo.png"/>
                     </image>
                 </ImageView>
-
             </VBox>
 
-            <!-- ================= MENU ================= -->
+            <Separator styleClass="sidebar-separator"/>
 
-            <VBox fx:id="menuContainer" spacing="5" styleClass="menu-container">
+            <VBox spacing="6.0" VBox.vgrow="NEVER">
+                <Button text="⌂   Trang chủ"
+                        prefHeight="48.0"
+                        maxWidth="1.7976931348623157E308"
+                        styleClass="menu-button"
+                        onAction="#openDashboard"/>
 
-                <Button fx:id="homeButton" maxHeight="38" maxWidth="1.7976931348623157E308" minHeight="38" mnemonicParsing="false" onAction="#handleHome" prefHeight="38" styleClass="menu-button" text="⌂   Trang chủ" />
+                <Button text="▣   Quản lý sản phẩm"
+                        prefHeight="48.0"
+                        maxWidth="1.7976931348623157E308"
+                        styleClass="menu-button"
+                        onAction="#openProductManagement"/>
 
-                <Button fx:id="productButton" maxHeight="38" maxWidth="1.7976931348623157E308" minHeight="38" mnemonicParsing="false" onAction="#handleProducts" prefHeight="38" styleClass="menu-button" text="▣   Quản lý sản phẩm" />
+                <Button text="▤   Quản lý đơn hàng"
+                        prefHeight="48.0"
+                        maxWidth="1.7976931348623157E308"
+                        styleClass="menu-button"
+                        onAction="#openOrderManagement"/>
 
-                <Button fx:id="orderButton" maxHeight="38" maxWidth="1.7976931348623157E308" minHeight="38" mnemonicParsing="false" onAction="#handleOrders" prefHeight="38" styleClass="menu-button" text="🛒   Quản lý đơn hàng" />
-
-                <Button fx:id="accountButton" maxHeight="38" maxWidth="1.7976931348623157E308" minHeight="38" mnemonicParsing="false" onAction="#handleAccounts" prefHeight="38" styleClass="menu-button" text="♙   Quản lý tài khoản" />
-
-                <Button fx:id="categoryButton" maxHeight="38" maxWidth="1.7976931348623157E308" minHeight="38" mnemonicParsing="false" onAction="#handleCategories" prefHeight="38" styleClass="menu-button,menu-button-active" text="▦   Quản lý danh mục" />
-
-                <Button fx:id="reviewButton" maxHeight="38" maxWidth="1.7976931348623157E308" minHeight="38" mnemonicParsing="false" onAction="#handleReviews" prefHeight="38" styleClass="menu-button" text="☆   Quản lý đánh giá" />
-
-                <Button fx:id="blogButton" maxHeight="38" maxWidth="1.7976931348623157E308" minHeight="38" mnemonicParsing="false" onAction="#handleBlog" prefHeight="38" styleClass="menu-button" text="▤   Tin tức &amp; Blog" />
-
+                <Button text="♙   Quản lý khách hàng"
+                        prefHeight="48.0"
+                        maxWidth="1.7976931348623157E308"
+                        styleClass="menu-button"
+                        onAction="#openCustomerManagement"/>
             </VBox>
 
-            <!-- ================= BOTTOM ================= -->
+            <Separator styleClass="sidebar-separator"/>
 
-            <Region VBox.vgrow="ALWAYS" />
+            <VBox spacing="6.0">
+                <Button text="▦   Quản lý danh mục"
+                        prefHeight="48.0"
+                        maxWidth="1.7976931348623157E308"
+                        styleClass="menu-button,menu-button-active"/>
 
-            <VBox alignment="CENTER" spacing="6" styleClass="sidebar-bottom">
-
-                <Button fx:id="logoutButton" maxHeight="38" maxWidth="1.7976931348623157E308" minHeight="38" mnemonicParsing="false" onAction="#handleLogout" prefHeight="38" styleClass="logout-button" text="←   Đăng xuất" />
-
-                <Label styleClass="coffee-slogan" text="Good Coffee&#10;Better Days" textAlignment="CENTER" />
-
+                <Button text="▣   Quản lý kho"
+                        prefHeight="48.0"
+                        maxWidth="1.7976931348623157E308"
+                        styleClass="menu-button"
+                        onAction="#openInventoryManagement"/>
             </VBox>
 
+            <Separator styleClass="sidebar-separator"/>
+
+            <VBox spacing="6.0">
+                <Button text="♙   Quản lý nhân viên"
+                        prefHeight="48.0"
+                        maxWidth="1.7976931348623157E308"
+                        styleClass="menu-button"
+                        onAction="#openEmployeeManagement"/>
+
+                <Button text="♙   Quản lý tài khoản"
+                        prefHeight="48.0"
+                        maxWidth="1.7976931348623157E308"
+                        styleClass="menu-button"
+                        onAction="#openAccountManagement"/>
+            </VBox>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <VBox alignment="CENTER_LEFT" spacing="8.0">
+                <padding>
+                    <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
+                </padding>
+                <Button text="←   Đăng xuất"
+                        prefHeight="42.0"
+                        maxWidth="1.7976931348623157E308"
+                        styleClass="logout-button"
+                        onAction="#logout"/>
+
+                <Label text="Cà phê ngon&#10;Ngày thêm tốt đẹp"
+                       styleClass="sidebar-footer"/>
+            </VBox>
         </VBox>
     </left>
 
     <!-- ================= MAIN CONTENT ================= -->
-
     <center>
         <VBox styleClass="content">
 
             <!-- ================= HEADER ================= -->
-
             <HBox alignment="CENTER_LEFT" prefHeight="72" spacing="10" styleClass="page-header">
-
                 <VBox spacing="3" HBox.hgrow="ALWAYS">
-
                     <Label styleClass="page-title" text="Quản lý danh mục" />
-
                     <Label styleClass="page-description" text="Tạo, chỉnh sửa và quản lý các danh mục sản phẩm của cửa hàng" />
-
                 </VBox>
 
                 <Label styleClass="header-icon" text="▦" />
 
                 <VBox alignment="CENTER_RIGHT" spacing="2">
-
                     <Label styleClass="admin-name" text="Admin" />
-
                     <Label styleClass="admin-role" text="Quản trị viên" />
-
                 </VBox>
 
                 <Label styleClass="profile-icon" text="◎" />
-
             </HBox>
 
             <!-- ================= STATISTICS ================= -->
-
             <HBox spacing="12" styleClass="statistics">
-
                 <!-- Tổng danh mục -->
-
                 <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-
                     <Label styleClass="stat-icon" text="▦" />
-
                     <Label styleClass="stat-title" text="Tổng số danh mục" />
-
                     <Label fx:id="totalCategoryLabel" styleClass="stat-value" text="0" />
-
                     <Label styleClass="stat-description" text="Danh mục sản phẩm hiện có" />
-
                 </VBox>
 
                 <!-- Đang hoạt động -->
-
                 <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-
                     <Label styleClass="stat-icon-active" text="●" />
-
                     <Label styleClass="stat-title" text="Danh mục đang hoạt động" />
-
                     <Label fx:id="activeCategoryLabel" styleClass="stat-value" text="0" />
-
                     <Label styleClass="stat-description" text="Đang hiển thị trên cửa hàng" />
-
                 </VBox>
 
                 <!-- Tạm ẩn -->
-
                 <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-
                     <Label styleClass="stat-icon-hidden" text="●" />
-
                     <Label styleClass="stat-title" text="Danh mục tạm ẩn" />
-
                     <Label fx:id="hiddenCategoryLabel" styleClass="stat-value" text="0" />
-
                     <Label styleClass="stat-description" text="Không hiển thị trên cửa hàng" />
-
                 </VBox>
 
                 <!-- Tổng sản phẩm -->
-
                 <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-
                     <Label styleClass="stat-icon" text="+" />
-
                     <Label styleClass="stat-title" text="Tổng số sản phẩm" />
-
                     <Label fx:id="totalCategoryProductLabel" styleClass="stat-value" text="0" />
-
                     <Label styleClass="stat-description" text="Sản phẩm thuộc tất cả danh mục" />
-
                 </VBox>
-
             </HBox>
 
             <!-- ================= CATEGORY LIST ================= -->
-
             <VBox spacing="10" styleClass="category-card" VBox.vgrow="ALWAYS">
 
                 <!-- ================= LIST HEADER ================= -->
-
                 <HBox alignment="CENTER_LEFT" spacing="10">
-
                     <Label styleClass="section-title" text="▦   Danh sách danh mục" />
-
                     <Region HBox.hgrow="ALWAYS" />
-
-                    <TextField fx:id="categorySearchField" prefWidth="320" promptText="Tìm kiếm danh mục..." styleClass="search-field" />
-
+                    <TextField fx:id="categorySearchField" onAction="#handleSearchAction" prefWidth="320" promptText="Tìm kiếm danh mục..." styleClass="search-field" />
                     <Button fx:id="addCategoryButton" mnemonicParsing="false" onAction="#handleAddCategory" styleClass="primary-button" text="+   Thêm danh mục" />
-
                 </HBox>
 
                 <!-- ================= TABLE ================= -->
-
-                <TableView fx:id="categoryTable" styleClass="category-table" VBox.vgrow="ALWAYS">
-
+                <TableView fx:id="categoryTable" onMouseClicked="#handleTableClick" styleClass="category-table" VBox.vgrow="ALWAYS">
                     <columns>
-
                         <!-- STT -->
-
                         <TableColumn fx:id="categoryIndexColumn" minWidth="55" prefWidth="65" text="STT" />
 
                         <!-- Ảnh -->
-
                         <TableColumn fx:id="categoryImageColumn" minWidth="70" prefWidth="80" text="" />
 
                         <!-- Tên -->
-
                         <TableColumn fx:id="categoryNameColumn" minWidth="220" prefWidth="280" text="Tên danh mục" />
 
                         <!-- Mô tả -->
-
                         <TableColumn fx:id="categoryDescriptionColumn" minWidth="300" prefWidth="430" text="Mô tả" />
 
                         <!-- Số sản phẩm -->
-
                         <TableColumn fx:id="categoryProductCountColumn" minWidth="120" prefWidth="150" text="Số sản phẩm" />
 
                         <!-- Trạng thái -->
-
                         <TableColumn fx:id="categoryStatusColumn" minWidth="130" prefWidth="160" text="Trạng thái" />
 
                         <!-- Thao tác -->
-
-                        <TableColumn fx:id="categoryActionColumn" minWidth="130" prefWidth="150" text=" " />
-
+                        <TableColumn fx:id="categoryActionColumn" minWidth="130" prefWidth="150" text="Thao tác" />
                     </columns>
 
                     <placeholder>
                         <Label styleClass="empty-label" text="Chưa có danh mục" />
                     </placeholder>
-
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                    </columnResizePolicy>
                 </TableView>
 
                 <!-- ================= FOOTER ================= -->
-
                 <HBox alignment="CENTER_LEFT" spacing="8">
-
                     <Label fx:id="categoryPaginationLabel" styleClass="table-footer" text="Hiển thị 0 – 0 trong tổng số 0 danh mục" />
-
                     <Region HBox.hgrow="ALWAYS" />
-
-                    <Button fx:id="previousCategoryPageButton" mnemonicParsing="false" styleClass="page-button" text="‹" />
-
-                    <Button fx:id="categoryPageOneButton" mnemonicParsing="false" styleClass="page-button,page-button-active" text="1" />
-
-                    <Button fx:id="nextCategoryPageButton" mnemonicParsing="false" styleClass="page-button" text="›" />
-
+                    <Button fx:id="previousCategoryPageButton" mnemonicParsing="false" onAction="#handlePreviousPage" styleClass="page-button" text="‹" />
+                    <Button fx:id="categoryPageOneButton" mnemonicParsing="false" onAction="#handlePageOne" styleClass="page-button,page-button-active" text="1" />
+                    <Button fx:id="nextCategoryPageButton" mnemonicParsing="false" onAction="#handleNextPage" styleClass="page-button" text="›" />
                 </HBox>
 
             </VBox>
