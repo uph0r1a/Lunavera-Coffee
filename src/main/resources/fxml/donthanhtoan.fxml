@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:id="invoiceRoot"
+      prefWidth="520.0"
+      prefHeight="820.0"
+      maxWidth="520.0"
+      spacing="14.0"
+      styleClass="invoice-root"
+      xmlns="http://javafx.com/javafx/26"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.controller.HoaDonController">
+
+    <padding>
+        <Insets top="25.0"
+                right="30.0"
+                bottom="25.0"
+                left="30.0"/>
+    </padding>
+
+
+    <!-- ========================================================= -->
+    <!-- HEADER -->
+    <!-- ========================================================= -->
+
+    <VBox alignment="CENTER"
+          spacing="4.0">
+
+        <Label text="LUNAVERA COFFEE"
+               styleClass="invoice-shop-name"/>
+
+        <Label text="HÓA ĐƠN THANH TOÁN"
+               styleClass="invoice-title"/>
+
+        <Label text="Cảm ơn quý khách đã sử dụng dịch vụ"
+               styleClass="invoice-subtitle"/>
+
+    </VBox>
+
+
+    <Separator/>
+
+
+    <!-- ========================================================= -->
+    <!-- ORDER INFORMATION -->
+    <!-- ========================================================= -->
+
+    <GridPane hgap="15.0"
+              vgap="8.0">
+
+        <columnConstraints>
+
+            <ColumnConstraints prefWidth="100.0"/>
+
+            <ColumnConstraints hgrow="ALWAYS"/>
+
+        </columnConstraints>
+
+
+        <!-- MÃ ĐƠN -->
+
+        <Label text="Mã đơn:"
+               GridPane.columnIndex="0"
+               GridPane.rowIndex="0"
+               styleClass="invoice-label"/>
+
+        <Label fx:id="invoiceIdLabel"
+               text="#DH000124"
+               GridPane.columnIndex="1"
+               GridPane.rowIndex="0"
+               styleClass="invoice-value"/>
+
+
+        <!-- BÀN -->
+
+        <Label text="Bàn:"
+               GridPane.columnIndex="0"
+               GridPane.rowIndex="1"
+               styleClass="invoice-label"/>
+
+        <Label fx:id="tableLabel"
+               text="Bàn 2"
+               GridPane.columnIndex="1"
+               GridPane.rowIndex="1"
+               styleClass="invoice-value"/>
+
+
+        <!-- KHÁCH HÀNG -->
+
+        <Label text="Khách hàng:"
+               GridPane.columnIndex="0"
+               GridPane.rowIndex="2"
+               styleClass="invoice-label"/>
+
+        <Label fx:id="customerLabel"
+               text="Khách lẻ"
+               GridPane.columnIndex="1"
+               GridPane.rowIndex="2"
+               styleClass="invoice-value"/>
+
+
+        <!-- THỜI GIAN -->
+
+        <Label text="Thời gian:"
+               GridPane.columnIndex="0"
+               GridPane.rowIndex="3"
+               styleClass="invoice-label"/>
+
+        <Label fx:id="orderTimeLabel"
+               text="26/09/2026 17:25"
+               GridPane.columnIndex="1"
+               GridPane.rowIndex="3"
+               styleClass="invoice-value"/>
+
+    </GridPane>
+
+
+    <Separator/>
+
+
+    <!-- ========================================================= -->
+    <!-- ORDER DETAILS -->
+    <!-- ========================================================= -->
+
+    <Label text="Chi tiết đơn hàng"
+           styleClass="detail-title"/>
+
+
+    <TableView fx:id="invoiceDetailTable"
+               prefHeight="260.0"
+               VBox.vgrow="NEVER"
+               styleClass="invoice-table">
+
+        <columns>
+
+            <TableColumn fx:id="productColumn"
+                         text="Sản phẩm"
+                         prefWidth="175.0"/>
+
+            <TableColumn fx:id="quantityColumn"
+                         text="SL"
+                         prefWidth="45.0"/>
+
+            <TableColumn fx:id="priceColumn"
+                         text="Đơn giá"
+                         prefWidth="90.0"/>
+
+            <TableColumn fx:id="subtotalColumn"
+                         text="Thành tiền"
+                         prefWidth="115.0"/>
+
+        </columns>
+
+        <placeholder>
+
+            <Label text="Không có sản phẩm"
+                   styleClass="empty-label"/>
+
+        </placeholder>
+
+    </TableView>
+
+
+    <Separator/>
+
+
+    <!-- ========================================================= -->
+    <!-- TOTAL -->
+    <!-- ========================================================= -->
+
+    <VBox spacing="7.0">
+
+        <HBox alignment="CENTER_LEFT">
+
+            <Label text="Tạm tính"
+                   styleClass="total-label"
+                   HBox.hgrow="ALWAYS"/>
+
+            <Label fx:id="subtotalLabel"
+                   text="150.000 đ"
+                   styleClass="total-value"/>
+
+        </HBox>
+
+
+        <HBox alignment="CENTER_LEFT">
+
+            <Label text="Giảm giá"
+                   styleClass="total-label"
+                   HBox.hgrow="ALWAYS"/>
+
+            <Label fx:id="discountLabel"
+                   text="0 đ"
+                   styleClass="total-value"/>
+
+        </HBox>
+
+
+        <Separator/>
+
+
+        <HBox alignment="CENTER_LEFT">
+
+            <Label text="TỔNG TIỀN"
+                   styleClass="grand-total-label"
+                   HBox.hgrow="ALWAYS"/>
+
+            <Label fx:id="totalLabel"
+                   text="150.000 đ"
+                   styleClass="grand-total-value"/>
+
+        </HBox>
+
+    </VBox>
+
+
+    <!-- ========================================================= -->
+    <!-- PAYMENT METHOD -->
+    <!-- ========================================================= -->
+
+    <HBox alignment="CENTER_LEFT"
+          spacing="10.0">
+
+        <Label text="Thanh toán:"
+               styleClass="invoice-label"/>
+
+        <Label fx:id="paymentMethodLabel"
+               text="Tiền mặt"
+               styleClass="payment-method"/>
+
+    </HBox>
+
+
+    <!-- ========================================================= -->
+    <!-- QR CODE -->
+    <!-- ========================================================= -->
+
+    <VBox alignment="CENTER"
+          spacing="6.0"
+          styleClass="qr-section">
+
+        <Label text="Mã QR hóa đơn"
+               styleClass="qr-title"/>
+
+
+        <StackPane prefWidth="145.0"
+                   prefHeight="145.0"
+                   styleClass="qr-container">
+
+            <ImageView fx:id="qrCodeImage"
+                       fitWidth="135.0"
+                       fitHeight="135.0"
+                       preserveRatio="true"/>
+
+        </StackPane>
+
+
+        <Label fx:id="qrOrderIdLabel"
+               text="DH000124"
+               styleClass="qr-order-id"/>
+
+
+        <Label text="Quét QR để xem hóa đơn"
+               styleClass="qr-subtitle"/>
+
+    </VBox>
+
+
+    <!-- ========================================================= -->
+    <!-- FOOTER -->
+    <!-- ========================================================= -->
+
+    <VBox alignment="CENTER"
+          spacing="3.0">
+
+        <Label text="LUNAVERA COFFEE"
+               styleClass="invoice-footer-shop"/>
+
+        <Label text="Cảm ơn quý khách và hẹn gặp lại!"
+               styleClass="invoice-footer-text"/>
+
+    </VBox>
+
+
+    <!-- ========================================================= -->
+    <!-- ACTION BUTTONS -->
+    <!-- ========================================================= -->
+
+    <HBox spacing="10.0"
+          alignment="CENTER">
+
+        <Button fx:id="printButton"
+                text="▣  In hóa đơn"
+                prefHeight="42.0"
+                HBox.hgrow="ALWAYS"
+                styleClass="print-button"
+                onAction="#handlePrint"/>
+
+
+        <Button fx:id="closeButton"
+                text="Đóng"
+                prefHeight="42.0"
+                HBox.hgrow="ALWAYS"
+                styleClass="close-button"
+                onAction="#handleClose"/>
+
+    </HBox>
+
+</VBox>
