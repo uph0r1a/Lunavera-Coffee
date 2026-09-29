@@ -76,6 +76,9 @@ public class AuthenticationService {
             return new RegisterResult(RegisterStatus.WEAK_PASSWORD,
                     "Mật khẩu phải có ít nhất 6 ký tự, gồm cả chữ và số.");
         }
+        if (!ValidationUtil.isBlank(phone) && customerDAO.existsByPhone(phone.trim(), 0)) {
+            return new RegisterResult(RegisterStatus.INVALID_INPUT, "Số điện thoại này đã được đăng ký.");
+        }
         if (userDAO.existsByUsername(username.trim())) {
             return new RegisterResult(RegisterStatus.DUPLICATE_USERNAME, "Tên đăng nhập đã tồn tại.");
         }

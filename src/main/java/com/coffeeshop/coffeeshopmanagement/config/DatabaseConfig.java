@@ -24,6 +24,8 @@ public final class DatabaseConfig {
 
     private static final Logger LOGGER = Logger.getLogger(DatabaseConfig.class.getName());
     private static final String DB_FILE_NAME = "lunavera.db";
+    /** Seeded for the very first login only; the app prompts to change it (see DefaultPasswordPrompt). */
+    public static final String DEFAULT_ADMIN_PASSWORD = "Admin@123";
     private static volatile boolean initialized = false;
 
     private DatabaseConfig() {
@@ -49,8 +51,26 @@ public final class DatabaseConfig {
         Connection connection = DriverManager.getConnection(DB_URL);
         try (Statement pragma = connection.createStatement()) {
             pragma.execute("PRAGMA foreign_keys = ON");
+            // TODO.md item 12: without this, two connections writing at once (e.g. the 30s
+            // SessionGuard background check landing mid-payment) get an immediate "database is
+            // locked" SQLException instead of one of them just waiting briefly - SQLite's
+            // default busy behavior is to not wait at all. 5s is generous for a single-till
+            // desktop app; a real contention problem should surface as a slow UI, not a crash.
+            pragma.execute("PRAGMA busy_timeout = 5000");
         }
         return connection;
+    }
+
+    /**
+     * Writes a consistent copy of the whole database to {@code target} using SQLite's
+     * {@code VACUUM INTO} (safe while the app is running, unlike copying the file by hand).
+     * Restoring is manual: close the app and replace ~/.lunavera-coffee/lunavera.db with the backup.
+     */
+    public static void backupTo(java.nio.file.Path target) throws SQLException, java.io.IOException {
+        java.nio.file.Files.deleteIfExists(target); // VACUUM INTO refuses to overwrite
+        try (Connection connection = getConnection(); Statement statement = connection.createStatement()) {
+            statement.execute("VACUUM INTO '" + target.toAbsolutePath().toString().replace("'", "''") + "'");
+        }
     }
 
     /**
@@ -195,7 +215,7 @@ public final class DatabaseConfig {
                 "INSERT INTO users (username, password_hash, role, status, employee_id, created_at) " +
                         "VALUES (?, ?, ?, 'ACTIVE', ?, ?)")) {
             insertUser.setString(1, "admin");
-            insertUser.setString(2, PasswordUtil.hash("Admin@123"));
+            insertUser.setString(2, PasswordUtil.hash(DEFAULT_ADMIN_PASSWORD));
             insertUser.setString(3, Role.ADMIN.name());
             insertUser.setInt(4, employeeId);
             insertUser.setString(5, LocalDateTime.now().toString());

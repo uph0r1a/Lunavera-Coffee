@@ -1,0 +1,108 @@
+.root {
+    -fx-font-family: "System";
+}
+
+.background-overlay {
+    -fx-background-color: rgba(35, 48, 38, 0.18);
+}
+
+.register-card {
+    -fx-background-color: rgba(250, 249, 243, 0.96);
+    -fx-background-radius: 28px;
+    -fx-border-color: rgba(255, 255, 255, 0.75);
+    -fx-border-radius: 28px;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(45, 60, 48, 0.25), 30, 0.15, 0, 8);
+}
+
+.moon-icon {
+    -fx-text-fill: #b69a5c;
+    -fx-font-size: 34px;
+    -fx-font-weight: bold;
+}
+
+.register-title {
+    -fx-text-fill: #50634f;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+.input-group {
+    -fx-padding: 0;
+}
+
+.input-label {
+    -fx-text-fill: #596a57;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.input-field {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 22px;
+    -fx-border-color: #d9ddd3;
+    -fx-border-radius: 22px;
+    -fx-border-width: 1px;
+    -fx-padding: 0 18px;
+    -fx-text-fill: #4d594c;
+    -fx-prompt-text-fill: #a8ada4;
+    -fx-font-size: 13px;
+}
+
+.input-field:focused {
+    -fx-border-color: #7d9075;
+    -fx-effect: dropshadow(gaussian, rgba(113, 131, 106, 0.25), 8, 0, 0, 0);
+}
+
+.password-button {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 22px;
+    -fx-border-color: #d9ddd3;
+    -fx-border-radius: 22px;
+    -fx-border-width: 1px;
+    -fx-text-fill: #71836a;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+}
+
+.password-button:hover {
+    -fx-background-color: #f1f3ed;
+    -fx-border-color: #7d9075;
+}
+
+.register-button {
+    -fx-background-color: #71836a;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.register-button:hover {
+    -fx-background-color: #60745b;
+    -fx-effect: dropshadow(gaussian, rgba(91, 112, 84, 0.4), 12, 0, 0, 2);
+}
+
+
+.separator-star {
+    -fx-text-fill: #b69a5c;
+    -fx-font-size: 15px;
+}
+
+.login-text {
+    -fx-text-fill: #969c91;
+    -fx-font-size: 12px;
+}
+
+.login-link {
+    -fx-text-fill: #ad8c50;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-border-width: 0;
+    -fx-underline: false;
+}
+
+.login-link:hover {
+    -fx-text-fill: #806735;
+    -fx-underline: true;
+}

@@ -19,6 +19,8 @@ import java.util.logging.Logger;
 public final class SceneNavigator {
 
     private static final Logger LOGGER = Logger.getLogger(SceneNavigator.class.getName());
+    private static final String LOGIN_FXML = "/fxml/dangnhap.fxml";
+    private static final String DANGKY_FXML = "/fxml/dangky.fxml";
 
     private SceneNavigator() {
     }
@@ -31,6 +33,16 @@ public final class SceneNavigator {
     }
 
     public static void switchScene(Stage stage, String fxmlPath) {
+        // A locked/deactivated account (Account Management -> lock, or the last-admin guard
+        // taking effect from another session) used to be checked only here, on screen changes.
+        // SessionGuard (progress.md, latest session) now also covers a background 30s tick, the
+        // moment of taking a payment, and admin-only actions - this call is the "every screen
+        // change" layer of that, delegated so there's one definition of "still valid".
+        if (!LOGIN_FXML.equals(fxmlPath) && !DANGKY_FXML.equals(fxmlPath)
+                && Session.getCurrentUser() != null && !SessionGuard.validateNow()) {
+            SessionGuard.forceLogout();
+            return;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(SceneNavigator.class.getResource(fxmlPath));
             Parent root = loader.load();

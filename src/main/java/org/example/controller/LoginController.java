@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import com.coffeeshop.coffeeshopmanagement.config.DatabaseConfig;
 import com.coffeeshop.coffeeshopmanagement.dao.EmployeeDAO;
 import com.coffeeshop.coffeeshopmanagement.model.Employee;
 import com.coffeeshop.coffeeshopmanagement.model.Role;
@@ -10,6 +11,7 @@ import com.coffeeshop.coffeeshopmanagement.util.AlertUtil;
 import com.coffeeshop.coffeeshopmanagement.util.Async;
 import com.coffeeshop.coffeeshopmanagement.util.Session;
 import com.coffeeshop.coffeeshopmanagement.util.SceneNavigator;
+import com.coffeeshop.coffeeshopmanagement.util.SessionGuard;
 
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -46,6 +48,10 @@ public class LoginController {
 
     @FXML
     private void initialize() {
+        if (usernameField != null && passwordField != null) {
+            usernameField.setOnAction(event -> passwordField.requestFocus());
+        }
+        if (passwordField != null) passwordField.setOnAction(event -> handleLogin());
         if (signInButton != null) signInButton.setOnAction(event -> handleLogin());
         if (loginButton != null) loginButton.setOnAction(event -> handleLogin());
         if (registerLink != null) registerLink.setOnAction(event -> handleRegister());
@@ -68,9 +74,10 @@ public class LoginController {
         // Async guarantees these callbacks land back on the FX thread.
         setLoginInProgress(true);
         String trimmedUsername = username.trim();
+        boolean usedDefaultPassword = DatabaseConfig.DEFAULT_ADMIN_PASSWORD.equals(password);
         Async.run(
                 () -> authenticationService.login(trimmedUsername, password),
-                this::onLoginFinished,
+                result -> onLoginFinished(result, usedDefaultPassword),
                 error -> {
                     setLoginInProgress(false);
                     AlertUtil.error("Lỗi đăng nhập",
@@ -79,14 +86,14 @@ public class LoginController {
         );
     }
 
-    private void onLoginFinished(LoginResult result) {
+    private void onLoginFinished(LoginResult result, boolean usedDefaultPassword) {
         setLoginInProgress(false);
         switch (result.status()) {
             case INVALID_USERNAME -> AlertUtil.error("Đăng nhập thất bại", "Tên đăng nhập không tồn tại.");
             case INVALID_PASSWORD -> AlertUtil.error("Đăng nhập thất bại", "Mật khẩu không chính xác.");
             case INACTIVE -> AlertUtil.error("Tài khoản bị khóa",
                     "Tài khoản này đã bị khóa. Vui lòng liên hệ quản trị viên.");
-            case SUCCESS -> onLoginSuccess(result.user());
+            case SUCCESS -> onLoginSuccess(result.user(), usedDefaultPassword);
         }
     }
 
@@ -101,7 +108,7 @@ public class LoginController {
         active.setText(inProgress ? "ĐANG ĐĂNG NHẬP..." : "ĐĂNG NHẬP");
     }
 
-    private void onLoginSuccess(User user) {
+    private void onLoginSuccess(User user, boolean usedDefaultPassword) {
         if (user.getRole() == Role.CUSTOMER) {
             // No customer-facing screen exists yet in this build; documented in progress.md.
             AlertUtil.info("Chưa hỗ trợ",
@@ -122,7 +129,11 @@ public class LoginController {
         String target = user.getRole() == Role.ADMIN
                 ? "/fxml/admin-trangchu.fxml"
                 : "/fxml/employee-trangchu.fxml";
+        SessionGuard.startWatching(stage);
         SceneNavigator.switchScene(stage, target);
+        if (usedDefaultPassword) {
+            javafx.application.Platform.runLater(() -> DefaultPasswordPrompt.show(user));
+        }
     }
 
     @FXML
