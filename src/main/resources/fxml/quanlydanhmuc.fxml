@@ -14,7 +14,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 
-<BorderPane fx:id="QuanLyDanhMucRoot" maxHeight="1000" maxWidth="1600" prefHeight="1000" prefWidth="1600" stylesheets="@../css/quanlydanhmuc.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.AdminController">
+<BorderPane fx:id="QuanLyDanhMucRoot" maxHeight="1000" maxWidth="1600" prefHeight="1000" prefWidth="1600" stylesheets="@../css/quanlydanhmuc.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.AdminController">
 
     <!-- SIDEBAR -->
     <left>

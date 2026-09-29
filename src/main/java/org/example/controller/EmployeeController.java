@@ -1,0 +1,105 @@
+package org.example.controller;
+
+import com.coffeeshop.coffeeshopmanagement.service.DashboardStatsService;
+import com.coffeeshop.coffeeshopmanagement.service.DashboardStatsService.DashboardStats;
+import com.coffeeshop.coffeeshopmanagement.util.AlertUtil;
+import com.coffeeshop.coffeeshopmanagement.util.Async;
+import com.coffeeshop.coffeeshopmanagement.util.CurrencyUtil;
+import com.coffeeshop.coffeeshopmanagement.util.Session;
+import com.coffeeshop.coffeeshopmanagement.util.SceneNavigator;
+
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
+
+/**
+ * Backs the employee dashboard (employee-trangchu.fxml). Mirrors AdminController's
+ * navigation/stat-loading pattern; the two are not merged into one class because the
+ * screens each are allowed to reach differ by role (see progress.md - Account Management
+ * currently applies its own admin-only checks for the actions employees aren't allowed to
+ * perform, rather than being hidden here).
+ */
+public class EmployeeController {
+
+    @FXML
+    private Label totalTableLabel;
+    @FXML
+    private Label tableStatusLabel;
+    @FXML
+    private Label todayOrderLabel;
+    @FXML
+    private Label todayRevenueLabel;
+    @FXML
+    private Label todayCustomerLabel;
+    @FXML
+    private Label tableUsageLabel;
+    @FXML
+    private GridPane tableStatusGrid;
+
+    private final DashboardStatsService dashboardStatsService = new DashboardStatsService();
+
+    @FXML
+    private void initialize() {
+        loadDashboardStats();
+        // Dine-in "table" seating (tableStatusGrid / totalTableLabel / tableUsageLabel) is
+        // decorative demo data: there is no table/seating entity in the current schema, so
+        // it is left as static placeholder content rather than faked as if it were real -
+        // see progress.md for this known gap.
+    }
+
+    private void loadDashboardStats() {
+        // See AdminController for why this is backgrounded: loadStats() makes ~10 sequential
+        // DB round-trips, enough to freeze the UI for a moment if run on the FX thread.
+        Async.run(
+                dashboardStatsService::loadStats,
+                this::applyDashboardStats,
+                error -> AlertUtil.error("Lỗi tải dữ liệu",
+                        "Không thể tải số liệu thống kê: " + error.getMessage())
+        );
+    }
+
+    private void applyDashboardStats(DashboardStats stats) {
+        if (todayOrderLabel != null) todayOrderLabel.setText(String.valueOf(stats.todayOrders()));
+        if (todayRevenueLabel != null) todayRevenueLabel.setText(CurrencyUtil.format(stats.todayRevenue()));
+        if (todayCustomerLabel != null) todayCustomerLabel.setText(String.valueOf(stats.todayCustomers()));
+    }
+
+    @FXML
+    public void openProductManagement(ActionEvent event) {
+        SceneNavigator.switchScene(event, "/fxml/quanlysanpham.fxml");
+    }
+
+    @FXML
+    public void openOrderManagement(ActionEvent event) {
+        SceneNavigator.switchScene(event, "/fxml/quanlydonhang.fxml");
+    }
+
+    @FXML
+    public void openCustomerManagement(ActionEvent event) {
+        SceneNavigator.switchScene(event, "/fxml/quanlykhachhang.fxml");
+    }
+
+    @FXML
+    public void openCategoryManagement(ActionEvent event) {
+        SceneNavigator.switchScene(event, "/fxml/quanlydanhmuc.fxml");
+    }
+
+    @FXML
+    public void openInventoryManagement(ActionEvent event) {
+        AlertUtil.info("Chưa triển khai",
+                "Chức năng Quản lý kho riêng biệt chưa được xây dựng. Tồn kho hiện được " +
+                        "quản lý trực tiếp trong màn hình Quản lý sản phẩm.");
+    }
+
+    @FXML
+    public void openAccountManagement(ActionEvent event) {
+        SceneNavigator.switchScene(event, "/fxml/quanlytaikhoan.fxml");
+    }
+
+    @FXML
+    public void logout(ActionEvent event) {
+        Session.clear();
+        SceneNavigator.switchScene(event, "/fxml/dangnhap.fxml");
+    }
+}
