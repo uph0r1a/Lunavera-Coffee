@@ -127,15 +127,29 @@
             <!-- HEADER -->
             <HBox alignment="CENTER_LEFT" prefHeight="70.0">
                 <VBox spacing="4.0">
-                    <Label text="Chào mừng, Admin!" styleClass="page-title"/>
+                    <Label fx:id="dashboardGreetingLabel" text="Chào mừng, Admin!" styleClass="page-title"/>
                     <Label text="Chúc bạn có một ngày làm việc hiệu quả!"
                            styleClass="page-subtitle"/>
                 </VBox>
 
                 <Region HBox.hgrow="ALWAYS"/>
 
+                <Button fx:id="backupButton"
+                        text="⤓  Sao lưu dữ liệu"
+                        prefHeight="42.0"
+                        styleClass="secondary-button"
+                        onAction="#handleBackupData"/>
+                <Region prefWidth="10.0"/>
+
+                <Button fx:id="reportButton"
+                        text="▤  Báo cáo doanh thu"
+                        prefHeight="42.0"
+                        styleClass="primary-button"
+                        onAction="#handleShowReports"/>
+                <Region prefWidth="16.0"/>
+
                 <VBox alignment="CENTER_RIGHT" spacing="3.0">
-                    <Label text="Admin" styleClass="account-name"/>
+                    <Label fx:id="dashboardAccountNameLabel" text="Admin" styleClass="account-name"/>
                     <Label text="Quản trị viên" styleClass="account-role"/>
                 </VBox>
             </HBox>
@@ -152,12 +166,12 @@
                 <VBox GridPane.columnIndex="0"
                       prefHeight="145.0"
                       styleClass="stat-card">
-                    <Label text="TỔNG SỐ BÀN" styleClass="stat-title"/>
-                    <Label fx:id="totalTableLabel"
+                    <Label text="SẢN PHẨM" styleClass="stat-title"/>
+                    <Label fx:id="dashboardProductCountLabel"
                            text="0"
                            styleClass="stat-value"/>
-                    <Label fx:id="tableStatusLabel"
-                           text="Đã sử dụng: 0   •   Còn trống: 0"
+                    <Label fx:id="dashboardLowStockNoteLabel"
+                           text="Đang tải..."
                            styleClass="stat-description"/>
                 </VBox>
 
@@ -291,132 +305,19 @@
                       HBox.hgrow="ALWAYS">
 
                     <HBox alignment="CENTER_LEFT">
-                        <Label text="Trạng thái bàn"
+                        <Label text="Đơn hàng gần đây"
                                styleClass="section-title"/>
 
                         <Region HBox.hgrow="ALWAYS"/>
 
-                        <Label fx:id="tableUsageLabel"
-                               text="0/0 bàn đang sử dụng"
+                        <Label fx:id="recentOrdersNoteLabel"
+                               text="Đang tải..."
                                styleClass="filter-label"/>
                     </HBox>
 
-                    <GridPane fx:id="tableStatusGrid"
-                              hgap="12.0"
-                              vgap="12.0"
-                              VBox.vgrow="ALWAYS">
-
-                        <columnConstraints>
-                            <ColumnConstraints percentWidth="25.0"/>
-                            <ColumnConstraints percentWidth="25.0"/>
-                            <ColumnConstraints percentWidth="25.0"/>
-                            <ColumnConstraints percentWidth="25.0"/>
-                        </columnConstraints>
-
-                        <VBox GridPane.columnIndex="0"
-                              GridPane.rowIndex="0"
-                              prefHeight="75.0"
-                              styleClass="table-card,table-available">
-                            <Label text="Bàn 01" styleClass="table-name"/>
-                            <Label text="●  Trống" styleClass="table-status"/>
-                        </VBox>
-
-                        <VBox GridPane.columnIndex="1"
-                              GridPane.rowIndex="0"
-                              prefHeight="75.0"
-                              styleClass="table-card,table-occupied">
-                            <Label text="Bàn 02" styleClass="table-name"/>
-                            <Label text="●  Có khách" styleClass="table-status"/>
-                        </VBox>
-
-                        <VBox GridPane.columnIndex="2"
-                              GridPane.rowIndex="0"
-                              prefHeight="75.0"
-                              styleClass="table-card,table-available">
-                            <Label text="Bàn 03" styleClass="table-name"/>
-                            <Label text="●  Trống" styleClass="table-status"/>
-                        </VBox>
-
-                        <VBox GridPane.columnIndex="3"
-                              GridPane.rowIndex="0"
-                              prefHeight="75.0"
-                              styleClass="table-card,table-occupied">
-                            <Label text="Bàn 04" styleClass="table-name"/>
-                            <Label text="●  Có khách" styleClass="table-status"/>
-                        </VBox>
-
-                        <VBox GridPane.columnIndex="0"
-                              GridPane.rowIndex="1"
-                              prefHeight="75.0"
-                              styleClass="table-card,table-available">
-                            <Label text="Bàn 05" styleClass="table-name"/>
-                            <Label text="●  Trống" styleClass="table-status"/>
-                        </VBox>
-
-                        <VBox GridPane.columnIndex="1"
-                              GridPane.rowIndex="1"
-                              prefHeight="75.0"
-                              styleClass="table-card,table-available">
-                            <Label text="Bàn 06" styleClass="table-name"/>
-                            <Label text="●  Trống" styleClass="table-status"/>
-                        </VBox>
-
-                        <VBox GridPane.columnIndex="2"
-                              GridPane.rowIndex="1"
-                              prefHeight="75.0"
-                              styleClass="table-card,table-occupied">
-                            <Label text="Bàn 07" styleClass="table-name"/>
-                            <Label text="●  Có khách" styleClass="table-status"/>
-                        </VBox>
-
-                        <VBox GridPane.columnIndex="3"
-                              GridPane.rowIndex="1"
-                              prefHeight="75.0"
-                              styleClass="table-card,table-available">
-                            <Label text="Bàn 08" styleClass="table-name"/>
-                            <Label text="●  Trống" styleClass="table-status"/>
-                        </VBox>
-
-                        <VBox GridPane.columnIndex="0"
-                              GridPane.rowIndex="2"
-                              prefHeight="75.0"
-                              styleClass="table-card,table-available">
-                            <Label text="Bàn 09" styleClass="table-name"/>
-                            <Label text="●  Trống" styleClass="table-status"/>
-                        </VBox>
-
-                        <VBox GridPane.columnIndex="1"
-                              GridPane.rowIndex="2"
-                              prefHeight="75.0"
-                              styleClass="table-card,table-available">
-                            <Label text="Bàn 10" styleClass="table-name"/>
-                            <Label text="●  Trống" styleClass="table-status"/>
-                        </VBox>
-
-                        <VBox GridPane.columnIndex="2"
-                              GridPane.rowIndex="2"
-                              prefHeight="75.0"
-                              styleClass="table-card,table-occupied">
-                            <Label text="Bàn 11" styleClass="table-name"/>
-                            <Label text="●  Có khách" styleClass="table-status"/>
-                        </VBox>
-
-                        <VBox GridPane.columnIndex="3"
-                              GridPane.rowIndex="2"
-                              prefHeight="75.0"
-                              styleClass="table-card,table-available">
-                            <Label text="Bàn 12" styleClass="table-name"/>
-                            <Label text="●  Trống" styleClass="table-status"/>
-                        </VBox>
-
-                    </GridPane>
-
-                    <HBox alignment="CENTER_RIGHT">
-                        <Label text="● Trống"
-                               styleClass="available-text"/>
-                        <Label text="     ● Có khách"
-                               styleClass="occupied-text"/>
-                    </HBox>
+                    <VBox fx:id="recentOrdersList"
+                          spacing="12.0"
+                          VBox.vgrow="ALWAYS"/>
                 </VBox>
 
                 <!-- INVENTORY -->
@@ -429,68 +330,15 @@
                                styleClass="section-title"/>
                     </HBox>
 
-                    <VBox spacing="12.0">
-
-                        <HBox alignment="CENTER_LEFT"
-                              styleClass="inventory-row">
-                            <VBox spacing="3.0">
-                                <Label text="Cà phê Arabica"
-                                       styleClass="inventory-name"/>
-                                <Label text="Còn 3 / tối thiểu 10"
-                                       styleClass="inventory-description"/>
-                            </VBox>
-                            <Region HBox.hgrow="ALWAYS"/>
-                            <Label text="Sắp hết"
-                                   styleClass="inventory-danger"/>
-                        </HBox>
-
-                        <HBox alignment="CENTER_LEFT"
-                              styleClass="inventory-row">
-                            <VBox spacing="3.0">
-                                <Label text="Bánh Croissant"
-                                       styleClass="inventory-name"/>
-                                <Label text="Còn 5 / tối thiểu 10"
-                                       styleClass="inventory-description"/>
-                            </VBox>
-                            <Region HBox.hgrow="ALWAYS"/>
-                            <Label text="Sắp hết"
-                                   styleClass="inventory-danger"/>
-                        </HBox>
-
-                        <HBox alignment="CENTER_LEFT"
-                              styleClass="inventory-row">
-                            <VBox spacing="3.0">
-                                <Label text="Nước cam"
-                                       styleClass="inventory-name"/>
-                                <Label text="Còn 2 / tối thiểu 8"
-                                       styleClass="inventory-description"/>
-                            </VBox>
-                            <Region HBox.hgrow="ALWAYS"/>
-                            <Label text="Sắp hết"
-                                   styleClass="inventory-danger"/>
-                        </HBox>
-
-                        <HBox alignment="CENTER_LEFT"
-                              styleClass="inventory-row">
-                            <VBox spacing="3.0">
-                                <Label text="Trà xanh"
-                                       styleClass="inventory-name"/>
-                                <Label text="Còn 8 / tối thiểu 10"
-                                       styleClass="inventory-description"/>
-                            </VBox>
-                            <Region HBox.hgrow="ALWAYS"/>
-                            <Label text="Thấp"
-                                   styleClass="inventory-warning"/>
-                        </HBox>
-                    </VBox>
+                    <VBox fx:id="lowStockList" spacing="12.0"/>
 
                     <Region VBox.vgrow="ALWAYS"/>
 
-                    <Button text="Xem kho →"
+                    <Button text="Xem sản phẩm →"
                             maxWidth="1.7976931348623157E308"
                             prefHeight="42.0"
                             styleClass="secondary-button"
-                            onAction="#openInventoryManagement"/>
+                            onAction="#openProductManagement"/>
                 </VBox>
             </HBox>
 

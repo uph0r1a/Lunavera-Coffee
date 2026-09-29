@@ -126,8 +126,12 @@
               styleClass="login-button"
               text="ĐĂNG NHẬP"/>
 
-      <!-- Register -->
-      <HBox alignment="CENTER" maxWidth="310" prefWidth="310" spacing="5">
+      <!-- Register: hidden on purpose (TODO.md item 9). A self-registered CUSTOMER account can't
+           log in to anything - there is no customer-facing screen (LoginController.onLoginSuccess
+           says so) - so offering sign-up here just created dead-end accounts. Staff add customers
+           (with loyalty points) from Quản lý khách hàng instead. dangky.fxml / RegisterController
+           are kept intact: to bring the link back, delete the visible/managed attributes below. -->
+      <HBox alignment="CENTER" maxWidth="310" prefWidth="310" spacing="5" visible="false" managed="false">
          <VBox.margin>
             <Insets top="16"/>
          </VBox.margin>

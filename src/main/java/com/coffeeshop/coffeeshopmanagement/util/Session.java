@@ -12,8 +12,9 @@ import com.coffeeshop.coffeeshopmanagement.model.User;
  */
 public final class Session {
 
-    private static User currentUser;
-    private static Employee currentEmployee; // populated for ADMIN/EMPLOYEE accounts
+    // volatile: SessionGuard's background check reads these off the FX thread.
+    private static volatile User currentUser;
+    private static volatile Employee currentEmployee; // populated for ADMIN/EMPLOYEE accounts
 
     private Session() {
     }

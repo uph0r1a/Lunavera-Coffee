@@ -11,6 +11,7 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class CustomerDAO {
 
@@ -33,6 +34,51 @@ public class CustomerDAO {
         } catch (SQLException e) {
             throw new DataAccessException("Failed to create customer", e);
         }
+    }
+
+    public void update(Customer customer) {
+        String sql = "UPDATE customers SET full_name = ?, phone = ?, email = ? WHERE id = ?";
+        try (Connection connection = DatabaseConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, customer.getFullName());
+            statement.setString(2, customer.getPhone());
+            statement.setString(3, customer.getEmail());
+            statement.setInt(4, customer.getId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to update customer", e);
+        }
+    }
+
+    /** True if another customer (id != excludeId; pass 0 when adding) already has this phone. */
+    public boolean existsByPhone(String phone, int excludeId) {
+        String sql = "SELECT 1 FROM customers WHERE phone = ? AND id <> ? LIMIT 1";
+        try (Connection connection = DatabaseConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, phone);
+            statement.setInt(2, excludeId);
+            try (ResultSet rs = statement.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to check phone uniqueness", e);
+        }
+    }
+
+    public Optional<Customer> findById(int id) {
+        String sql = "SELECT * FROM customers WHERE id = ?";
+        try (Connection connection = DatabaseConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, id);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(map(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to load customer", e);
+        }
+        return Optional.empty();
     }
 
     public List<Customer> findAll() {

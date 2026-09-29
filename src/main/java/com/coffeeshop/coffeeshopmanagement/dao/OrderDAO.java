@@ -5,6 +5,7 @@ import com.coffeeshop.coffeeshopmanagement.model.Order;
 import com.coffeeshop.coffeeshopmanagement.model.OrderItem;
 import com.coffeeshop.coffeeshopmanagement.model.OrderStatus;
 import com.coffeeshop.coffeeshopmanagement.model.PaymentMethod;
+import com.coffeeshop.coffeeshopmanagement.service.LoyaltyPolicy;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -64,6 +65,37 @@ public class OrderDAO {
                 }
                 statement.executeBatch();
             }
+            // Stock is taken inside the same transaction, and only if enough is left: a sale that
+            // would drive stock below zero fails as a whole (nothing saved) instead of going negative.
+            if (order.getStatus() == OrderStatus.PAID) {
+                try (PreparedStatement statement = connection.prepareStatement(
+                        "UPDATE products SET stock = stock - ? WHERE id = ? AND stock >= ?")) {
+                    for (OrderItem item : items) {
+                        if (item.getProductId() == null) continue;
+                        statement.setInt(1, item.getQuantity());
+                        statement.setInt(2, item.getProductId());
+                        statement.setInt(3, item.getQuantity());
+                        if (statement.executeUpdate() == 0) {
+                            connection.rollback();
+                            throw new DataAccessException("\"" + item.getProductName()
+                                    + "\" không đủ tồn kho để hoàn tất đơn. Vui lòng kiểm tra lại số lượng.");
+                        }
+                    }
+                }
+            }
+            // Loyalty points are awarded inside the same transaction as the order itself, so a
+            // failed save can never leave points granted for an order that doesn't exist.
+            if (order.getCustomerId() != null && order.getStatus() == OrderStatus.PAID) {
+                int points = LoyaltyPolicy.pointsFor(order.getTotal());
+                if (points > 0) {
+                    try (PreparedStatement statement = connection.prepareStatement(
+                            "UPDATE customers SET loyalty_points = loyalty_points + ? WHERE id = ?")) {
+                        statement.setInt(1, points);
+                        statement.setInt(2, order.getCustomerId());
+                        statement.executeUpdate();
+                    }
+                }
+            }
             connection.commit();
             order.setId(orderId);
             return order;
@@ -86,6 +118,115 @@ public class OrderDAO {
             throw new DataAccessException("Failed to load order", e);
         }
         return Optional.empty();
+    }
+
+    /** Newest orders first (by id, which is monotonic - more reliable than comparing dates). */
+    public List<Order> findRecent(int limit) {
+        List<Order> result = new ArrayList<>();
+        try (Connection connection = DatabaseConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(
+                     "SELECT * FROM orders ORDER BY id DESC LIMIT ?")) {
+            statement.setInt(1, limit);
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    result.add(map(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to load recent orders", e);
+        }
+        return result;
+    }
+
+    /** An order plus the display names the history screen needs (avoids N+1 lookups per row). */
+    public record OrderSummary(Order order, String employeeName, String customerName) {
+    }
+
+    /** Newest first. Capped so the history window stays fast on a long-running database. */
+    public List<OrderSummary> findHistory(int limit) {
+        String sql = "SELECT o.*, e.full_name AS employee_name, c.full_name AS customer_name FROM orders o " +
+                "LEFT JOIN employees e ON o.employee_id = e.id " +
+                "LEFT JOIN customers c ON o.customer_id = c.id ORDER BY o.id DESC LIMIT ?";
+        List<OrderSummary> result = new ArrayList<>();
+        try (Connection connection = DatabaseConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, limit);
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    result.add(new OrderSummary(map(rs), rs.getString("employee_name"), rs.getString("customer_name")));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to load order history", e);
+        }
+        return result;
+    }
+
+    /**
+     * Cancels a PAID order as a full refund, in one transaction: stock is put back, the loyalty
+     * points that order earned are taken back (never below zero), and the status becomes
+     * CANCELLED (which the dashboard's revenue query already excludes). Nothing changes if any
+     * step fails. The order row and its items are kept, so the history stays intact.
+     */
+    public void cancelPaidOrder(int orderId) {
+        try (Connection connection = DatabaseConfig.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                Integer customerId;
+                BigDecimal total;
+                try (PreparedStatement statement = connection.prepareStatement(
+                        "SELECT status, customer_id, total FROM orders WHERE id = ?")) {
+                    statement.setInt(1, orderId);
+                    try (ResultSet rs = statement.executeQuery()) {
+                        if (!rs.next()) {
+                            throw new DataAccessException("Không tìm thấy đơn hàng #" + orderId);
+                        }
+                        if (OrderStatus.fromDb(rs.getString("status")) != OrderStatus.PAID) {
+                            throw new DataAccessException("Chỉ có thể hủy đơn hàng đã thanh toán.");
+                        }
+                        int cid = rs.getInt("customer_id");
+                        customerId = rs.wasNull() ? null : cid;
+                        total = rs.getBigDecimal("total");
+                    }
+                }
+                try (PreparedStatement items = connection.prepareStatement(
+                        "SELECT product_id, quantity FROM order_items WHERE order_id = ? AND product_id IS NOT NULL");
+                     PreparedStatement restock = connection.prepareStatement(
+                             "UPDATE products SET stock = stock + ? WHERE id = ?")) {
+                    items.setInt(1, orderId);
+                    try (ResultSet rs = items.executeQuery()) {
+                        while (rs.next()) {
+                            restock.setInt(1, rs.getInt("quantity"));
+                            restock.setInt(2, rs.getInt("product_id"));
+                            restock.addBatch();
+                        }
+                    }
+                    restock.executeBatch();
+                }
+                if (customerId != null) {
+                    int points = LoyaltyPolicy.pointsFor(total);
+                    if (points > 0) {
+                        try (PreparedStatement statement = connection.prepareStatement(
+                                "UPDATE customers SET loyalty_points = MAX(0, loyalty_points - ?) WHERE id = ?")) {
+                            statement.setInt(1, points);
+                            statement.setInt(2, customerId);
+                            statement.executeUpdate();
+                        }
+                    }
+                }
+                try (PreparedStatement statement = connection.prepareStatement(
+                        "UPDATE orders SET status = 'CANCELLED' WHERE id = ?")) {
+                    statement.setInt(1, orderId);
+                    statement.executeUpdate();
+                }
+                connection.commit();
+            } catch (SQLException | RuntimeException e) {
+                connection.rollback();
+                throw e;
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to cancel order", e);
+        }
     }
 
     public List<OrderItem> findItemsByOrderId(int orderId) {
@@ -115,7 +256,7 @@ public class OrderDAO {
     }
 
     public int countToday() {
-        return countWhere("DATE(order_date) = DATE('now', 'localtime')");
+        return countWhere("status <> 'CANCELLED' AND DATE(order_date) = DATE('now', 'localtime')");
     }
 
     public int countByStatus(OrderStatus status) {
@@ -148,7 +289,7 @@ public class OrderDAO {
 
     public int countDistinctCustomersToday() {
         String sql = "SELECT COUNT(DISTINCT customer_id) FROM orders " +
-                "WHERE customer_id IS NOT NULL AND DATE(order_date) = DATE('now', 'localtime')";
+                "WHERE customer_id IS NOT NULL AND status <> 'CANCELLED' AND DATE(order_date) = DATE('now', 'localtime')";
         try (Connection connection = DatabaseConfig.getConnection();
              Statement statement = connection.createStatement();
              ResultSet rs = statement.executeQuery(sql)) {

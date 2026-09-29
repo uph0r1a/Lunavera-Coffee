@@ -5,13 +5,14 @@ import com.coffeeshop.coffeeshopmanagement.service.DashboardStatsService.Dashboa
 import com.coffeeshop.coffeeshopmanagement.util.AlertUtil;
 import com.coffeeshop.coffeeshopmanagement.util.Async;
 import com.coffeeshop.coffeeshopmanagement.util.CurrencyUtil;
+import com.coffeeshop.coffeeshopmanagement.util.DashboardWidgets;
 import com.coffeeshop.coffeeshopmanagement.util.Session;
 import com.coffeeshop.coffeeshopmanagement.util.SceneNavigator;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 
 /**
  * Backs the employee dashboard (employee-trangchu.fxml). Mirrors AdminController's
@@ -23,9 +24,9 @@ import javafx.scene.layout.GridPane;
 public class EmployeeController {
 
     @FXML
-    private Label totalTableLabel;
+    private Label dashboardProductCountLabel;
     @FXML
-    private Label tableStatusLabel;
+    private Label dashboardLowStockNoteLabel;
     @FXML
     private Label todayOrderLabel;
     @FXML
@@ -33,19 +34,27 @@ public class EmployeeController {
     @FXML
     private Label todayCustomerLabel;
     @FXML
-    private Label tableUsageLabel;
+    private Label recentOrdersNoteLabel;
     @FXML
-    private GridPane tableStatusGrid;
+    private Label dashboardGreetingLabel;
+    @FXML
+    private Label dashboardAccountNameLabel;
+    @FXML
+    private VBox recentOrdersList;
+    @FXML
+    private VBox lowStockList;
 
     private final DashboardStatsService dashboardStatsService = new DashboardStatsService();
 
     @FXML
     private void initialize() {
+        if (dashboardGreetingLabel != null) {
+            dashboardGreetingLabel.setText("Chào mừng, " + Session.getDisplayName() + "!");
+        }
+        if (dashboardAccountNameLabel != null) {
+            dashboardAccountNameLabel.setText(Session.getDisplayName());
+        }
         loadDashboardStats();
-        // Dine-in "table" seating (tableStatusGrid / totalTableLabel / tableUsageLabel) is
-        // decorative demo data: there is no table/seating entity in the current schema, so
-        // it is left as static placeholder content rather than faked as if it were real -
-        // see progress.md for this known gap.
     }
 
     private void loadDashboardStats() {
@@ -63,6 +72,26 @@ public class EmployeeController {
         if (todayOrderLabel != null) todayOrderLabel.setText(String.valueOf(stats.todayOrders()));
         if (todayRevenueLabel != null) todayRevenueLabel.setText(CurrencyUtil.format(stats.todayRevenue()));
         if (todayCustomerLabel != null) todayCustomerLabel.setText(String.valueOf(stats.todayCustomers()));
+        // Real data replaces the old hardcoded table-occupancy grid and fake low-stock rows
+        // (progress.md, Session 13) - same content as AdminController's dashboard.
+        if (dashboardProductCountLabel != null) {
+            dashboardProductCountLabel.setText(String.valueOf(stats.totalProducts()));
+        }
+        if (dashboardLowStockNoteLabel != null) {
+            dashboardLowStockNoteLabel.setText(stats.lowStockCount() == 0
+                    ? "Không có sản phẩm sắp hết hàng"
+                    : "Cần nhập thêm: " + stats.lowStockCount() + " sản phẩm");
+        }
+        if (lowStockList != null) {
+            DashboardWidgets.fillLowStock(lowStockList, stats.lowStockProducts());
+        }
+        if (recentOrdersList != null) {
+            DashboardWidgets.fillRecentOrders(recentOrdersList, stats.recentOrders());
+        }
+        if (recentOrdersNoteLabel != null) {
+            recentOrdersNoteLabel.setText(stats.recentOrders().isEmpty()
+                    ? "Chưa có đơn" : stats.recentOrders().size() + " đơn mới nhất");
+        }
     }
 
     @FXML

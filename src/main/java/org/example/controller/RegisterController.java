@@ -41,6 +41,7 @@ public class RegisterController {
 
     @FXML
     private void initialize() {
+        if (confirmPasswordField != null) confirmPasswordField.setOnAction(event -> handleRegister());
         if (registerButton != null) registerButton.setOnAction(event -> handleRegister());
         if (loginLink != null) loginLink.setOnAction(event -> handleBackToLogin());
         if (showPasswordButton != null) {

@@ -46,4 +46,12 @@ public class Product {
 
     public boolean isActive() { return active; }
     public void setActive(boolean active) { this.active = active; }
+
+    @Override
+    public String toString() {
+        // Used by ChoiceDialog/ComboBox cells elsewhere in the UI (product picker in the
+        // POS screen, category picker in the add/edit product dialog). Kept dependency-free
+        // (no CurrencyUtil) since models shouldn't reach into the util/display layer.
+        return price != null ? name + " - " + price.toPlainString() + "đ" : name;
+    }
 }

@@ -339,7 +339,7 @@
                                          text="Giá"
                                          prefWidth="110"/>
 
-                            <TableColumn fx:id="statusColumn"
+                            <TableColumn fx:id="productStatusColumn"
                                          text="Trạng thái"
                                          prefWidth="120"/>
 
@@ -367,22 +367,22 @@
                         <Button fx:id="previousPageButton"
                                 text="‹"
                                 styleClass="page-button"
-                                onAction="#handlePreviousPage"/>
+                                onAction="#handleProductPreviousPage"/>
 
                         <Button fx:id="pageOneButton"
                                 text="1"
                                 styleClass="page-button,page-button-active"
-                                onAction="#handlePageOne"/>
+                                onAction="#handleProductPageOne"/>
 
                         <Button fx:id="pageTwoButton"
                                 text="2"
                                 styleClass="page-button"
-                                onAction="#handlePageTwo"/>
+                                onAction="#handleProductPageTwo"/>
 
                         <Button fx:id="nextPageButton"
                                 text="›"
                                 styleClass="page-button"
-                                onAction="#handleNextPage"/>
+                                onAction="#handleProductNextPage"/>
                     </HBox>
 
                 </VBox>

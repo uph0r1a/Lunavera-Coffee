@@ -24,7 +24,7 @@
             stylesheets="@../css/admin-trangchu.css"
             xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.example.controller.AdminController"
+            fx:controller="org.example.controller.CustomerController"
             styleClass="dashboard">
 
     <!-- SIDEBAR -->
@@ -133,36 +133,39 @@
                 <Region HBox.hgrow="ALWAYS"/>
 
                 <VBox alignment="CENTER_RIGHT" spacing="3.0">
-                    <Label text="Admin" styleClass="account-name"/>
-                    <Label text="Quản trị viên" styleClass="account-role"/>
+                    <Label fx:id="accountNameLabel" text="Admin" styleClass="account-name"/>
+                    <Label fx:id="accountRoleLabel" text="Quản trị viên" styleClass="account-role"/>
                 </VBox>
             </HBox>
 
             <!-- SEARCH AND ACTIONS -->
             <HBox alignment="CENTER_LEFT" spacing="12.0">
-                <TextField promptText="Tìm kiếm khách hàng theo tên, số điện thoại..."
+                <TextField fx:id="customerSearchField"
+                           promptText="Tìm kiếm khách hàng theo tên, số điện thoại..."
                            prefHeight="42.0"
                            prefWidth="400.0"
                            styleClass="search-field"/>
 
                 <Region HBox.hgrow="ALWAYS"/>
 
-                <Button text="+   Thêm khách hàng"
+                <Button fx:id="addCustomerButton"
+                        text="+   Thêm khách hàng"
                         prefHeight="42.0"
-                        styleClass="primary-button"/>
+                        styleClass="primary-button"
+                        onAction="#handleAddCustomer"/>
             </HBox>
 
             <!-- CUSTOMER TABLE -->
             <VBox VBox.vgrow="ALWAYS" styleClass="content-card">
-                <TableView VBox.vgrow="ALWAYS">
+                <TableView fx:id="customerTable" VBox.vgrow="ALWAYS">
                     <columns>
-                        <TableColumn prefWidth="70.0" text="STT"/>
-                        <TableColumn prefWidth="250.0" text="Họ và tên"/>
-                        <TableColumn prefWidth="180.0" text="Số điện thoại"/>
-                        <TableColumn prefWidth="250.0" text="Email"/>
-                        <TableColumn prefWidth="180.0" text="Điểm tích lũy"/>
-                        <TableColumn prefWidth="180.0" text="Hạng thành viên"/>
-                        <TableColumn prefWidth="160.0" text="Thao tác"/>
+                        <TableColumn fx:id="customerIndexColumn" prefWidth="70.0" text="STT"/>
+                        <TableColumn fx:id="customerNameColumn" prefWidth="250.0" text="Họ và tên"/>
+                        <TableColumn fx:id="customerPhoneColumn" prefWidth="180.0" text="Số điện thoại"/>
+                        <TableColumn fx:id="customerEmailColumn" prefWidth="250.0" text="Email"/>
+                        <TableColumn fx:id="customerLoyaltyColumn" prefWidth="150.0" text="Điểm tích lũy"/>
+                        <TableColumn fx:id="customerTierColumn" prefWidth="180.0" text="Hạng thành viên"/>
+                        <TableColumn fx:id="customerActionColumn" prefWidth="100.0" text="Thao tác"/>
                     </columns>
                     <placeholder>
                         <Label text="Chưa có thông tin khách hàng"/>

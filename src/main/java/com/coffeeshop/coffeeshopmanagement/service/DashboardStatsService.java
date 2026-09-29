@@ -4,10 +4,13 @@ import com.coffeeshop.coffeeshopmanagement.dao.CustomerDAO;
 import com.coffeeshop.coffeeshopmanagement.dao.EmployeeDAO;
 import com.coffeeshop.coffeeshopmanagement.dao.OrderDAO;
 import com.coffeeshop.coffeeshopmanagement.dao.ProductDAO;
+import com.coffeeshop.coffeeshopmanagement.model.Order;
 import com.coffeeshop.coffeeshopmanagement.model.OrderStatus;
+import com.coffeeshop.coffeeshopmanagement.model.Product;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,9 +30,15 @@ public class DashboardStatsService {
             int totalProducts,
             int totalEmployees,
             int totalCustomers,
-            Map<LocalDate, BigDecimal> revenueLast7Days
+            Map<LocalDate, BigDecimal> revenueLast7Days,
+            int lowStockCount,
+            List<Product> lowStockProducts,
+            List<Order> recentOrders
     ) {
     }
+
+    private static final int LOW_STOCK_ROWS = 5;
+    private static final int RECENT_ORDER_ROWS = 5;
 
     private final OrderDAO orderDAO;
     private final ProductDAO productDAO;
@@ -59,7 +68,10 @@ public class DashboardStatsService {
                 productDAO.countAll(),
                 employeeDAO.countActive(),
                 customerDAO.countAll(),
-                orderDAO.revenueForLast7Days()
+                orderDAO.revenueForLast7Days(),
+                productDAO.countLowStock(ProductDAO.LOW_STOCK_THRESHOLD),
+                productDAO.findLowStock(ProductDAO.LOW_STOCK_THRESHOLD, LOW_STOCK_ROWS),
+                orderDAO.findRecent(RECENT_ORDER_ROWS)
         );
     }
 }

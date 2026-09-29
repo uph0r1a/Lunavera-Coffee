@@ -63,7 +63,7 @@
 
         <!-- BÀN -->
 
-        <Label styleClass="invoice-label" text="Bàn:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <Label styleClass="invoice-label" text="Nhân viên:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
 
         <Label fx:id="tableLabel" styleClass="invoice-value" text="Bàn 2" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 

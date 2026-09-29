@@ -28,7 +28,7 @@
             stylesheets="@../css/quanlydonhang.css"
             xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.example.controller.AdminController">
+            fx:controller="org.example.controller.OrderController">
 
     <!-- ========================================================= -->
     <!-- SIDEBAR -->
@@ -151,6 +151,12 @@
                            styleClass="page-description"/>
                 </VBox>
 
+                <Button fx:id="orderHistoryButton"
+                        text="▤  Lịch sử đơn hàng"
+                        prefHeight="42.0"
+                        styleClass="secondary-button"
+                        onAction="#handleShowOrderHistory"/>
+
                 <Label text="♧" styleClass="header-icon"/>
 
                 <VBox alignment="CENTER_RIGHT" spacing="2.0">
@@ -216,6 +222,7 @@
 
                         <!-- ROW 1 -->
                         <Button fx:id="table1Button"
+                                onAction="#handleTableClick"
                                 text="☕  Bàn 1&#10;Đang có đơn"
                                 GridPane.columnIndex="0"
                                 GridPane.rowIndex="0"
@@ -224,6 +231,7 @@
                                 styleClass="table-button-occupied"/>
 
                         <Button fx:id="table2Button"
+                                onAction="#handleTableClick"
                                 text="☕  Bàn 2&#10;Còn trống"
                                 GridPane.columnIndex="1"
                                 GridPane.rowIndex="0"
@@ -232,6 +240,7 @@
                                 styleClass="table-button-empty,table-button-selected"/>
 
                         <Button fx:id="table3Button"
+                                onAction="#handleTableClick"
                                 text="☕  Bàn 3&#10;Đang có đơn"
                                 GridPane.columnIndex="2"
                                 GridPane.rowIndex="0"
@@ -241,6 +250,7 @@
 
                         <!-- ROW 2 -->
                         <Button fx:id="table4Button"
+                                onAction="#handleTableClick"
                                 text="☕  Bàn 4&#10;Còn trống"
                                 GridPane.columnIndex="0"
                                 GridPane.rowIndex="1"
@@ -249,6 +259,7 @@
                                 styleClass="table-button-empty"/>
 
                         <Button fx:id="table5Button"
+                                onAction="#handleTableClick"
                                 text="☕  Bàn 5&#10;Còn trống"
                                 GridPane.columnIndex="1"
                                 GridPane.rowIndex="1"
@@ -257,6 +268,7 @@
                                 styleClass="table-button-empty"/>
 
                         <Button fx:id="table6Button"
+                                onAction="#handleTableClick"
                                 text="☕  Bàn 6&#10;Đang có đơn"
                                 GridPane.columnIndex="2"
                                 GridPane.rowIndex="1"
@@ -266,6 +278,7 @@
 
                         <!-- ROW 3 -->
                         <Button fx:id="table7Button"
+                                onAction="#handleTableClick"
                                 text="☕  Bàn 7&#10;Còn trống"
                                 GridPane.columnIndex="0"
                                 GridPane.rowIndex="2"
@@ -274,6 +287,7 @@
                                 styleClass="table-button-empty"/>
 
                         <Button fx:id="table8Button"
+                                onAction="#handleTableClick"
                                 text="☕  Bàn 8&#10;Đang có đơn"
                                 GridPane.columnIndex="1"
                                 GridPane.rowIndex="2"
@@ -282,6 +296,7 @@
                                 styleClass="table-button-occupied"/>
 
                         <Button fx:id="table9Button"
+                                onAction="#handleTableClick"
                                 text="☕  Bàn 9&#10;Còn trống"
                                 GridPane.columnIndex="2"
                                 GridPane.rowIndex="2"
@@ -291,6 +306,7 @@
 
                         <!-- ROW 4 -->
                         <Button fx:id="table10Button"
+                                onAction="#handleTableClick"
                                 text="☕  Bàn 10&#10;Còn trống"
                                 GridPane.columnIndex="0"
                                 GridPane.rowIndex="3"
@@ -299,6 +315,7 @@
                                 styleClass="table-button-empty"/>
 
                         <Button fx:id="table11Button"
+                                onAction="#handleTableClick"
                                 text="☕  Bàn 11&#10;Đang có đơn"
                                 GridPane.columnIndex="1"
                                 GridPane.rowIndex="3"
@@ -307,6 +324,7 @@
                                 styleClass="table-button-occupied"/>
 
                         <Button fx:id="table12Button"
+                                onAction="#handleTableClick"
                                 text="☕  Bàn 12&#10;Còn trống"
                                 GridPane.columnIndex="2"
                                 GridPane.rowIndex="3"
@@ -339,13 +357,15 @@
 
                         <HBox spacing="8.0" alignment="CENTER_RIGHT">
                             <Button fx:id="startOrderButton"
-                                    text="▶  Đặt đơn"
+                                    text="▶  Bắt đầu đặt đơn"
                                     prefHeight="36.0"
+                                    onAction="#handleStartOrder"
                                     styleClass="primary-button"/>
 
                             <Button fx:id="tableDetailButton"
-                                    text="Xem chi tiết"
+                                    text="Xem chi tiết bàn"
                                     prefHeight="36.0"
+                                    onAction="#handleTableDetail"
                                     styleClass="secondary-button"/>
                         </HBox>
                     </HBox>
@@ -456,12 +476,14 @@
                         <TextField fx:id="productSearchField"
                                    promptText="Tìm món nhanh (tên hoặc mã sản phẩm)..."
                                    prefHeight="38.0"
+                                   onAction="#handleAddProductToCart"
                                    HBox.hgrow="ALWAYS"
                                    styleClass="search-field"/>
 
                         <Button fx:id="addProductButton"
                                 text="⊕  Thêm món"
                                 prefHeight="38.0"
+                                onAction="#handleAddProductToCart"
                                 styleClass="primary-button"/>
                     </HBox>
 
@@ -491,6 +513,7 @@
                                 prefHeight="42.0"
                                 maxWidth="1.7976931348623157E308"
                                 HBox.hgrow="ALWAYS"
+                                onAction="#handlePrintInvoice"
                                 styleClass="secondary-button"/>
 
                         <Button fx:id="editOrderButton"
@@ -498,6 +521,7 @@
                                 prefHeight="42.0"
                                 maxWidth="1.7976931348623157E308"
                                 HBox.hgrow="ALWAYS"
+                                onAction="#handleEditOrder"
                                 styleClass="secondary-button"/>
 
                         <Button fx:id="paymentButton"
@@ -505,6 +529,7 @@
                                 prefHeight="42.0"
                                 maxWidth="1.7976931348623157E308"
                                 HBox.hgrow="ALWAYS"
+                                onAction="#handlePayment"
                                 styleClass="primary-button,action-pay-button"/>
                     </HBox>
                 </VBox>

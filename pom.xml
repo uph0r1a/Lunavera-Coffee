@@ -140,6 +140,17 @@
             <version>${kotlin.version}</version>
             <scope>test</scope>
         </dependency>
+        <!-- Added: first real automated tests (TODO.md), replacing the old dev-checks/*.java
+             approach (a plain-Java program run by hand outside Maven) with proper `mvn test`.
+             JUnit 4 rather than 5: one dependency, no test-engine/module complexity, and
+             Surefire runs it with zero extra config - matches the "avoid unnecessary
+             complexity" spirit of a learning project. -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
