@@ -25,7 +25,7 @@
                preserveRatio="false"
                smooth="true">
         <image>
-            <Image url="@../images/LoginBackgroung.png"/>
+            <Image url="@../images/background/LoginBackgroung.png"/>
         </image>
     </ImageView>
 
@@ -87,7 +87,7 @@
                     <VBox alignment="CENTER" prefHeight="100.0">
                         <ImageView fitHeight="100.0" fitWidth="130.0" preserveRatio="true">
                             <image>
-                                <Image url="@../images/LunaveraLogo.png"/>
+                                <Image url="@../images/background/LunaveraLogo.png"/>
                             </image>
                         </ImageView>
                     </VBox>

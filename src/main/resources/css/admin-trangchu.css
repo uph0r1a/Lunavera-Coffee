@@ -342,53 +342,53 @@
     -fx-alignment: CENTER_LEFT;
 }
 
-/* Bàn trống: Xanh lá mạ non tươi tắn, dịu mắt */
+/* Bàn trống (chưa có khách): Màu xám tinh tế, sạch sẽ */
 .table-available {
-    -fx-background-color: #f1f8e8;
-    -fx-border-color: #b5d894;
+    -fx-background-color: #f3f4f6;
+    -fx-border-color: #d1d5db;
 }
 
 .table-available .table-name {
-    -fx-text-fill: #274917;
+    -fx-text-fill: #374151;
     -fx-font-family: "Segoe UI", sans-serif;
     -fx-font-size: 13px;
     -fx-font-weight: bold;
 }
 
 .table-available .table-status {
-    -fx-text-fill: #3f7b24;
+    -fx-text-fill: #6b7280;
     -fx-font-size: 11px;
     -fx-font-weight: bold;
 }
 
-/* Bàn có khách: Cam đất nhẹ nhàng tương phản */
+/* Bàn có khách: Màu xanh lá cây tươi sáng, nổi bật */
 .table-occupied {
-    -fx-background-color: #fcf1eb;
-    -fx-border-color: #e9c3b3;
+    -fx-background-color: #eaf6ea;
+    -fx-border-color: #9cd49f;
 }
 
 .table-occupied .table-name {
-    -fx-text-fill: #5b2817;
+    -fx-text-fill: #194d1c;
     -fx-font-family: "Segoe UI", sans-serif;
     -fx-font-size: 13px;
     -fx-font-weight: bold;
 }
 
 .table-occupied .table-status {
-    -fx-text-fill: #b34a26;
+    -fx-text-fill: #2d7a2f;
     -fx-font-size: 11px;
     -fx-font-weight: bold;
 }
 
 .available-text {
-    -fx-text-fill: #3a7522;
+    -fx-text-fill: #6b7280;
     -fx-font-family: "Segoe UI", sans-serif;
     -fx-font-size: 12px;
     -fx-font-weight: bold;
 }
 
 .occupied-text {
-    -fx-text-fill: #b34a26;
+    -fx-text-fill: #2d7a2f;
     -fx-font-family: "Segoe UI", sans-serif;
     -fx-font-size: 12px;
     -fx-font-weight: bold;
