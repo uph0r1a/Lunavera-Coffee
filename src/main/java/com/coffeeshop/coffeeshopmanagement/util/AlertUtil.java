@@ -35,12 +35,15 @@ public final class AlertUtil {
     }
 
     public static boolean confirm(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, message, ButtonType.YES, ButtonType.NO);
+        // Custom labels: the built-in YES/NO buttons follow the OS language ("Yes/No" on English systems).
+        ButtonType yes = new ButtonType("Có", javafx.scene.control.ButtonBar.ButtonData.YES);
+        ButtonType no = new ButtonType("Không", javafx.scene.control.ButtonBar.ButtonData.NO);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, message, yes, no);
         alert.setTitle(title);
         alert.setHeaderText(null);
         configure(alert);
         Optional<ButtonType> result = alert.showAndWait();
-        return result.isPresent() && result.get() == ButtonType.YES;
+        return result.isPresent() && result.get() == yes;
     }
 
     private static void show(Alert.AlertType type, String title, String message) {

@@ -40,4 +40,11 @@ public class Customer {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    @Override
+    public String toString() {
+        // Used by ChoiceDialog/ComboBox cells elsewhere in the UI (e.g. attaching a customer
+        // to an order in the POS screen).
+        return phone != null && !phone.isBlank() ? fullName + " - " + phone : fullName;
+    }
 }

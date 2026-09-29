@@ -33,6 +33,22 @@ public class UserDAO {
         return Optional.empty();
     }
 
+public Optional<User> findById(int id) {
+        String sql = "SELECT * FROM users WHERE id = ?";
+        try (Connection connection = DatabaseConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, id);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(map(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to look up user by id", e);
+        }
+        return Optional.empty();
+    }
+
     public boolean existsByUsername(String username) {
         String sql = "SELECT 1 FROM users WHERE username = ?";
         try (Connection connection = DatabaseConfig.getConnection();
@@ -97,6 +113,18 @@ public class UserDAO {
         }
     }
 
+    public void updatePasswordHash(int userId, String passwordHash) {
+        String sql = "UPDATE users SET password_hash = ? WHERE id = ?";
+        try (Connection connection = DatabaseConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, passwordHash);
+            statement.setInt(2, userId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to update password", e);
+        }
+    }
+
     public void updateRole(int userId, Role role) {
         String sql = "UPDATE users SET role = ? WHERE id = ?";
         try (Connection connection = DatabaseConfig.getConnection();
@@ -106,6 +134,19 @@ public class UserDAO {
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException("Failed to update account role", e);
+        }
+    }
+
+    /** Active ADMIN accounts - used to stop the last one being demoted or locked out. */
+    public int countActiveAdmins() {
+        String sql = "SELECT COUNT(*) FROM users WHERE role = 'ADMIN' AND status = 'ACTIVE'";
+        try (Connection connection = DatabaseConfig.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet rs = statement.executeQuery(sql)) {
+            rs.next();
+            return rs.getInt(1);
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to count admins", e);
         }
     }
 

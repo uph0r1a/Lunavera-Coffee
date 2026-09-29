@@ -49,6 +49,17 @@ public class ProductDAO {
         }
     }
 
+    /** Hard delete - callers must first confirm no order_items reference this product. */
+    public void delete(int id) {
+        try (Connection connection = DatabaseConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement("DELETE FROM products WHERE id = ?")) {
+            statement.setInt(1, id);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to delete product", e);
+        }
+    }
+
     public void setActive(int id, boolean active) {
         String sql = "UPDATE products SET active = ? WHERE id = ?";
         try (Connection connection = DatabaseConfig.getConnection();
@@ -102,6 +113,58 @@ public class ProductDAO {
             throw new DataAccessException("Failed to load products by category", e);
         }
         return result;
+    }
+
+    /** Blocks hard-deleting a product that historical orders still reference. */
+    public int countOrderReferences(int productId) {
+        String sql = "SELECT COUNT(*) FROM order_items WHERE product_id = ?";
+        try (Connection connection = DatabaseConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, productId);
+            try (ResultSet rs = statement.executeQuery()) {
+                rs.next();
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to check product order history", e);
+        }
+    }
+
+    /** Stock level at or below which an active product is flagged on the dashboards. There is
+     *  no per-product minimum-stock column, so this is one shop-wide threshold. */
+    public static final int LOW_STOCK_THRESHOLD = 10;
+
+    /** Active products at or below the threshold, lowest stock first. */
+    public List<Product> findLowStock(int threshold, int limit) {
+        List<Product> result = new ArrayList<>();
+        try (Connection connection = DatabaseConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(
+                     SELECT_WITH_CATEGORY + " WHERE p.active = 1 AND p.stock <= ? ORDER BY p.stock ASC, p.name LIMIT ?")) {
+            statement.setInt(1, threshold);
+            statement.setInt(2, limit);
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    result.add(map(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to load low-stock products", e);
+        }
+        return result;
+    }
+
+    public int countLowStock(int threshold) {
+        String sql = "SELECT COUNT(*) FROM products WHERE active = 1 AND stock <= ?";
+        try (Connection connection = DatabaseConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, threshold);
+            try (ResultSet rs = statement.executeQuery()) {
+                rs.next();
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to count low-stock products", e);
+        }
     }
 
     public int countAll() {
