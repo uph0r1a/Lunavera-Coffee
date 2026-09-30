@@ -28,7 +28,7 @@
               pickOnBounds="true"
               preserveRatio="false">
       <image>
-         <Image url="@../images/LoginBackgroung.png"/>
+         <Image url="@../images/background/LoginBackgroung.png"/>
       </image>
    </ImageView>
 
@@ -60,7 +60,7 @@
                  fitWidth="150"
                  preserveRatio="true">
          <image>
-            <Image url="@../images/LunaveraLogo.png"/>
+            <Image url="@../images/background/LunaveraLogo.png"/>
          </image>
       </ImageView>
 

@@ -1,0 +1,4 @@
+--patch-module
+com.coffeeshop.coffeeshopmanagement=_
+--add-reads
+com.coffeeshop.coffeeshopmanagement=ALL-UNNAMED

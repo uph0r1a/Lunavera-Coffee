@@ -180,7 +180,26 @@ public final class DatabaseConfig {
                 )
                 """);
 
+            statement.execute("""
+                CREATE TABLE IF NOT EXISTS dining_tables (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    table_number INTEGER UNIQUE NOT NULL,
+                    name TEXT NOT NULL,
+                    status TEXT NOT NULL DEFAULT 'EMPTY',
+                    capacity INTEGER DEFAULT 4,
+                    current_order_id INTEGER,
+                    FOREIGN KEY (current_order_id) REFERENCES orders(id)
+                )
+                """);
+
+            try {
+                statement.execute("ALTER TABLE orders ADD COLUMN table_number INTEGER");
+            } catch (SQLException ignored) {
+                // Column already exists
+            }
+
             seedDefaultAdmin(connection);
+            seedDiningTables(connection);
             initialized = true;
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Database initialization failed", e);
@@ -224,5 +243,27 @@ public final class DatabaseConfig {
 
         LOGGER.info("Seeded default admin account (username: admin / password: Admin@123). " +
                 "Change this password after first login.");
+    }
+
+    private static void seedDiningTables(Connection connection) throws SQLException {
+        try (Statement check = connection.createStatement()) {
+            var rs = check.executeQuery("SELECT COUNT(*) FROM dining_tables");
+            rs.next();
+            if (rs.getInt(1) > 0) {
+                return; // already seeded
+            }
+        }
+
+        String insertSql = "INSERT INTO dining_tables (table_number, name, status, capacity) VALUES (?, ?, 'EMPTY', ?)";
+        try (var insert = connection.prepareStatement(insertSql)) {
+            for (int i = 1; i <= 12; i++) {
+                insert.setInt(1, i);
+                insert.setString(2, "Bàn " + i);
+                insert.setInt(3, 4);
+                insert.addBatch();
+            }
+            insert.executeBatch();
+        }
+        LOGGER.info("Seeded 12 dining tables into dining_tables.");
     }
 }

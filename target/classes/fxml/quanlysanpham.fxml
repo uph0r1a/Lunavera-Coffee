@@ -25,7 +25,7 @@
             <VBox alignment="CENTER" prefHeight="150.0">
                 <ImageView fitHeight="100.0" fitWidth="180.0" preserveRatio="true">
                     <image>
-                        <Image url="@../images/LunaveraLogo.png"/>
+                        <Image url="@../images/background/LunaveraLogo.png"/>
                     </image>
                 </ImageView>
             </VBox>
@@ -66,21 +66,12 @@
                         styleClass="menu-button"
                         onAction="#openCategoryManagement"/>
 
-                <Button text="▣   Quản lý kho"
-                        prefHeight="48.0"
-                        maxWidth="1.7976931348623157E308"
-                        styleClass="menu-button"
-                        onAction="#openInventoryManagement"/>
+
             </VBox>
 
             <Separator styleClass="sidebar-separator"/>
 
             <VBox spacing="6.0">
-                <Button text="♙   Quản lý nhân viên"
-                        prefHeight="48.0"
-                        maxWidth="1.7976931348623157E308"
-                        styleClass="menu-button"
-                        onAction="#openEmployeeManagement"/>
 
                 <Button text="♙   Quản lý tài khoản"
                         prefHeight="48.0"
@@ -140,31 +131,7 @@
                        styleClass="profile-icon"/>
             </HBox>
 
-            <!-- ================= CATEGORY TABS ================= -->
 
-            <HBox spacing="8"
-                  styleClass="category-tabs">
-
-                <Button fx:id="allCategoryButton"
-                        text="▦   Tất cả"
-                        onAction="#handleAllCategory"
-                        styleClass="category-button,category-button-active"/>
-
-                <Button fx:id="coffeeCategoryButton"
-                        text="☕   Cà phê"
-                        onAction="#handleCoffeeCategory"
-                        styleClass="category-button"/>
-
-                <Button fx:id="cakeCategoryButton"
-                        text="♨   Bánh ngọt"
-                        onAction="#handleCakeCategory"
-                        styleClass="category-button"/>
-
-                <Button fx:id="juiceCategoryButton"
-                        text="▣   Nước ép"
-                        onAction="#handleJuiceCategory"
-                        styleClass="category-button"/>
-            </HBox>
 
             <!-- ================= PRODUCT AREA ================= -->
 
@@ -174,104 +141,23 @@
 
                 <!-- ================= CATEGORY LIST ================= -->
 
-                <VBox prefWidth="215"
-                      minWidth="215"
-                      maxWidth="215"
+                <VBox prefWidth="230"
+                      minWidth="230"
+                      maxWidth="230"
                       spacing="8"
                       styleClass="category-card">
 
                     <Label text="Danh mục sản phẩm"
                            styleClass="card-title"/>
 
-                    <!-- ALL -->
-
-                    <Button fx:id="allCategoryListButton"
-                            maxWidth="1.7976931348623157E308"
-                            prefHeight="36"
-                            onAction="#handleAllCategory"
-                            styleClass="category-list-button,category-list-active">
-
-                        <graphic>
-                            <HBox alignment="CENTER_LEFT"
-                                  spacing="8">
-
-                                <Label text="▦"/>
-                                <Label text="Tất cả"/>
-                                <Region HBox.hgrow="ALWAYS"/>
-
-                                <Label fx:id="allProductCountLabel"
-                                       text="0"/>
-                            </HBox>
-                        </graphic>
-                    </Button>
-
-                    <!-- COFFEE -->
-
-                    <Button fx:id="coffeeCategoryListButton"
-                            maxWidth="1.7976931348623157E308"
-                            prefHeight="36"
-                            onAction="#handleCoffeeCategory"
-                            styleClass="category-list-button">
-
-                        <graphic>
-                            <HBox alignment="CENTER_LEFT"
-                                  spacing="8">
-
-                                <Label text="☕"/>
-                                <Label text="Cà phê"/>
-                                <Region HBox.hgrow="ALWAYS"/>
-
-                                <Label fx:id="coffeeCountLabel"
-                                       text="0"/>
-                            </HBox>
-                        </graphic>
-                    </Button>
-
-                    <!-- CAKE -->
-
-                    <Button fx:id="cakeCategoryListButton"
-                            maxWidth="1.7976931348623157E308"
-                            prefHeight="36"
-                            onAction="#handleCakeCategory"
-                            styleClass="category-list-button">
-
-                        <graphic>
-                            <HBox alignment="CENTER_LEFT"
-                                  spacing="8">
-
-                                <Label text="♨"/>
-                                <Label text="Bánh ngọt"/>
-                                <Region HBox.hgrow="ALWAYS"/>
-
-                                <Label fx:id="cakeCountLabel"
-                                       text="0"/>
-                            </HBox>
-                        </graphic>
-                    </Button>
-
-                    <!-- JUICE -->
-
-                    <Button fx:id="juiceCategoryListButton"
-                            maxWidth="1.7976931348623157E308"
-                            prefHeight="36"
-                            onAction="#handleJuiceCategory"
-                            styleClass="category-list-button">
-
-                        <graphic>
-                            <HBox alignment="CENTER_LEFT"
-                                  spacing="8">
-
-                                <Label text="▣"/>
-                                <Label text="Nước ép"/>
-                                <Region HBox.hgrow="ALWAYS"/>
-
-                                <Label fx:id="juiceCountLabel"
-                                       text="0"/>
-                            </HBox>
-                        </graphic>
-                    </Button>
-
-                    <Region VBox.vgrow="ALWAYS"/>
+                    <ScrollPane fitToWidth="true"
+                                vbarPolicy="AS_NEEDED"
+                                hbarPolicy="NEVER"
+                                styleClass="category-list-scroll"
+                                VBox.vgrow="ALWAYS">
+                        <VBox fx:id="categoryListContainer"
+                              spacing="6" />
+                    </ScrollPane>
 
                     <Button maxWidth="1.7976931348623157E308"
                             prefHeight="36"

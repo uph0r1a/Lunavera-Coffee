@@ -31,7 +31,7 @@ public class OrderDAO {
 
     public Order insert(Order order, List<OrderItem> items) {
         String orderSql = "INSERT INTO orders (order_date, employee_id, customer_id, status, subtotal, discount, " +
-                "total, payment_method, paid_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "total, payment_method, paid_at, table_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String itemSql = "INSERT INTO order_items (order_id, product_id, product_name, quantity, unit_price, line_total) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection connection = DatabaseConfig.getConnection()) {
@@ -47,6 +47,7 @@ public class OrderDAO {
                 statement.setBigDecimal(7, order.getTotal());
                 statement.setString(8, order.getPaymentMethod() != null ? order.getPaymentMethod().name() : null);
                 statement.setString(9, order.getPaidAt() != null ? order.getPaidAt().toString() : null);
+                setNullableInt(statement, 10, order.getTableNumber());
                 statement.executeUpdate();
                 try (ResultSet keys = statement.getGeneratedKeys()) {
                     keys.next();
@@ -136,6 +137,54 @@ public class OrderDAO {
             throw new DataAccessException("Failed to load recent orders", e);
         }
         return result;
+    }
+
+    /** All orders created today, newest first. */
+    public List<Order> findTodayOrders() {
+        List<Order> result = new ArrayList<>();
+        String sql = "SELECT * FROM orders WHERE DATE(order_date) = DATE('now', 'localtime') ORDER BY id DESC";
+        try (Connection connection = DatabaseConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet rs = statement.executeQuery()) {
+            while (rs.next()) {
+                result.add(map(rs));
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to load today's orders", e);
+        }
+        return result;
+    }
+
+    /** Find open order for a table if exists. */
+    public Optional<Order> findOpenOrderByTable(int tableNumber) {
+        String sql = "SELECT * FROM orders WHERE table_number = ? AND status = 'OPEN' ORDER BY id DESC LIMIT 1";
+        try (Connection connection = DatabaseConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, tableNumber);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(map(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to load open order for table " + tableNumber, e);
+        }
+        return Optional.empty();
+    }
+
+    /** Returns the next order id (1 if empty, or max(id) + 1). */
+    public int getNextOrderId() {
+        String sql = "SELECT COALESCE(MAX(id), 0) + 1 FROM orders";
+        try (Connection connection = DatabaseConfig.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet rs = statement.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+            return 1;
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to get next order id", e);
+        }
     }
 
     /** An order plus the display names the history screen needs (avoids N+1 lookups per row). */
@@ -361,6 +410,11 @@ public class OrderDAO {
         order.setPaymentMethod(PaymentMethod.fromDb(rs.getString("payment_method")));
         String paidAt = rs.getString("paid_at");
         order.setPaidAt(paidAt != null ? LocalDateTime.parse(paidAt) : null);
+        try {
+            int tableNumber = rs.getInt("table_number");
+            order.setTableNumber(rs.wasNull() ? null : tableNumber);
+        } catch (SQLException ignored) {
+        }
         return order;
     }
 }

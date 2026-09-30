@@ -36,7 +36,7 @@
             <VBox alignment="CENTER" prefHeight="150.0">
                 <ImageView fitHeight="100.0" fitWidth="180.0" preserveRatio="true">
                     <image>
-                        <Image url="@../images/LunaveraLogo.png"/>
+                        <Image url="@../images/background/LunaveraLogo.png"/>
                     </image>
                 </ImageView>
             </VBox>
@@ -77,21 +77,12 @@
                         styleClass="menu-button"
                         onAction="#openCategoryManagement"/>
 
-                <Button text="▣   Quản lý kho"
-                        prefHeight="48.0"
-                        maxWidth="1.7976931348623157E308"
-                        styleClass="menu-button"
-                        onAction="#openInventoryManagement"/>
+
             </VBox>
 
             <Separator styleClass="sidebar-separator"/>
 
             <VBox spacing="6.0">
-                <Button text="♙   Quản lý nhân viên"
-                        prefHeight="48.0"
-                        maxWidth="1.7976931348623157E308"
-                        styleClass="menu-button"
-                        onAction="#openEmployeeManagement"/>
 
                 <Button text="♙   Quản lý tài khoản"
                         prefHeight="48.0"

@@ -58,28 +58,28 @@
 
         <Label styleClass="invoice-label" text="Mã đơn:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
 
-        <Label fx:id="invoiceIdLabel" styleClass="invoice-value" text="#DH000124" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+        <Label fx:id="invoiceIdLabel" styleClass="invoice-value" text="" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
 
         <!-- BÀN -->
 
         <Label styleClass="invoice-label" text="Nhân viên:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
 
-        <Label fx:id="tableLabel" styleClass="invoice-value" text="Bàn 2" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <Label fx:id="tableLabel" styleClass="invoice-value" text="" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
 
         <!-- KHÁCH HÀNG -->
 
         <Label styleClass="invoice-label" text="Khách hàng:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
 
-        <Label fx:id="customerLabel" styleClass="invoice-value" text="Khách lẻ" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+        <Label fx:id="customerLabel" styleClass="invoice-value" text="" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
 
         <!-- THỜI GIAN -->
 
         <Label styleClass="invoice-label" text="Thời gian:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
 
-        <Label fx:id="orderTimeLabel" styleClass="invoice-value" text="26/09/2026 17:25" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+        <Label fx:id="orderTimeLabel" styleClass="invoice-value" text="" GridPane.columnIndex="1" GridPane.rowIndex="3" />
       <rowConstraints>
          <RowConstraints />
          <RowConstraints />
@@ -136,7 +136,7 @@
 
             <Label styleClass="total-label" text="Tạm tính" HBox.hgrow="ALWAYS" />
 
-            <Label fx:id="subtotalLabel" styleClass="total-value" text="150.000 đ" />
+            <Label fx:id="subtotalLabel" styleClass="total-value" text="0 đ" />
 
         </HBox>
 
@@ -157,7 +157,7 @@
 
             <Label styleClass="grand-total-label" text="TỔNG TIỀN" HBox.hgrow="ALWAYS" />
 
-            <Label fx:id="totalLabel" styleClass="grand-total-value" text="150.000 đ" />
+            <Label fx:id="totalLabel" styleClass="grand-total-value" text="0 đ" />
 
         </HBox>
 
@@ -172,7 +172,7 @@
 
         <Label styleClass="invoice-label" text="Thanh toán:" />
 
-        <Label fx:id="paymentMethodLabel" styleClass="payment-method" text="Tiền mặt" />
+        <Label fx:id="paymentMethodLabel" styleClass="payment-method" text="" />
 
     </HBox>
 
@@ -183,20 +183,24 @@
 
     <VBox alignment="CENTER" spacing="6.0" styleClass="qr-section">
 
-        <Label styleClass="qr-title" text="Mã QR hóa đơn" />
+        <Label styleClass="qr-title" text="Mã QR thanh toán" />
 
+        <StackPane fx:id="qrContainer" prefHeight="150.0" prefWidth="150.0" maxWidth="150.0" styleClass="qr-container" onMouseClicked="#handleUploadQr">
 
-        <StackPane prefHeight="145.0" prefWidth="145.0" styleClass="qr-container">
+            <ImageView fx:id="qrCodeImage" fitHeight="138.0" fitWidth="138.0" preserveRatio="true" />
 
-            <ImageView fx:id="qrCodeImage" fitHeight="135.0" fitWidth="135.0" preserveRatio="true" />
+            <VBox fx:id="qrPlaceholderBox" alignment="CENTER" spacing="4.0" styleClass="qr-placeholder-box" prefHeight="138.0" prefWidth="138.0">
+                <Label text="⤓" styleClass="qr-placeholder-icon" />
+                <Label text="Thêm ảnh mã QR" styleClass="qr-placeholder-text" />
+            </VBox>
 
         </StackPane>
 
+        <Button fx:id="uploadQrButton" text="📷 Thêm / Đổi ảnh QR" styleClass="qr-upload-button" onAction="#handleUploadQr" />
 
-        <Label fx:id="qrOrderIdLabel" styleClass="qr-order-id" text="DH000124" />
+        <Label fx:id="qrOrderIdLabel" styleClass="qr-order-id" text="" />
 
-
-        <Label styleClass="qr-subtitle" text="Quét QR để xem hóa đơn" />
+        <Label styleClass="qr-subtitle" text="Quét QR để thanh toán hoặc xem hóa đơn" />
 
     </VBox>
 
