@@ -81,6 +81,22 @@ public class CustomerDAO {
         return Optional.empty();
     }
 
+    public Optional<Customer> findByPhone(String phone) {
+        String sql = "SELECT * FROM customers WHERE phone = ? LIMIT 1";
+        try (Connection connection = DatabaseConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, phone);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(map(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to load customer by phone", e);
+        }
+        return Optional.empty();
+    }
+
     public List<Customer> findAll() {
         String sql = "SELECT * FROM customers ORDER BY id";
         List<Customer> result = new ArrayList<>();

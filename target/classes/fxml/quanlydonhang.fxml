@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -11,6 +12,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
@@ -42,7 +44,7 @@
             <VBox alignment="CENTER" prefHeight="150.0">
                 <ImageView fitHeight="100.0" fitWidth="180.0" preserveRatio="true">
                     <image>
-                        <Image url="@../images/LunaveraLogo.png"/>
+                        <Image url="@../images/background/LunaveraLogo.png"/>
                     </image>
                 </ImageView>
             </VBox>
@@ -85,22 +87,13 @@
                         styleClass="menu-button"
                         onAction="#openCategoryManagement"/>
 
-                <Button text="▣   Quản lý kho"
-                        prefHeight="48.0"
-                        maxWidth="1.7976931348623157E308"
-                        styleClass="menu-button"
-                        onAction="#openInventoryManagement"/>
+
             </VBox>
 
             <Separator styleClass="sidebar-separator"/>
 
             <!-- MENU 3 -->
             <VBox spacing="6.0">
-                <Button text="♙   Quản lý nhân viên"
-                        prefHeight="48.0"
-                        maxWidth="1.7976931348623157E308"
-                        styleClass="menu-button"
-                        onAction="#openEmployeeManagement"/>
 
                 <Button text="♙   Quản lý tài khoản"
                         prefHeight="48.0"
@@ -163,55 +156,50 @@
                     <Label fx:id="adminNameLabel" text="Admin" styleClass="admin-name"/>
                     <Label fx:id="adminRoleLabel" text="Quản trị viên" styleClass="admin-role"/>
                 </VBox>
-
-                <Label text="◎" styleClass="profile-icon"/>
+                <Label text="◎" styleClass="profile-avatar"/>
             </HBox>
 
+            <HBox spacing="14.0" VBox.vgrow="ALWAYS">
 
-            <!-- ================= MAIN LAYOUT ================= -->
-            <HBox spacing="18.0" VBox.vgrow="ALWAYS">
-
-                <!-- ================= LEFT: SƠ ĐỒ BÀN ================= -->
-                <VBox prefWidth="730.0"
-                      spacing="14.0"
-                      HBox.hgrow="ALWAYS"
+                <!-- ================= COL 1: SƠ ĐỒ BÀN ================= -->
+                <VBox prefWidth="310.0"
+                      minWidth="290.0"
+                      maxWidth="330.0"
+                      spacing="10.0"
                       styleClass="content-card">
                     <padding>
-                        <Insets top="18.0" right="20.0" bottom="18.0" left="20.0"/>
+                        <Insets top="12.0" right="12.0" bottom="12.0" left="12.0"/>
                     </padding>
 
                     <!-- TABLE HEADER -->
-                    <HBox alignment="CENTER_LEFT" spacing="12.0">
+                    <HBox alignment="CENTER_LEFT" spacing="8.0">
                         <VBox spacing="2.0" HBox.hgrow="ALWAYS">
                             <Label text="Sơ đồ bàn phục vụ" styleClass="section-title"/>
-                            <Label text="Chọn bàn để tạo mới hoặc xem đơn hàng đang phục vụ"
-                                   styleClass="section-subtitle"/>
+                            <Label text="Chọn bàn để đặt hoặc xem đơn" styleClass="section-subtitle"/>
                         </VBox>
 
                         <!-- STATUS LEGENDS -->
-                        <HBox spacing="16.0" alignment="CENTER">
-                            <HBox spacing="6.0" alignment="CENTER">
+                        <HBox spacing="8.0" alignment="CENTER">
+                            <HBox spacing="4.0" alignment="CENTER">
                                 <Label text="●" styleClass="status-dot-occupied"/>
-                                <Label text="Đang có đơn" styleClass="status-legend-text"/>
+                                <Label text="Có đơn" styleClass="status-legend-text"/>
                             </HBox>
-
-                            <HBox spacing="6.0" alignment="CENTER">
+                            <HBox spacing="4.0" alignment="CENTER">
                                 <Label text="●" styleClass="status-dot-empty"/>
-                                <Label text="Còn trống" styleClass="status-legend-text"/>
+                                <Label text="Trống" styleClass="status-legend-text"/>
                             </HBox>
                         </HBox>
                     </HBox>
 
-                    <!-- TABLE GRID (4x4) -->
+                    <!-- TABLE GRID (3x4 = 12 BÀN) -->
                     <GridPane fx:id="tableGrid"
-                              hgap="12.0"
-                              vgap="12.0"
+                              hgap="8.0"
+                              vgap="8.0"
                               VBox.vgrow="ALWAYS">
                         <columnConstraints>
-                            <ColumnConstraints percentWidth="25.0" hgrow="ALWAYS"/>
-                            <ColumnConstraints percentWidth="25.0" hgrow="ALWAYS"/>
-                            <ColumnConstraints percentWidth="25.0" hgrow="ALWAYS"/>
-                            <ColumnConstraints percentWidth="25.0" hgrow="ALWAYS"/>
+                            <ColumnConstraints percentWidth="33.333" hgrow="ALWAYS"/>
+                            <ColumnConstraints percentWidth="33.333" hgrow="ALWAYS"/>
+                            <ColumnConstraints percentWidth="33.333" hgrow="ALWAYS"/>
                         </columnConstraints>
                         <rowConstraints>
                             <RowConstraints percentHeight="25.0" vgrow="ALWAYS"/>
@@ -223,45 +211,45 @@
                         <!-- ROW 1 -->
                         <Button fx:id="table1Button"
                                 onAction="#handleTableClick"
-                                text="☕  Bàn 1&#10;Đang có đơn"
+                                text="☕  Bàn 1&#10;Trống"
                                 GridPane.columnIndex="0"
-                                GridPane.rowIndex="0"
-                                maxWidth="1.7976931348623157E308"
-                                maxHeight="1.7976931348623157E308"
-                                styleClass="table-button-occupied"/>
-
-                        <Button fx:id="table2Button"
-                                onAction="#handleTableClick"
-                                text="☕  Bàn 2&#10;Còn trống"
-                                GridPane.columnIndex="1"
                                 GridPane.rowIndex="0"
                                 maxWidth="1.7976931348623157E308"
                                 maxHeight="1.7976931348623157E308"
                                 styleClass="table-button-empty,table-button-selected"/>
 
-                        <Button fx:id="table3Button"
+                        <Button fx:id="table2Button"
                                 onAction="#handleTableClick"
-                                text="☕  Bàn 3&#10;Đang có đơn"
-                                GridPane.columnIndex="2"
+                                text="☕  Bàn 2&#10;Trống"
+                                GridPane.columnIndex="1"
                                 GridPane.rowIndex="0"
                                 maxWidth="1.7976931348623157E308"
                                 maxHeight="1.7976931348623157E308"
-                                styleClass="table-button-occupied"/>
+                                styleClass="table-button-empty"/>
 
-                        <Button fx:id="table4Button"
+                        <Button fx:id="table3Button"
                                 onAction="#handleTableClick"
-                                text="☕  Bàn 4&#10;Còn trống"
-                                GridPane.columnIndex="3"
+                                text="☕  Bàn 3&#10;Trống"
+                                GridPane.columnIndex="2"
                                 GridPane.rowIndex="0"
                                 maxWidth="1.7976931348623157E308"
                                 maxHeight="1.7976931348623157E308"
                                 styleClass="table-button-empty"/>
 
                         <!-- ROW 2 -->
+                        <Button fx:id="table4Button"
+                                onAction="#handleTableClick"
+                                text="☕  Bàn 4&#10;Trống"
+                                GridPane.columnIndex="0"
+                                GridPane.rowIndex="1"
+                                maxWidth="1.7976931348623157E308"
+                                maxHeight="1.7976931348623157E308"
+                                styleClass="table-button-empty"/>
+
                         <Button fx:id="table5Button"
                                 onAction="#handleTableClick"
-                                text="☕  Bàn 5&#10;Còn trống"
-                                GridPane.columnIndex="0"
+                                text="☕  Bàn 5&#10;Trống"
+                                GridPane.columnIndex="1"
                                 GridPane.rowIndex="1"
                                 maxWidth="1.7976931348623157E308"
                                 maxHeight="1.7976931348623157E308"
@@ -269,100 +257,64 @@
 
                         <Button fx:id="table6Button"
                                 onAction="#handleTableClick"
-                                text="☕  Bàn 6&#10;Đang có đơn"
-                                GridPane.columnIndex="1"
+                                text="☕  Bàn 6&#10;Trống"
+                                GridPane.columnIndex="2"
                                 GridPane.rowIndex="1"
                                 maxWidth="1.7976931348623157E308"
                                 maxHeight="1.7976931348623157E308"
-                                styleClass="table-button-occupied"/>
+                                styleClass="table-button-empty"/>
 
+                        <!-- ROW 3 -->
                         <Button fx:id="table7Button"
                                 onAction="#handleTableClick"
-                                text="☕  Bàn 7&#10;Còn trống"
-                                GridPane.columnIndex="2"
-                                GridPane.rowIndex="1"
+                                text="☕  Bàn 7&#10;Trống"
+                                GridPane.columnIndex="0"
+                                GridPane.rowIndex="2"
                                 maxWidth="1.7976931348623157E308"
                                 maxHeight="1.7976931348623157E308"
                                 styleClass="table-button-empty"/>
 
                         <Button fx:id="table8Button"
                                 onAction="#handleTableClick"
-                                text="☕  Bàn 8&#10;Đang có đơn"
-                                GridPane.columnIndex="3"
-                                GridPane.rowIndex="1"
-                                maxWidth="1.7976931348623157E308"
-                                maxHeight="1.7976931348623157E308"
-                                styleClass="table-button-occupied"/>
-
-                        <!-- ROW 3 -->
-                        <Button fx:id="table9Button"
-                                onAction="#handleTableClick"
-                                text="☕  Bàn 9&#10;Còn trống"
-                                GridPane.columnIndex="0"
-                                GridPane.rowIndex="2"
-                                maxWidth="1.7976931348623157E308"
-                                maxHeight="1.7976931348623157E308"
-                                styleClass="table-button-empty"/>
-
-                        <Button fx:id="table10Button"
-                                onAction="#handleTableClick"
-                                text="☕  Bàn 10&#10;Còn trống"
+                                text="☕  Bàn 8&#10;Trống"
                                 GridPane.columnIndex="1"
                                 GridPane.rowIndex="2"
                                 maxWidth="1.7976931348623157E308"
                                 maxHeight="1.7976931348623157E308"
                                 styleClass="table-button-empty"/>
 
-                        <Button fx:id="table11Button"
+                        <Button fx:id="table9Button"
                                 onAction="#handleTableClick"
-                                text="☕  Bàn 11&#10;Đang có đơn"
+                                text="☕  Bàn 9&#10;Trống"
                                 GridPane.columnIndex="2"
-                                GridPane.rowIndex="2"
-                                maxWidth="1.7976931348623157E308"
-                                maxHeight="1.7976931348623157E308"
-                                styleClass="table-button-occupied"/>
-
-                        <Button fx:id="table12Button"
-                                onAction="#handleTableClick"
-                                text="☕  Bàn 12&#10;Còn trống"
-                                GridPane.columnIndex="3"
                                 GridPane.rowIndex="2"
                                 maxWidth="1.7976931348623157E308"
                                 maxHeight="1.7976931348623157E308"
                                 styleClass="table-button-empty"/>
 
                         <!-- ROW 4 -->
-                        <Button fx:id="table13Button"
+                        <Button fx:id="table10Button"
                                 onAction="#handleTableClick"
-                                text="☕  Bàn 13&#10;Còn trống"
+                                text="☕  Bàn 10&#10;Trống"
                                 GridPane.columnIndex="0"
                                 GridPane.rowIndex="3"
                                 maxWidth="1.7976931348623157E308"
                                 maxHeight="1.7976931348623157E308"
                                 styleClass="table-button-empty"/>
 
-                        <Button fx:id="table14Button"
+                        <Button fx:id="table11Button"
                                 onAction="#handleTableClick"
-                                text="☕  Bàn 14&#10;Đang có đơn"
+                                text="☕  Bàn 11&#10;Trống"
                                 GridPane.columnIndex="1"
-                                GridPane.rowIndex="3"
-                                maxWidth="1.7976931348623157E308"
-                                maxHeight="1.7976931348623157E308"
-                                styleClass="table-button-occupied"/>
-
-                        <Button fx:id="table15Button"
-                                onAction="#handleTableClick"
-                                text="☕  Bàn 15&#10;Còn trống"
-                                GridPane.columnIndex="2"
                                 GridPane.rowIndex="3"
                                 maxWidth="1.7976931348623157E308"
                                 maxHeight="1.7976931348623157E308"
                                 styleClass="table-button-empty"/>
 
-                        <Button fx:id="table16Button"
+                        <Button fx:id="table12Button"
                                 onAction="#handleTableClick"
-                                text="☕  Bàn 16&#10;Còn trống"
-                                GridPane.columnIndex="3"
+                                text="☕  Bàn 12&#10;Trống"
+                                GridPane.columnIndex="2"
                                 GridPane.rowIndex="3"
                                 maxWidth="1.7976931348623157E308"
                                 maxHeight="1.7976931348623157E308"
@@ -371,133 +323,202 @@
 
                     <!-- SELECTED TABLE ACTION BAR -->
                     <HBox alignment="CENTER_LEFT"
-                          spacing="16.0"
+                          spacing="8.0"
                           styleClass="selected-table">
                         <padding>
-                            <Insets top="12.0" right="16.0" bottom="12.0" left="16.0"/>
+                            <Insets top="8.0" right="10.0" bottom="8.0" left="10.0"/>
                         </padding>
 
-                        <VBox spacing="4.0" HBox.hgrow="ALWAYS">
-                            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <VBox spacing="2.0" HBox.hgrow="ALWAYS">
+                            <HBox alignment="CENTER_LEFT" spacing="6.0">
                                 <Label fx:id="selectedTableLabel"
-                                       text="Bàn 2"
+                                       text="Bàn 1"
                                        styleClass="selected-table-title"/>
                                 <Label fx:id="selectedTableStatusLabel"
-                                       text="Đang trống"
+                                       text="Trống"
                                        styleClass="empty-badge"/>
                             </HBox>
                             <Label fx:id="selectedTableCapacityLabel"
-                                   text="Sức chứa: 4 người   •   Khu vực: Tầng 1"
+                                   text="4 người • Tầng 1"
                                    styleClass="selected-table-info"/>
                         </VBox>
 
-                        <HBox spacing="10.0" alignment="CENTER_RIGHT">
-                            <Button fx:id="startOrderButton"
-                                    text="▶  Bắt đầu đặt đơn"
-                                    prefHeight="38.0"
-                                    onAction="#handleStartOrder"
-                                    styleClass="primary-button"/>
-
-                            <Button fx:id="tableDetailButton"
-                                    text="Xem chi tiết bàn"
-                                    prefHeight="38.0"
-                                    onAction="#handleTableDetail"
-                                    styleClass="secondary-button"/>
-                        </HBox>
+                        <Button fx:id="startOrderButton"
+                                text="▶ Đặt đơn"
+                                prefHeight="32.0"
+                                onAction="#handleStartOrder"
+                                styleClass="primary-button"/>
                     </HBox>
                 </VBox>
 
 
-                <!-- ================= RIGHT: ĐƠN HÀNG HIỆN TẠI ================= -->
-                <VBox prefWidth="534.0"
-                      spacing="14.0"
+                <!-- ================= COL 2: THỰC ĐƠN CHỌN MÓN (LEFT & RIGHT) ================= -->
+                <VBox prefWidth="540.0"
+                      spacing="10.0"
                       HBox.hgrow="ALWAYS"
                       styleClass="content-card">
                     <padding>
-                        <Insets top="18.0" right="20.0" bottom="18.0" left="20.0"/>
+                        <Insets top="12.0" right="12.0" bottom="12.0" left="12.0"/>
+                    </padding>
+
+                    <!-- HEADER THỰC ĐƠN: TIÊU ĐỀ & TÌM KIẾM MÓN NHANH -->
+                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <VBox spacing="2.0" HBox.hgrow="ALWAYS">
+                            <Label text="Thực đơn món" styleClass="section-title"/>
+                            <Label text="Click dấu [+] để thêm món vào đơn hàng" styleClass="section-subtitle"/>
+                        </VBox>
+                        <TextField fx:id="posProductSearchField"
+                                   promptText="Tìm món nhanh..."
+                                   prefWidth="160.0"
+                                   prefHeight="32.0"
+                                   styleClass="search-field"/>
+                    </HBox>
+
+                    <!-- VÙNG CHỌN MÓN: CHIA LEFT (DANH MỤC - BÉ HƠN) & RIGHT (SẢN PHẨM - RỘNG HƠN) -->
+                    <HBox spacing="10.0" VBox.vgrow="ALWAYS">
+                        <!-- LEFT: DANH SÁCH DANH MỤC (BÉ HƠN) -->
+                        <VBox prefWidth="125.0"
+                              minWidth="115.0"
+                              maxWidth="135.0"
+                              spacing="6.0">
+                            <Label text="Danh mục" styleClass="section-subtitle-bold"/>
+                            <ScrollPane fitToWidth="true"
+                                        vbarPolicy="AS_NEEDED"
+                                        hbarPolicy="NEVER"
+                                        styleClass="category-list-scroll"
+                                        VBox.vgrow="ALWAYS">
+                                <VBox fx:id="posCategoryContainer"
+                                      spacing="4.0"/>
+                            </ScrollPane>
+                        </VBox>
+
+                        <Separator orientation="VERTICAL"/>
+
+                        <!-- RIGHT: DANH SÁCH SẢN PHẨM (RỘNG HƠN) -->
+                        <VBox spacing="6.0" HBox.hgrow="ALWAYS">
+                            <HBox alignment="CENTER_LEFT" spacing="6.0">
+                                <Label fx:id="posCategoryTitleLabel" text="Tất cả món" styleClass="section-subtitle-bold"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Label fx:id="posProductCountLabel" text="0 món" styleClass="info-sublabel"/>
+                            </HBox>
+                            <ScrollPane fitToWidth="true"
+                                        vbarPolicy="AS_NEEDED"
+                                        hbarPolicy="NEVER"
+                                        styleClass="product-cards-scroll"
+                                        VBox.vgrow="ALWAYS">
+                                <FlowPane fx:id="posProductFlowPane"
+                                          hgap="8.0"
+                                          vgap="8.0"
+                                          prefWrapLength="360.0"/>
+                            </ScrollPane>
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+
+                <!-- ================= COL 3: ĐƠN HÀNG HIỆN TẠI (GIỎ HÀNG) ================= -->
+                <VBox prefWidth="420.0"
+                      minWidth="400.0"
+                      maxWidth="440.0"
+                      spacing="10.0"
+                      styleClass="content-card">
+                    <padding>
+                        <Insets top="12.0" right="14.0" bottom="12.0" left="14.0"/>
                     </padding>
 
                     <!-- ORDER HEADER -->
-                    <HBox alignment="CENTER_LEFT" spacing="10.0">
-                        <VBox spacing="2.0" HBox.hgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT" spacing="8.0">
+                        <VBox spacing="1.0" HBox.hgrow="ALWAYS">
                             <Label text="Đơn hàng hiện tại" styleClass="section-title"/>
-                            <Label text="Thông tin chi tiết đơn hàng của bàn đang chọn"
-                                   styleClass="section-subtitle"/>
+                            <Label text="Chi tiết đơn của bàn đang chọn" styleClass="section-subtitle"/>
                         </VBox>
-
-                        <Label fx:id="orderStatusLabel"
-                               text="Đang phục vụ"
-                               styleClass="order-status-badge"/>
+                        <Label fx:id="orderStatusLabel" text="Đang phục vụ" styleClass="order-status-badge"/>
                     </HBox>
 
-                    <!-- ORDER INFO METRICS -->
-                    <GridPane hgap="16.0"
-                              vgap="8.0"
+                    <!-- ORDER INFO METRICS & CUSTOMER INPUT -->
+                    <GridPane hgap="8.0"
+                              vgap="6.0"
                               styleClass="order-info-card">
                         <padding>
-                            <Insets top="12.0" right="14.0" bottom="12.0" left="14.0"/>
+                            <Insets top="8.0" right="10.0" bottom="8.0" left="10.0"/>
                         </padding>
                         <columnConstraints>
-                            <ColumnConstraints percentWidth="50.0" hgrow="ALWAYS"/>
-                            <ColumnConstraints percentWidth="50.0" hgrow="ALWAYS"/>
+                            <ColumnConstraints percentWidth="25.0" hgrow="ALWAYS"/>
+                            <ColumnConstraints percentWidth="38.0" hgrow="ALWAYS"/>
+                            <ColumnConstraints percentWidth="37.0" hgrow="ALWAYS"/>
                         </columnConstraints>
 
-                        <!-- Cell 1: Mã đơn -->
-                        <VBox spacing="2.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                            <Label text="Mã đơn hàng" styleClass="info-label"/>
-                            <Label fx:id="orderIdLabel" text="#DH000124" styleClass="info-value"/>
+                        <!-- Row 0: Mã đơn hàng -->
+                        <VBox spacing="1.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <Label text="Mã đơn" styleClass="info-label"/>
+                            <Label fx:id="orderIdLabel" text="#1" styleClass="info-value"/>
                         </VBox>
 
-                        <!-- Cell 2: Khách hàng -->
-                        <VBox spacing="2.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                            <Label text="Khách hàng" styleClass="info-label"/>
-                            <Label fx:id="customerLabel" text="Khách vãng lai" styleClass="info-value"/>
-                        </VBox>
-
-                        <!-- Cell 3: Bàn -->
-                        <VBox spacing="2.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                        <!-- Row 0: Vị trí phục vụ -->
+                        <VBox spacing="1.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
                             <Label text="Vị trí phục vụ" styleClass="info-label"/>
-                            <Label fx:id="orderTableLabel" text="Bàn 2 (Tầng 1)" styleClass="info-value"/>
+                            <Label fx:id="orderTableLabel" text="Bàn 1 (Tầng 1)" styleClass="info-value"/>
                         </VBox>
 
-                        <!-- Cell 4: Giờ tạo -->
-                        <VBox spacing="2.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <!-- Row 0: Thời gian tạo đơn -->
+                        <VBox spacing="1.0" GridPane.columnIndex="2" GridPane.rowIndex="0">
                             <Label text="Thời gian tạo đơn" styleClass="info-label"/>
-                            <Label fx:id="orderTimeLabel" text="23/09/2026 17:08" styleClass="info-value"/>
+                            <Label fx:id="orderTimeLabel" text="" styleClass="info-value"/>
+                        </VBox>
+
+                        <!-- Row 1: Khách hàng - Số điện thoại -->
+                        <VBox spacing="2.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <Label text="SĐT khách" styleClass="info-label"/>
+                            <TextField fx:id="customerPhoneField"
+                                       promptText="Nhập SĐT..."
+                                       prefHeight="30.0"
+                                       styleClass="customer-input-field"/>
+                        </VBox>
+
+                        <!-- Row 1: Khách hàng - Tên khách hàng (Spans cols 1 and 2) -->
+                        <VBox spacing="2.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
+                            <HBox alignment="CENTER_LEFT" spacing="6.0">
+                                <Label text="Tên khách hàng" styleClass="info-label"/>
+                                <Label text="(Để trống nếu là Khách vãng lai)" styleClass="info-sublabel"/>
+                            </HBox>
+                            <TextField fx:id="customerNameField"
+                                       promptText="Nhập tên khách hàng..."
+                                       prefHeight="30.0"
+                                       styleClass="customer-input-field"/>
                         </VBox>
                     </GridPane>
 
                     <!-- ORDER DETAIL TABLE -->
-                    <VBox spacing="6.0" VBox.vgrow="ALWAYS">
+                    <VBox spacing="4.0" VBox.vgrow="ALWAYS">
                         <Label text="Danh sách món gọi" styleClass="section-subtitle-bold"/>
 
                         <TableView fx:id="orderDetailTable"
-                                   prefHeight="290.0"
+                                   prefHeight="260.0"
                                    VBox.vgrow="ALWAYS"
                                    styleClass="order-detail-table">
                             <columns>
                                 <TableColumn fx:id="detailIndexColumn"
                                              text="STT"
-                                             prefWidth="48.0"
+                                             prefWidth="40.0"
                                              style="-fx-alignment: CENTER;"/>
 
                                 <TableColumn fx:id="productNameColumn"
                                              text="Tên món"
-                                             prefWidth="175.0"/>
+                                             prefWidth="140.0"/>
 
                                 <TableColumn fx:id="quantityColumn"
                                              text="SL"
-                                             prefWidth="60.0"
+                                             prefWidth="75.0"
                                              style="-fx-alignment: CENTER;"/>
 
                                 <TableColumn fx:id="unitPriceColumn"
                                              text="Đơn giá"
-                                             prefWidth="105.0"
+                                             prefWidth="65.0"
                                              style="-fx-alignment: CENTER-RIGHT;"/>
 
                                 <TableColumn fx:id="subtotalColumn"
                                              text="Thành tiền"
-                                             prefWidth="115.0"
+                                             prefWidth="75.0"
                                              style="-fx-alignment: CENTER-RIGHT;"/>
                             </columns>
 
@@ -507,30 +528,14 @@
                         </TableView>
                     </VBox>
 
-                    <!-- ADD PRODUCT QUICK BAR -->
-                    <HBox spacing="10.0" alignment="CENTER_LEFT">
-                        <TextField fx:id="productSearchField"
-                                   promptText="Tìm món nhanh (tên hoặc mã sản phẩm)..."
-                                   prefHeight="38.0"
-                                   onAction="#handleAddProductToCart"
-                                   HBox.hgrow="ALWAYS"
-                                   styleClass="search-field"/>
-
-                        <Button fx:id="addProductButton"
-                                text="⊕  Thêm món"
-                                prefHeight="38.0"
-                                onAction="#handleAddProductToCart"
-                                styleClass="primary-button"/>
-                    </HBox>
-
                     <!-- TOTAL CARD -->
                     <HBox alignment="CENTER_LEFT"
                           styleClass="total-card">
                         <padding>
-                            <Insets top="12.0" right="16.0" bottom="12.0" left="16.0"/>
+                            <Insets top="10.0" right="12.0" bottom="10.0" left="12.0"/>
                         </padding>
 
-                        <VBox spacing="2.0">
+                        <VBox spacing="1.0">
                             <Label text="TỔNG TIỀN THANH TOÁN" styleClass="total-label"/>
                             <Label text="Đã bao gồm VAT &amp; phí dịch vụ" styleClass="total-subtext"/>
                         </VBox>
@@ -538,23 +543,15 @@
                         <Region HBox.hgrow="ALWAYS"/>
 
                         <Label fx:id="totalAmountLabel"
-                               text="215.000 đ"
+                               text="0 đ"
                                styleClass="total-value"/>
                     </HBox>
 
                     <!-- ACTION BUTTONS -->
-                    <HBox spacing="10.0" prefHeight="42.0">
-                        <Button fx:id="printOrderButton"
-                                text="▣  In hóa đơn"
-                                prefHeight="42.0"
-                                maxWidth="1.7976931348623157E308"
-                                HBox.hgrow="ALWAYS"
-                                onAction="#handlePrintInvoice"
-                                styleClass="secondary-button"/>
-
+                    <HBox spacing="8.0" prefHeight="40.0">
                         <Button fx:id="editOrderButton"
                                 text="✎  Chỉnh sửa"
-                                prefHeight="42.0"
+                                prefHeight="40.0"
                                 maxWidth="1.7976931348623157E308"
                                 HBox.hgrow="ALWAYS"
                                 onAction="#handleEditOrder"
@@ -562,7 +559,7 @@
 
                         <Button fx:id="paymentButton"
                                 text="✓  Thanh toán"
-                                prefHeight="42.0"
+                                prefHeight="40.0"
                                 maxWidth="1.7976931348623157E308"
                                 HBox.hgrow="ALWAYS"
                                 onAction="#handlePayment"

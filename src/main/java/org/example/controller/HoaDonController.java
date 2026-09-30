@@ -13,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -61,11 +62,19 @@ public class HoaDonController {
     @FXML
     private ImageView qrCodeImage;
     @FXML
+    private StackPane qrContainer;
+    @FXML
+    private VBox qrPlaceholderBox;
+    @FXML
+    private Button uploadQrButton;
+    @FXML
     private Label qrOrderIdLabel;
     @FXML
     private Button printButton;
     @FXML
     private Button closeButton;
+
+    private static final String QR_IMAGE_PATH = System.getProperty("user.home") + java.io.File.separator + ".coffeeshop_qr.png";
 
     @FXML
     private void initialize() {
@@ -77,6 +86,55 @@ public class HoaDonController {
                 new javafx.beans.property.SimpleStringProperty(CurrencyUtil.format(data.getValue().getUnitPrice())));
         subtotalColumn.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(CurrencyUtil.format(data.getValue().getLineTotal())));
+
+        loadSavedQrImage();
+    }
+
+    private void loadSavedQrImage() {
+        java.io.File file = new java.io.File(QR_IMAGE_PATH);
+        if (file.exists() && file.isFile()) {
+            try {
+                javafx.scene.image.Image img = new javafx.scene.image.Image(file.toURI().toString());
+                qrCodeImage.setImage(img);
+                if (qrPlaceholderBox != null) {
+                    qrPlaceholderBox.setVisible(false);
+                    qrPlaceholderBox.setManaged(false);
+                }
+            } catch (Exception ignored) {
+            }
+        } else {
+            if (qrPlaceholderBox != null) {
+                qrPlaceholderBox.setVisible(true);
+                qrPlaceholderBox.setManaged(true);
+            }
+        }
+    }
+
+    @FXML
+    public void handleUploadQr() {
+        javafx.stage.FileChooser chooser = new javafx.stage.FileChooser();
+        chooser.setTitle("Chọn ảnh mã QR thanh toán");
+        chooser.getExtensionFilters().add(
+                new javafx.stage.FileChooser.ExtensionFilter("Ảnh mã QR (*.png, *.jpg, *.jpeg)", "*.png", "*.jpg", "*.jpeg")
+        );
+        Stage stage = invoiceRoot != null && invoiceRoot.getScene() != null
+                ? (Stage) invoiceRoot.getScene().getWindow() : null;
+        java.io.File selected = chooser.showOpenDialog(stage);
+        if (selected != null) {
+            try {
+                java.io.File target = new java.io.File(QR_IMAGE_PATH);
+                java.nio.file.Files.copy(selected.toPath(), target.toPath(),
+                        java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                javafx.scene.image.Image img = new javafx.scene.image.Image(target.toURI().toString());
+                qrCodeImage.setImage(img);
+                if (qrPlaceholderBox != null) {
+                    qrPlaceholderBox.setVisible(false);
+                    qrPlaceholderBox.setManaged(false);
+                }
+            } catch (Exception e) {
+                AlertUtil.error("Lỗi", "Không thể lưu ảnh QR: " + e.getMessage());
+            }
+        }
     }
 
     /** Populates every field on the receipt from a completed order. */

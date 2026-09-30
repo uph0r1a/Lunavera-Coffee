@@ -1,25 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="invoiceRoot"
-      prefWidth="520.0"
-      prefHeight="820.0"
-      maxWidth="520.0"
-      spacing="14.0"
-      styleClass="invoice-root"
-      xmlns="http://javafx.com/javafx/21"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="org.example.controller.HoaDonController">
+<VBox fx:id="invoiceRoot" maxWidth="520.0" prefHeight="820.0" prefWidth="520.0" spacing="14.0" styleClass="invoice-root" stylesheets="@../css/donthanhtoan.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.HoaDonController">
 
     <padding>
-        <Insets top="25.0"
-                right="30.0"
-                bottom="25.0"
-                left="30.0"/>
+        <Insets bottom="25.0" left="30.0" right="30.0" top="25.0" />
     </padding>
 
 
@@ -27,145 +25,105 @@
     <!-- HEADER -->
     <!-- ========================================================= -->
 
-    <VBox alignment="CENTER"
-          spacing="4.0">
+    <VBox alignment="CENTER" spacing="4.0">
 
-        <Label text="LUNAVERA COFFEE"
-               styleClass="invoice-shop-name"/>
+        <Label styleClass="invoice-shop-name" text="LUNAVERA COFFEE" />
 
-        <Label text="HÓA ĐƠN THANH TOÁN"
-               styleClass="invoice-title"/>
+        <Label styleClass="invoice-title" text="HÓA ĐƠN THANH TOÁN" />
 
-        <Label text="Cảm ơn quý khách đã sử dụng dịch vụ"
-               styleClass="invoice-subtitle"/>
+        <Label styleClass="invoice-subtitle" text="Cảm ơn quý khách đã sử dụng dịch vụ" />
 
     </VBox>
 
 
-    <Separator/>
+    <Separator />
 
 
     <!-- ========================================================= -->
     <!-- ORDER INFORMATION -->
     <!-- ========================================================= -->
 
-    <GridPane hgap="15.0"
-              vgap="8.0">
+    <GridPane hgap="15.0" vgap="8.0">
 
         <columnConstraints>
 
-            <ColumnConstraints prefWidth="100.0"/>
+            <ColumnConstraints prefWidth="100.0" />
 
-            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints hgrow="ALWAYS" />
 
         </columnConstraints>
 
 
         <!-- MÃ ĐƠN -->
 
-        <Label text="Mã đơn:"
-               GridPane.columnIndex="0"
-               GridPane.rowIndex="0"
-               styleClass="invoice-label"/>
+        <Label styleClass="invoice-label" text="Mã đơn:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
 
-        <Label fx:id="invoiceIdLabel"
-               text="#DH000124"
-               GridPane.columnIndex="1"
-               GridPane.rowIndex="0"
-               styleClass="invoice-value"/>
+        <Label fx:id="invoiceIdLabel" styleClass="invoice-value" text="" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
 
         <!-- BÀN -->
 
-        <Label text="Nhân viên:"
-               GridPane.columnIndex="0"
-               GridPane.rowIndex="1"
-               styleClass="invoice-label"/>
+        <Label styleClass="invoice-label" text="Nhân viên:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
 
-        <Label fx:id="tableLabel"
-               text="Bàn 2"
-               GridPane.columnIndex="1"
-               GridPane.rowIndex="1"
-               styleClass="invoice-value"/>
+        <Label fx:id="tableLabel" styleClass="invoice-value" text="" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
 
         <!-- KHÁCH HÀNG -->
 
-        <Label text="Khách hàng:"
-               GridPane.columnIndex="0"
-               GridPane.rowIndex="2"
-               styleClass="invoice-label"/>
+        <Label styleClass="invoice-label" text="Khách hàng:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
 
-        <Label fx:id="customerLabel"
-               text="Khách lẻ"
-               GridPane.columnIndex="1"
-               GridPane.rowIndex="2"
-               styleClass="invoice-value"/>
+        <Label fx:id="customerLabel" styleClass="invoice-value" text="" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
 
         <!-- THỜI GIAN -->
 
-        <Label text="Thời gian:"
-               GridPane.columnIndex="0"
-               GridPane.rowIndex="3"
-               styleClass="invoice-label"/>
+        <Label styleClass="invoice-label" text="Thời gian:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
 
-        <Label fx:id="orderTimeLabel"
-               text="26/09/2026 17:25"
-               GridPane.columnIndex="1"
-               GridPane.rowIndex="3"
-               styleClass="invoice-value"/>
+        <Label fx:id="orderTimeLabel" styleClass="invoice-value" text="" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+      <rowConstraints>
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+      </rowConstraints>
 
     </GridPane>
 
 
-    <Separator/>
+    <Separator />
 
 
     <!-- ========================================================= -->
     <!-- ORDER DETAILS -->
     <!-- ========================================================= -->
 
-    <Label text="Chi tiết đơn hàng"
-           styleClass="detail-title"/>
+    <Label styleClass="detail-title" text="Chi tiết đơn hàng" />
 
 
-    <TableView fx:id="invoiceDetailTable"
-               prefHeight="260.0"
-               VBox.vgrow="NEVER"
-               styleClass="invoice-table">
+    <TableView fx:id="invoiceDetailTable" prefHeight="260.0" styleClass="invoice-table" VBox.vgrow="NEVER">
 
         <columns>
 
-            <TableColumn fx:id="productColumn"
-                         text="Sản phẩm"
-                         prefWidth="175.0"/>
+            <TableColumn fx:id="productColumn" prefWidth="175.0" text="Sản phẩm" />
 
-            <TableColumn fx:id="quantityColumn"
-                         text="SL"
-                         prefWidth="45.0"/>
+            <TableColumn fx:id="quantityColumn" prefWidth="45.0" text="SL" />
 
-            <TableColumn fx:id="priceColumn"
-                         text="Đơn giá"
-                         prefWidth="90.0"/>
+            <TableColumn fx:id="priceColumn" prefWidth="90.0" text="Đơn giá" />
 
-            <TableColumn fx:id="subtotalColumn"
-                         text="Thành tiền"
-                         prefWidth="115.0"/>
+            <TableColumn fx:id="subtotalColumn" prefWidth="144.0" text="Thành tiền" />
 
         </columns>
 
         <placeholder>
 
-            <Label text="Không có sản phẩm"
-                   styleClass="empty-label"/>
+            <Label styleClass="empty-label" text="Không có sản phẩm" />
 
         </placeholder>
 
     </TableView>
 
 
-    <Separator/>
+    <Separator />
 
 
     <!-- ========================================================= -->
@@ -176,42 +134,30 @@
 
         <HBox alignment="CENTER_LEFT">
 
-            <Label text="Tạm tính"
-                   styleClass="total-label"
-                   HBox.hgrow="ALWAYS"/>
+            <Label styleClass="total-label" text="Tạm tính" HBox.hgrow="ALWAYS" />
 
-            <Label fx:id="subtotalLabel"
-                   text="150.000 đ"
-                   styleClass="total-value"/>
+            <Label fx:id="subtotalLabel" styleClass="total-value" text="0 đ" />
 
         </HBox>
 
 
         <HBox alignment="CENTER_LEFT">
 
-            <Label text="Giảm giá"
-                   styleClass="total-label"
-                   HBox.hgrow="ALWAYS"/>
+            <Label styleClass="total-label" text="Giảm giá" HBox.hgrow="ALWAYS" />
 
-            <Label fx:id="discountLabel"
-                   text="0 đ"
-                   styleClass="total-value"/>
+            <Label fx:id="discountLabel" styleClass="total-value" text="0 đ" />
 
         </HBox>
 
 
-        <Separator/>
+        <Separator />
 
 
         <HBox alignment="CENTER_LEFT">
 
-            <Label text="TỔNG TIỀN"
-                   styleClass="grand-total-label"
-                   HBox.hgrow="ALWAYS"/>
+            <Label styleClass="grand-total-label" text="TỔNG TIỀN" HBox.hgrow="ALWAYS" />
 
-            <Label fx:id="totalLabel"
-                   text="150.000 đ"
-                   styleClass="grand-total-value"/>
+            <Label fx:id="totalLabel" styleClass="grand-total-value" text="0 đ" />
 
         </HBox>
 
@@ -222,15 +168,11 @@
     <!-- PAYMENT METHOD -->
     <!-- ========================================================= -->
 
-    <HBox alignment="CENTER_LEFT"
-          spacing="10.0">
+    <HBox alignment="CENTER_LEFT" spacing="10.0">
 
-        <Label text="Thanh toán:"
-               styleClass="invoice-label"/>
+        <Label styleClass="invoice-label" text="Thanh toán:" />
 
-        <Label fx:id="paymentMethodLabel"
-               text="Tiền mặt"
-               styleClass="payment-method"/>
+        <Label fx:id="paymentMethodLabel" styleClass="payment-method" text="" />
 
     </HBox>
 
@@ -239,33 +181,26 @@
     <!-- QR CODE -->
     <!-- ========================================================= -->
 
-    <VBox alignment="CENTER"
-          spacing="6.0"
-          styleClass="qr-section">
+    <VBox alignment="CENTER" spacing="6.0" styleClass="qr-section">
 
-        <Label text="Mã QR hóa đơn"
-               styleClass="qr-title"/>
+        <Label styleClass="qr-title" text="Mã QR thanh toán" />
 
+        <StackPane fx:id="qrContainer" prefHeight="150.0" prefWidth="150.0" maxWidth="150.0" styleClass="qr-container" onMouseClicked="#handleUploadQr">
 
-        <StackPane prefWidth="145.0"
-                   prefHeight="145.0"
-                   styleClass="qr-container">
+            <ImageView fx:id="qrCodeImage" fitHeight="138.0" fitWidth="138.0" preserveRatio="true" />
 
-            <ImageView fx:id="qrCodeImage"
-                       fitWidth="135.0"
-                       fitHeight="135.0"
-                       preserveRatio="true"/>
+            <VBox fx:id="qrPlaceholderBox" alignment="CENTER" spacing="4.0" styleClass="qr-placeholder-box" prefHeight="138.0" prefWidth="138.0">
+                <Label text="⤓" styleClass="qr-placeholder-icon" />
+                <Label text="Thêm ảnh mã QR" styleClass="qr-placeholder-text" />
+            </VBox>
 
         </StackPane>
 
+        <Button fx:id="uploadQrButton" text="📷 Thêm / Đổi ảnh QR" styleClass="qr-upload-button" onAction="#handleUploadQr" />
 
-        <Label fx:id="qrOrderIdLabel"
-               text="DH000124"
-               styleClass="qr-order-id"/>
+        <Label fx:id="qrOrderIdLabel" styleClass="qr-order-id" text="" />
 
-
-        <Label text="Quét QR để xem hóa đơn"
-               styleClass="qr-subtitle"/>
+        <Label styleClass="qr-subtitle" text="Quét QR để thanh toán hoặc xem hóa đơn" />
 
     </VBox>
 
@@ -274,14 +209,11 @@
     <!-- FOOTER -->
     <!-- ========================================================= -->
 
-    <VBox alignment="CENTER"
-          spacing="3.0">
+    <VBox alignment="CENTER" spacing="3.0">
 
-        <Label text="LUNAVERA COFFEE"
-               styleClass="invoice-footer-shop"/>
+        <Label styleClass="invoice-footer-shop" text="LUNAVERA COFFEE" />
 
-        <Label text="Cảm ơn quý khách và hẹn gặp lại!"
-               styleClass="invoice-footer-text"/>
+        <Label styleClass="invoice-footer-text" text="Cảm ơn quý khách và hẹn gặp lại!" />
 
     </VBox>
 
@@ -290,23 +222,12 @@
     <!-- ACTION BUTTONS -->
     <!-- ========================================================= -->
 
-    <HBox spacing="10.0"
-          alignment="CENTER">
+    <HBox alignment="CENTER" spacing="10.0">
 
-        <Button fx:id="printButton"
-                text="▣  In hóa đơn"
-                prefHeight="42.0"
-                HBox.hgrow="ALWAYS"
-                styleClass="print-button"
-                onAction="#handlePrint"/>
+        <Button fx:id="printButton" maxWidth="1.7976931348623157E308" onAction="#handlePrint" prefHeight="42.0" styleClass="print-button" text="▣  In hóa đơn" HBox.hgrow="ALWAYS" />
 
 
-        <Button fx:id="closeButton"
-                text="Đóng"
-                prefHeight="42.0"
-                HBox.hgrow="ALWAYS"
-                styleClass="close-button"
-                onAction="#handleClose"/>
+        <Button fx:id="closeButton" maxWidth="1.7976931348623157E308" onAction="#handleClose" prefHeight="42.0" styleClass="close-button" text="Đóng" HBox.hgrow="ALWAYS" />
 
     </HBox>
 

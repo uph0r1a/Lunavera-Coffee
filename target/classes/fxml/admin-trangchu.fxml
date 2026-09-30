@@ -6,10 +6,12 @@
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
@@ -38,7 +40,7 @@
             <VBox alignment="CENTER" prefHeight="150.0">
                 <ImageView fitHeight="100.0" fitWidth="180.0" preserveRatio="true">
                     <image>
-                        <Image url="@../images/LunaveraLogo.png"/>
+                        <Image url="@../images/background/LunaveraLogo.png"/>
                     </image>
                 </ImageView>
             </VBox>
@@ -79,21 +81,11 @@
                         styleClass="menu-button"
                         onAction="#openCategoryManagement"/>
 
-                <Button text="▣   Quản lý kho"
-                        prefHeight="48.0"
-                        maxWidth="1.7976931348623157E308"
-                        styleClass="menu-button"
-                        onAction="#openInventoryManagement"/>
             </VBox>
 
             <Separator styleClass="sidebar-separator"/>
 
             <VBox spacing="6.0">
-                <Button text="♙   Quản lý nhân viên"
-                        prefHeight="48.0"
-                        maxWidth="1.7976931348623157E308"
-                        styleClass="menu-button"
-                        onAction="#openEmployeeManagement"/>
 
                 <Button text="♙   Quản lý tài khoản"
                         prefHeight="48.0"
@@ -209,54 +201,109 @@
                 </VBox>
             </GridPane>
 
-            <!-- CHART + ORDER STATISTICS -->
-            <HBox spacing="16.0" VBox.vgrow="NEVER">
+            <!-- MAIN DASHBOARD CONTENT (2 COLUMNS) -->
+            <HBox spacing="16.0" VBox.vgrow="ALWAYS">
 
-                <VBox prefWidth="850.0"
-                      prefHeight="300.0"
-                      spacing="12.0"
-                      styleClass="content-card"
-                      HBox.hgrow="ALWAYS">
+                <!-- LEFT COLUMN: LINE CHART + DINING TABLE GRID -->
+                <VBox spacing="16.0" HBox.hgrow="ALWAYS">
 
-                    <HBox alignment="CENTER_LEFT">
-                        <Label text="Doanh thu 7 ngày gần đây"
-                               styleClass="section-title"/>
+                    <!-- DOANH THU 7 NGÀY GẦN ĐÂY -->
+                    <VBox prefHeight="280.0"
+                          spacing="12.0"
+                          styleClass="content-card">
 
-                        <Region HBox.hgrow="ALWAYS"/>
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="Doanh thu 7 ngày gần đây"
+                                   styleClass="section-title"/>
 
-                        <Label text="7 ngày qua"
-                               styleClass="filter-label"/>
-                    </HBox>
+                            <Region HBox.hgrow="ALWAYS"/>
 
-                    <LineChart fx:id="revenueChart"
-                               animated="false"
-                               legendVisible="false"
-                               createSymbols="true"
-                               verticalGridLinesVisible="false"
-                               horizontalGridLinesVisible="true"
-                               VBox.vgrow="ALWAYS">
+                            <Label text="7 ngày qua"
+                                   styleClass="filter-label"/>
+                        </HBox>
 
-                        <xAxis>
-                            <CategoryAxis fx:id="revenueXAxis"
-                                          label="Ngày"/>
-                        </xAxis>
+                        <LineChart fx:id="revenueChart"
+                                   animated="false"
+                                   legendVisible="false"
+                                   createSymbols="true"
+                                   verticalGridLinesVisible="false"
+                                   horizontalGridLinesVisible="true"
+                                   VBox.vgrow="ALWAYS">
 
-                        <yAxis>
-                            <NumberAxis fx:id="revenueYAxis"
-                                        label="Doanh thu"/>
-                        </yAxis>
-                    </LineChart>
+                            <xAxis>
+                                <CategoryAxis fx:id="revenueXAxis"
+                                              label="Ngày"/>
+                            </xAxis>
+
+                            <yAxis>
+                                <NumberAxis fx:id="revenueYAxis"
+                                            label="Doanh thu"/>
+                            </yAxis>
+                        </LineChart>
+                    </VBox>
+
+                    <!-- SƠ ĐỒ BÀN PHỤC VỤ -->
+                    <VBox spacing="14.0"
+                          styleClass="content-card"
+                          VBox.vgrow="ALWAYS">
+
+                        <HBox alignment="CENTER_LEFT" spacing="12.0">
+                            <VBox spacing="3.0">
+                                <Label text="Sơ đồ bàn phục vụ"
+                                       styleClass="section-title"/>
+                                <Label text="Chọn bàn để tạo hoặc xem đơn"
+                                       styleClass="section-subtitle"/>
+                            </VBox>
+
+                            <Region HBox.hgrow="ALWAYS"/>
+
+                            <!-- STATUS LEGENDS -->
+                            <HBox spacing="14.0" alignment="CENTER">
+                                <HBox spacing="6.0" alignment="CENTER">
+                                    <Label text="●" styleClass="status-dot-occupied"/>
+                                    <Label text="Có đơn" styleClass="status-legend-text"/>
+                                </HBox>
+
+                                <HBox spacing="6.0" alignment="CENTER">
+                                    <Label text="●" styleClass="status-dot-empty"/>
+                                    <Label text="Không đơn" styleClass="status-legend-text"/>
+                                </HBox>
+                            </HBox>
+                        </HBox>
+
+                        <!-- GRID BÀN (3x4 = 12 BÀN) -->
+                        <GridPane fx:id="homeTableGrid"
+                                  hgap="12.0"
+                                  vgap="12.0"
+                                  VBox.vgrow="ALWAYS">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="33.333" hgrow="ALWAYS"/>
+                                <ColumnConstraints percentWidth="33.333" hgrow="ALWAYS"/>
+                                <ColumnConstraints percentWidth="33.333" hgrow="ALWAYS"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints minHeight="78.0" prefHeight="88.0" vgrow="ALWAYS"/>
+                                <RowConstraints minHeight="78.0" prefHeight="88.0" vgrow="ALWAYS"/>
+                                <RowConstraints minHeight="78.0" prefHeight="88.0" vgrow="ALWAYS"/>
+                                <RowConstraints minHeight="78.0" prefHeight="88.0" vgrow="ALWAYS"/>
+                            </rowConstraints>
+                        </GridPane>
+                    </VBox>
                 </VBox>
 
-                <VBox prefWidth="350.0"
-                      prefHeight="300.0"
-                      spacing="15.0"
-                      styleClass="content-card">
+                <!-- RIGHT COLUMN: THỐNG KÊ ĐƠN HÀNG HÔM NAY (KÉO DÀI HẾT CHIỀU CAO) -->
+                <VBox prefWidth="360.0"
+                      minWidth="340.0"
+                      maxWidth="380.0"
+                      spacing="14.0"
+                      styleClass="content-card"
+                      VBox.vgrow="ALWAYS">
 
-                    <Label text="Thống kê đơn hàng"
+                    <Label text="Thống kê đơn hàng hôm nay"
                            styleClass="section-title"/>
 
-                    <VBox spacing="14.0">
+                    <!-- 3 TRẠNG THÁI ĐƠN -->
+                    <VBox spacing="10.0" styleClass="order-summary-box">
                         <HBox alignment="CENTER_LEFT">
                             <Label text="Đã thanh toán"
                                    styleClass="order-status-label"/>
@@ -285,60 +332,29 @@
                         </HBox>
                     </VBox>
 
-                    <Region VBox.vgrow="ALWAYS"/>
+                    <!-- TIÊU ĐỀ PHẦN DANH SÁCH ĐƠN HÀNG HÔM NAY -->
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="Đơn hàng trong ngày"
+                               styleClass="section-subtitle"
+                               style="-fx-font-weight: bold; -fx-text-fill: #274917;"/>
+                    </HBox>
+
+                    <!-- DANH SÁCH ĐƠN HÀNG TRONG NGÀY (SCROLLPANE) -->
+                    <ScrollPane fitToWidth="true"
+                                hbarPolicy="NEVER"
+                                vbarPolicy="AS_NEEDED"
+                                styleClass="today-orders-scroll"
+                                VBox.vgrow="ALWAYS">
+                        <VBox fx:id="todayOrdersContainer"
+                              spacing="8.0"
+                              styleClass="today-orders-container"/>
+                    </ScrollPane>
 
                     <Button text="Xem tất cả đơn hàng →"
                             maxWidth="1.7976931348623157E308"
                             prefHeight="42.0"
                             styleClass="secondary-button"
                             onAction="#openOrderManagement"/>
-                </VBox>
-            </HBox>
-
-            <!-- TABLE + INVENTORY -->
-            <HBox spacing="16.0" VBox.vgrow="ALWAYS">
-
-                <!-- TABLE STATUS -->
-                <VBox prefWidth="850.0"
-                      spacing="12.0"
-                      styleClass="content-card"
-                      HBox.hgrow="ALWAYS">
-
-                    <HBox alignment="CENTER_LEFT">
-                        <Label text="Đơn hàng gần đây"
-                               styleClass="section-title"/>
-
-                        <Region HBox.hgrow="ALWAYS"/>
-
-                        <Label fx:id="recentOrdersNoteLabel"
-                               text="Đang tải..."
-                               styleClass="filter-label"/>
-                    </HBox>
-
-                    <VBox fx:id="recentOrdersList"
-                          spacing="12.0"
-                          VBox.vgrow="ALWAYS"/>
-                </VBox>
-
-                <!-- INVENTORY -->
-                <VBox prefWidth="350.0"
-                      spacing="12.0"
-                      styleClass="content-card">
-
-                    <HBox alignment="CENTER_LEFT">
-                        <Label text="Cảnh báo tồn kho"
-                               styleClass="section-title"/>
-                    </HBox>
-
-                    <VBox fx:id="lowStockList" spacing="12.0"/>
-
-                    <Region VBox.vgrow="ALWAYS"/>
-
-                    <Button text="Xem sản phẩm →"
-                            maxWidth="1.7976931348623157E308"
-                            prefHeight="42.0"
-                            styleClass="secondary-button"
-                            onAction="#openProductManagement"/>
                 </VBox>
             </HBox>
 
