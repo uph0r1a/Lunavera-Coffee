@@ -190,4 +190,68 @@ public class OrderDAOTest {
             assertTrue(e.getMessage().contains("đã thanh toán"));
         }
     }
+
+    @Test
+    public void historyPageAndCountAgreeAndRespectPageSize() {
+        Product product = newProduct(20, new BigDecimal("10000"));
+        for (int i = 0; i < 5; i++) {
+            orderDAO.insert(paidOrderTotaling(new BigDecimal("10000"), null), List.of(lineFor(product, 1)));
+        }
+
+        OrderDAO.HistoryFilter noFilter = OrderDAO.HistoryFilter.NONE;
+        int totalBefore = orderDAO.countHistory(noFilter);
+        assertTrue("count should include at least the 5 orders just created", totalBefore >= 5);
+
+        List<OrderDAO.OrderSummary> firstPageOfTwo = orderDAO.findHistoryPage(noFilter, 2, 0);
+        assertEquals(2, firstPageOfTwo.size());
+        // Newest first: the two most recently inserted ids should lead the very first page.
+        assertTrue(firstPageOfTwo.get(0).order().getId() > firstPageOfTwo.get(1).order().getId());
+    }
+
+    @Test
+    public void historyFilterByStatusOnlyMatchesThatStatus() {
+        Product product = newProduct(20, new BigDecimal("10000"));
+        Order paid = orderDAO.insert(paidOrderTotaling(new BigDecimal("10000"), null), List.of(lineFor(product, 1)));
+        orderDAO.cancelPaidOrder(paid.getId());
+
+        OrderDAO.HistoryFilter cancelledOnly = new OrderDAO.HistoryFilter(null, OrderStatus.CANCELLED, null, null);
+        boolean found = orderDAO.findHistoryPage(cancelledOnly, 500, 0).stream()
+                .anyMatch(s -> s.order().getId() == paid.getId());
+        assertTrue("the just-cancelled order should show up under the CANCELLED filter", found);
+
+        OrderDAO.HistoryFilter paidOnly = new OrderDAO.HistoryFilter(null, OrderStatus.PAID, null, null);
+        boolean wronglyStillPaid = orderDAO.findHistoryPage(paidOnly, 500, 0).stream()
+                .anyMatch(s -> s.order().getId() == paid.getId());
+        assertFalse("a cancelled order must not show up under the PAID filter", wronglyStillPaid);
+    }
+
+    @Test
+    public void historyFilterByKeywordMatchesOrderIdOrCustomerName() {
+        Product product = newProduct(20, new BigDecimal("10000"));
+        Customer customer = newCustomer();
+        Order order = orderDAO.insert(paidOrderTotaling(new BigDecimal("10000"), customer.getId()), List.of(lineFor(product, 1)));
+
+        OrderDAO.HistoryFilter byId = new OrderDAO.HistoryFilter(String.valueOf(order.getId()), null, null, null);
+        assertTrue(orderDAO.findHistoryPage(byId, 500, 0).stream().anyMatch(s -> s.order().getId() == order.getId()));
+
+        OrderDAO.HistoryFilter byCustomerName = new OrderDAO.HistoryFilter(customer.getFullName(), null, null, null);
+        assertTrue(orderDAO.findHistoryPage(byCustomerName, 500, 0).stream().anyMatch(s -> s.order().getId() == order.getId()));
+
+        OrderDAO.HistoryFilter noMatch = new OrderDAO.HistoryFilter("no-such-keyword-" + UUID.randomUUID(), null, null, null);
+        assertTrue(orderDAO.findHistoryPage(noMatch, 500, 0).stream().noneMatch(s -> s.order().getId() == order.getId()));
+    }
+
+    @Test
+    public void historyFilterByDateRangeExcludesOrdersOutsideIt() {
+        Product product = newProduct(20, new BigDecimal("10000"));
+        Order order = orderDAO.insert(paidOrderTotaling(new BigDecimal("10000"), null), List.of(lineFor(product, 1)));
+        java.time.LocalDate today = java.time.LocalDate.now();
+
+        OrderDAO.HistoryFilter includesToday = new OrderDAO.HistoryFilter(null, null, today, today);
+        assertTrue(orderDAO.findHistoryPage(includesToday, 500, 0).stream().anyMatch(s -> s.order().getId() == order.getId()));
+
+        OrderDAO.HistoryFilter onlyYesterday = new OrderDAO.HistoryFilter(null, null, today.minusDays(1), today.minusDays(1));
+        assertTrue("an order from today must not match a yesterday-only range",
+                orderDAO.findHistoryPage(onlyYesterday, 500, 0).stream().noneMatch(s -> s.order().getId() == order.getId()));
+    }
 }

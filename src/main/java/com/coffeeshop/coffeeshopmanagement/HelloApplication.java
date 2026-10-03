@@ -1,6 +1,7 @@
 package com.coffeeshop.coffeeshopmanagement;
 
 import com.coffeeshop.coffeeshopmanagement.config.DatabaseConfig;
+import com.coffeeshop.coffeeshopmanagement.util.AppLogging;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -10,6 +11,10 @@ public class HelloApplication extends Application {
 
     @Override
     public void init() {
+        // File logging first, so a problem during DB setup itself (schema creation, migration,
+        // seeding) still ends up in ~/.lunavera-coffee/logs/ and not just a console nobody sees
+        // during normal desktop use.
+        AppLogging.install();
         // Runs on the JavaFX launcher thread before start(), so the login screen never shows
         // until the schema exists and (on a first run) the default admin account is seeded.
         DatabaseConfig.initialize();

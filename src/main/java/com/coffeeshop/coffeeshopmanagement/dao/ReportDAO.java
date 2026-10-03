@@ -1,6 +1,7 @@
 package com.coffeeshop.coffeeshopmanagement.dao;
 
 import com.coffeeshop.coffeeshopmanagement.config.DatabaseConfig;
+import com.coffeeshop.coffeeshopmanagement.util.Money;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -43,8 +44,8 @@ public class ReportDAO {
             bindRange(statement, from, to);
             try (ResultSet rs = statement.executeQuery()) {
                 rs.next();
-                return new Summary(rs.getInt("paid_count"), nonNull(rs.getBigDecimal("revenue")),
-                        nonNull(rs.getBigDecimal("discounts")), rs.getInt("cancelled_count"));
+                return new Summary(rs.getInt("paid_count"), Money.fromDong(rs.getLong("revenue")),
+                        Money.fromDong(rs.getLong("discounts")), rs.getInt("cancelled_count"));
             }
         } catch (SQLException e) {
             throw new DataAccessException("Failed to load sales summary", e);
@@ -65,7 +66,7 @@ public class ReportDAO {
             try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
                     result.add(new ProductSales(rs.getString("name"), rs.getInt("qty"),
-                            nonNull(rs.getBigDecimal("revenue"))));
+                            Money.fromDong(rs.getLong("revenue"))));
                 }
             }
         } catch (SQLException e) {
@@ -85,7 +86,7 @@ public class ReportDAO {
             try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
                     result.add(new DailySales(LocalDate.parse(rs.getString("d")), rs.getInt("orders"),
-                            nonNull(rs.getBigDecimal("revenue"))));
+                            Money.fromDong(rs.getLong("revenue"))));
                 }
             }
         } catch (SQLException e) {
@@ -99,7 +100,4 @@ public class ReportDAO {
         statement.setString(2, to.toString());
     }
 
-    private static BigDecimal nonNull(BigDecimal value) {
-        return value != null ? value : BigDecimal.ZERO;
-    }
 }

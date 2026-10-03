@@ -339,6 +339,10 @@
                                          text="Giá"
                                          prefWidth="110"/>
 
+                            <TableColumn fx:id="stockColumn"
+                                         text="Tồn kho"
+                                         prefWidth="90"/>
+
                             <TableColumn fx:id="productStatusColumn"
                                          text="Trạng thái"
                                          prefWidth="120"/>

@@ -192,6 +192,7 @@ public class AdminController {
     @FXML private TableColumn<Product, String> nameColumn;
     @FXML private TableColumn<Product, String> categoryColumn;
     @FXML private TableColumn<Product, String> sellingPriceColumn;
+    @FXML private TableColumn<Product, Number> stockColumn;
     @FXML private TableColumn<Product, String> productStatusColumn;
     @FXML private TableColumn<Product, Void> actionColumn;
     @FXML private Label totalProductLabel;
@@ -1019,6 +1020,23 @@ public class AdminController {
         categoryColumn.setCellValueFactory(data -> new SimpleStringProperty(
                 data.getValue().getCategoryName() != null ? data.getValue().getCategoryName() : "-"));
         sellingPriceColumn.setCellValueFactory(data -> new SimpleStringProperty(CurrencyUtil.format(data.getValue().getPrice())));
+        stockColumn.setCellValueFactory(data -> new javafx.beans.property.SimpleIntegerProperty(data.getValue().getStock()));
+        stockColumn.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(Number value, boolean empty) {
+                super.updateItem(value, empty);
+                if (empty || value == null) {
+                    setText(null);
+                    setStyle(null);
+                    return;
+                }
+                setText(value.toString());
+                // Same threshold the dashboard's "low stock" widgets already use
+                // (ProductDAO.LOW_STOCK_THRESHOLD) - one definition of "low", not two.
+                setStyle(value.intValue() <= ProductDAO.LOW_STOCK_THRESHOLD
+                        ? "-fx-text-fill: #c0392b; -fx-font-weight: bold;" : null);
+            }
+        });
         productStatusColumn.setCellValueFactory(data ->
                 new SimpleStringProperty(data.getValue().isActive() ? "Đang bán" : "Ngừng bán"));
         actionColumn.setCellFactory(actionColumnFactory(this::openEditProductDialog, this::deleteProduct));
