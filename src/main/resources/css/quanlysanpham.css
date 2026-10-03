@@ -191,58 +191,34 @@
 }
 
 .category-button {
-    -fx-background-color: #ffffff;
+    -fx-background-color: rgba(250, 249, 243, 0.90);
     -fx-background-radius: 18px;
-    -fx-border-color: #cbdbba;
+    -fx-border-color: #dedfd3;
     -fx-border-radius: 18px;
-    -fx-border-width: 1.2px;
-    -fx-text-fill: #274519;
+    -fx-border-width: 1px;
+    -fx-text-fill: #71806b;
     -fx-font-family: "Georgia";
-    -fx-font-size: 13px;
-    -fx-font-weight: bold;
-    -fx-padding: 8px 18px;
+    -fx-font-size: 12px;
+    -fx-padding: 8px 17px;
     -fx-cursor: hand;
 }
 
 .category-button:hover {
-    -fx-background-color: #e4eed6;
-    -fx-border-color: #3e7728;
-    -fx-text-fill: #1c380f;
+    -fx-background-color: #edf0e5;
+    -fx-border-color: #b9c2ad;
+    -fx-text-fill: #50634f;
 }
 
 .category-button-active {
-    -fx-background-color: #3e7728;
-    -fx-border-color: #3e7728;
-    -fx-text-fill: #ffffff;
+    -fx-background-color: #71836a;
+    -fx-border-color: #71836a;
+    -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-effect: dropshadow(gaussian, rgba(45, 85, 25, 0.28), 6, 0, 0, 1);
 }
 
 .category-button-active:hover {
-    -fx-background-color: #356722;
-    -fx-border-color: #356722;
-    -fx-text-fill: #ffffff;
-}
-
-.category-tabs-scroll,
-.category-list-scroll {
-    -fx-background-color: transparent;
-    -fx-background: transparent;
-    -fx-border-color: transparent;
-    -fx-border-width: 0;
-    -fx-padding: 0;
-}
-
-.category-tabs-scroll > .viewport,
-.category-list-scroll > .viewport {
-    -fx-background-color: transparent;
-}
-
-.category-list-badge {
-    -fx-text-fill: #4b663b;
-    -fx-font-family: "Georgia";
-    -fx-font-size: 12px;
-    -fx-font-weight: bold;
+    -fx-background-color: #65785f;
+    -fx-border-color: #65785f;
 }
 
 
@@ -273,7 +249,7 @@
    ========================================================= */
 
 .card-title {
-    -fx-text-fill: #224416;
+    -fx-text-fill: #50634f;
     -fx-font-family: "Georgia";
     -fx-font-size: 14px;
     -fx-font-weight: bold;
@@ -289,46 +265,27 @@
     -fx-background-color: transparent;
     -fx-background-radius: 8px;
     -fx-border-color: transparent;
+    -fx-text-fill: #71806b;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 12px;
     -fx-alignment: CENTER_LEFT;
     -fx-padding: 0 10px;
     -fx-cursor: hand;
 }
 
-.category-list-button .label,
-.category-list-name,
-.category-list-icon {
-    -fx-text-fill: #2d4c20;
-    -fx-font-family: "Georgia";
-    -fx-font-size: 13px;
-    -fx-font-weight: 600;
-}
-
 .category-list-button:hover {
-    -fx-background-color: #e4eed6;
-}
-
-.category-list-button:hover .label,
-.category-list-button:hover .category-list-name,
-.category-list-button:hover .category-list-icon {
-    -fx-text-fill: #1c380f;
+    -fx-background-color: rgba(113, 131, 106, 0.10);
+    -fx-text-fill: #50634f;
 }
 
 .category-list-active {
-    -fx-background-color: #3e7728;
-    -fx-background-radius: 8px;
-    -fx-effect: dropshadow(gaussian, rgba(45, 85, 25, 0.28), 6, 0, 0, 1);
-}
-
-.category-list-active .label,
-.category-list-active .category-list-name,
-.category-list-active .category-list-icon,
-.category-list-active .category-list-badge {
-    -fx-text-fill: #ffffff;
+    -fx-background-color: #e5ebdd;
+    -fx-text-fill: #50634f;
     -fx-font-weight: bold;
 }
 
 .category-list-active:hover {
-    -fx-background-color: #356722;
+    -fx-background-color: #dce5d3;
 }
 
 .add-category-button {

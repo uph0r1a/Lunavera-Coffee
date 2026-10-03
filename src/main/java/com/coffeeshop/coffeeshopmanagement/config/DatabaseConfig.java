@@ -26,6 +26,8 @@ public final class DatabaseConfig {
     private static final String DB_FILE_NAME = "lunavera.db";
     /** Seeded for the very first login only; the app prompts to change it (see DefaultPasswordPrompt). */
     public static final String DEFAULT_ADMIN_PASSWORD = "Admin@123";
+    /** v1: money columns are INTEGER dong instead of REAL (see MoneyMigration). */
+    static final int CURRENT_SCHEMA_VERSION = 1;
     private static volatile boolean initialized = false;
 
     private DatabaseConfig() {
@@ -74,17 +76,25 @@ public final class DatabaseConfig {
     }
 
     /**
-     * Creates all tables if they do not already exist, and seeds one default admin account
-     * the very first time the application runs against an empty database. Safe to call every
-     * time the application starts.
+     * Creates all tables if they do not already exist, seeds one default admin account the
+     * very first time the application runs against an empty database, and seeds the starter
+     * menu exactly once (see {@link MenuSeeder} - gated by its own persistent flag, not by
+     * current table contents, so deleting starter items never brings them back). Safe to call
+     * every time the application starts.
      */
     public static synchronized void initialize() {
         if (initialized) {
             return;
         }
-        try (Connection connection = getConnection();
-             Statement statement = connection.createStatement()) {
+        try (Connection connection = getConnection()) {
+            // Must check this *before* creating any table below: it's the only way to tell a
+            // brand-new database (no migration needed - CREATE TABLE already uses the current
+            // schema) apart from one that existed before schema versioning was added (PRAGMA
+            // user_version defaults to 0 for both, so the version number alone can't tell them
+            // apart - only "did any of our tables already exist" can).
+            boolean preexisting = tableExists(connection, "users");
 
+            try (Statement statement = connection.createStatement()) {
             statement.execute("""
                 CREATE TABLE IF NOT EXISTS employees (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -93,7 +103,7 @@ public final class DatabaseConfig {
                     email TEXT,
                     address TEXT,
                     position TEXT,
-                    salary REAL,
+                    salary INTEGER,
                     hire_date TEXT,
                     active INTEGER NOT NULL DEFAULT 1
                 )
@@ -139,8 +149,8 @@ public final class DatabaseConfig {
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     name TEXT NOT NULL,
                     category_id INTEGER,
-                    price REAL NOT NULL,
-                    cost REAL,
+                    price INTEGER NOT NULL,
+                    cost INTEGER,
                     stock INTEGER NOT NULL DEFAULT 0,
                     description TEXT,
                     image_path TEXT,
@@ -156,9 +166,9 @@ public final class DatabaseConfig {
                     employee_id INTEGER,
                     customer_id INTEGER,
                     status TEXT NOT NULL DEFAULT 'OPEN',
-                    subtotal REAL NOT NULL DEFAULT 0,
-                    discount REAL NOT NULL DEFAULT 0,
-                    total REAL NOT NULL DEFAULT 0,
+                    subtotal INTEGER NOT NULL DEFAULT 0,
+                    discount INTEGER NOT NULL DEFAULT 0,
+                    total INTEGER NOT NULL DEFAULT 0,
                     payment_method TEXT,
                     paid_at TEXT,
                     FOREIGN KEY (employee_id) REFERENCES employees(id),
@@ -173,37 +183,44 @@ public final class DatabaseConfig {
                     product_id INTEGER,
                     product_name TEXT NOT NULL,
                     quantity INTEGER NOT NULL,
-                    unit_price REAL NOT NULL,
-                    line_total REAL NOT NULL,
+                    unit_price INTEGER NOT NULL,
+                    line_total INTEGER NOT NULL,
                     FOREIGN KEY (order_id) REFERENCES orders(id),
                     FOREIGN KEY (product_id) REFERENCES products(id)
                 )
                 """);
+            }
 
-            statement.execute("""
-                CREATE TABLE IF NOT EXISTS dining_tables (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    table_number INTEGER UNIQUE NOT NULL,
-                    name TEXT NOT NULL,
-                    status TEXT NOT NULL DEFAULT 'EMPTY',
-                    capacity INTEGER DEFAULT 4,
-                    current_order_id INTEGER,
-                    FOREIGN KEY (current_order_id) REFERENCES orders(id)
-                )
-                """);
-
-            try {
-                statement.execute("ALTER TABLE orders ADD COLUMN table_number INTEGER");
-            } catch (SQLException ignored) {
-                // Column already exists
+            if (preexisting) {
+                MoneyMigration.runIfNeeded(connection, CURRENT_SCHEMA_VERSION);
+            } else {
+                setUserVersion(connection, CURRENT_SCHEMA_VERSION);
             }
 
             seedDefaultAdmin(connection);
-            seedDiningTables(connection);
+            MenuSeeder.seedIfNeeded(connection);
             initialized = true;
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Database initialization failed", e);
             throw new IllegalStateException("Could not initialize the database", e);
+        }
+    }
+
+    private static boolean tableExists(Connection connection, String tableName) throws SQLException {
+        try (java.sql.PreparedStatement statement = connection.prepareStatement(
+                "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ?")) {
+            statement.setString(1, tableName);
+            try (java.sql.ResultSet rs = statement.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+
+    /** PRAGMA statements don't support `?` placeholders - safe here since version is always
+     *  this class's own int constant, never anything derived from user input. */
+    static void setUserVersion(Connection connection, int version) throws SQLException {
+        try (Statement statement = connection.createStatement()) {
+            statement.execute("PRAGMA user_version = " + version);
         }
     }
 
@@ -243,27 +260,5 @@ public final class DatabaseConfig {
 
         LOGGER.info("Seeded default admin account (username: admin / password: Admin@123). " +
                 "Change this password after first login.");
-    }
-
-    private static void seedDiningTables(Connection connection) throws SQLException {
-        try (Statement check = connection.createStatement()) {
-            var rs = check.executeQuery("SELECT COUNT(*) FROM dining_tables");
-            rs.next();
-            if (rs.getInt(1) > 0) {
-                return; // already seeded
-            }
-        }
-
-        String insertSql = "INSERT INTO dining_tables (table_number, name, status, capacity) VALUES (?, ?, 'EMPTY', ?)";
-        try (var insert = connection.prepareStatement(insertSql)) {
-            for (int i = 1; i <= 12; i++) {
-                insert.setInt(1, i);
-                insert.setString(2, "Bàn " + i);
-                insert.setInt(3, 4);
-                insert.addBatch();
-            }
-            insert.executeBatch();
-        }
-        LOGGER.info("Seeded 12 dining tables into dining_tables.");
     }
 }

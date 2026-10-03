@@ -199,12 +199,12 @@
    ========================================================= */
 
 .status-dot-occupied {
-    -fx-text-fill: #2e7d32;
+    -fx-text-fill: #3e7728;
     -fx-font-size: 13px;
 }
 
 .status-dot-empty {
-    -fx-text-fill: #adb5bd;
+    -fx-text-fill: #a9b59d;
     -fx-font-size: 13px;
 }
 
@@ -215,25 +215,25 @@
 }
 
 .order-status-badge {
-    -fx-background-color: #e8f5e9;
-    -fx-text-fill: #1b5e20;
+    -fx-background-color: #e8f4de;
+    -fx-text-fill: #2e6819;
     -fx-font-size: 12px;
     -fx-font-weight: bold;
     -fx-padding: 5px 12px;
     -fx-background-radius: 20px;
-    -fx-border-color: #81c784;
+    -fx-border-color: #b7dba0;
     -fx-border-radius: 20px;
     -fx-border-width: 1px;
 }
 
 .empty-badge {
-    -fx-background-color: #f1f3f5;
-    -fx-text-fill: #6c757d;
+    -fx-background-color: #f1f4ec;
+    -fx-text-fill: #6a7c5c;
     -fx-font-size: 11px;
     -fx-font-weight: 600;
     -fx-padding: 3px 10px;
     -fx-background-radius: 15px;
-    -fx-border-color: #ced4da;
+    -fx-border-color: #d8e2cf;
     -fx-border-radius: 15px;
     -fx-border-width: 1px;
 }
@@ -244,33 +244,33 @@
    ========================================================= */
 
 .table-button-occupied {
-    -fx-background-color: #e8f5e9;
-    -fx-text-fill: #1b5e20;
+    -fx-background-color: #eaf4e2;
+    -fx-text-fill: #254d19;
     -fx-font-size: 13px;
     -fx-font-weight: bold;
     -fx-background-radius: 10px;
-    -fx-border-color: #4caf50;
+    -fx-border-color: #9ecc7a;
     -fx-border-radius: 10px;
     -fx-border-width: 1.5px;
     -fx-alignment: CENTER;
     -fx-cursor: hand;
     -fx-line-spacing: 3px;
-    -fx-effect: dropshadow(gaussian, rgba(46, 125, 50, 0.15), 5, 0, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(46, 104, 25, 0.08), 4, 0, 0, 1);
 }
 
 .table-button-occupied:hover {
-    -fx-background-color: #c8e6c9;
-    -fx-border-color: #2e7d32;
-    -fx-effect: dropshadow(gaussian, rgba(46, 125, 50, 0.25), 6, 0, 0, 2);
+    -fx-background-color: #dbeecf;
+    -fx-border-color: #72ab45;
+    -fx-effect: dropshadow(gaussian, rgba(46, 104, 25, 0.18), 6, 0, 0, 2);
 }
 
 .table-button-empty {
-    -fx-background-color: #f1f3f5;
-    -fx-text-fill: #6c757d;
+    -fx-background-color: #f8faf4;
+    -fx-text-fill: #617352;
     -fx-font-size: 13px;
     -fx-font-weight: 600;
     -fx-background-radius: 10px;
-    -fx-border-color: #ced4da;
+    -fx-border-color: #dbe3d2;
     -fx-border-radius: 10px;
     -fx-border-width: 1px;
     -fx-alignment: CENTER;
@@ -279,15 +279,15 @@
 }
 
 .table-button-empty:hover {
-    -fx-background-color: #e9ecef;
-    -fx-border-color: #adb5bd;
-    -fx-text-fill: #495057;
+    -fx-background-color: #eef4e6;
+    -fx-border-color: #b9caa8;
+    -fx-text-fill: #2d4c1e;
 }
 
 .table-button-selected {
-    -fx-border-color: #198754;
-    -fx-border-width: 2.5px;
-    -fx-effect: dropshadow(gaussian, rgba(25, 135, 84, 0.35), 8, 0, 0, 2);
+    -fx-border-color: #3e7728;
+    -fx-border-width: 2px;
+    -fx-effect: dropshadow(gaussian, rgba(62, 119, 40, 0.35), 8, 0, 0, 2);
 }
 
 
@@ -339,29 +339,6 @@
     -fx-font-weight: bold;
 }
 
-.info-sublabel {
-    -fx-text-fill: #94a38e;
-    -fx-font-size: 11px;
-    -fx-font-style: italic;
-}
-
-.customer-input-field {
-    -fx-background-color: #ffffff;
-    -fx-background-radius: 7px;
-    -fx-border-color: #d1dcce;
-    -fx-border-radius: 7px;
-    -fx-border-width: 1px;
-    -fx-padding: 6px 12px;
-    -fx-font-size: 13px;
-    -fx-text-fill: #1d3e12;
-    -fx-prompt-text-fill: #9aa894;
-}
-
-.customer-input-field:focused {
-    -fx-border-color: #438428;
-    -fx-background-color: #ffffff;
-    -fx-effect: dropshadow(gaussian, rgba(67, 132, 40, 0.18), 5, 0, 0, 1);
-}
 
 /* =========================================================
    ORDER DETAIL TABLE
@@ -525,108 +502,4 @@
 .action-pay-button {
     -fx-font-size: 13px;
     -fx-font-weight: bold;
-}
-
-/* =========================================================
-   POS MENU CHỌN MÓN (LEFT CATEGORY & RIGHT PRODUCT CARDS)
-   ========================================================= */
-
-.pos-category-btn {
-    -fx-background-color: transparent;
-    -fx-background-radius: 8px;
-    -fx-border-color: transparent;
-    -fx-alignment: CENTER_LEFT;
-    -fx-padding: 8px 10px;
-    -fx-cursor: hand;
-    -fx-text-fill: #2d4c20;
-    -fx-font-family: "Segoe UI", sans-serif;
-    -fx-font-size: 12px;
-    -fx-font-weight: 600;
-}
-
-.pos-category-btn:hover {
-    -fx-background-color: #e4eed6;
-    -fx-text-fill: #1c380f;
-}
-
-.pos-category-btn-active {
-    -fx-background-color: #3e7728;
-    -fx-background-radius: 8px;
-    -fx-text-fill: #ffffff;
-    -fx-font-weight: bold;
-    -fx-effect: dropshadow(gaussian, rgba(45, 85, 25, 0.25), 6, 0, 0, 1);
-}
-
-.pos-category-btn-active:hover {
-    -fx-background-color: #356722;
-    -fx-text-fill: #ffffff;
-}
-
-/* Thẻ sản phẩm (Product Card) */
-.product-card {
-    -fx-background-color: #ffffff;
-    -fx-background-radius: 10px;
-    -fx-border-color: #dce5d3;
-    -fx-border-radius: 10px;
-    -fx-border-width: 1px;
-    -fx-padding: 8px;
-    -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 4, 0, 0, 1);
-}
-
-.product-card:hover {
-    -fx-border-color: #3e7728;
-    -fx-background-color: #f7fbf2;
-    -fx-effect: dropshadow(gaussian, rgba(62, 119, 40, 0.18), 8, 0, 0, 2);
-}
-
-.product-card-name {
-    -fx-text-fill: #244218;
-    -fx-font-family: "Segoe UI", sans-serif;
-    -fx-font-size: 12px;
-    -fx-font-weight: bold;
-    -fx-alignment: CENTER;
-}
-
-.product-card-price {
-    -fx-text-fill: #3e7728;
-    -fx-font-family: "Segoe UI", sans-serif;
-    -fx-font-size: 12px;
-    -fx-font-weight: bold;
-}
-
-.product-add-btn {
-    -fx-background-color: #3e7728;
-    -fx-text-fill: #ffffff;
-    -fx-font-family: "Segoe UI", sans-serif;
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 14px;
-    -fx-min-width: 26px;
-    -fx-min-height: 26px;
-    -fx-max-width: 26px;
-    -fx-max-height: 26px;
-    -fx-padding: 0;
-    -fx-alignment: CENTER;
-    -fx-cursor: hand;
-}
-
-.product-add-btn:hover {
-    -fx-background-color: #2e5c1c;
-    -fx-scale-x: 1.1;
-    -fx-scale-y: 1.1;
-}
-
-.product-cards-scroll,
-.category-list-scroll {
-    -fx-background-color: transparent;
-    -fx-background: transparent;
-    -fx-border-color: transparent;
-    -fx-border-width: 0;
-    -fx-padding: 0;
-}
-
-.product-cards-scroll > .viewport,
-.category-list-scroll > .viewport {
-    -fx-background-color: transparent;
 }

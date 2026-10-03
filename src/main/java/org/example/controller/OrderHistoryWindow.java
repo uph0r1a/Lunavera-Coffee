@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import com.coffeeshop.coffeeshopmanagement.dao.OrderDAO;
+import com.coffeeshop.coffeeshopmanagement.dao.OrderDAO.HistoryFilter;
 import com.coffeeshop.coffeeshopmanagement.dao.OrderDAO.OrderSummary;
 import com.coffeeshop.coffeeshopmanagement.model.OrderItem;
 import com.coffeeshop.coffeeshopmanagement.model.OrderStatus;
@@ -29,21 +30,28 @@ import javafx.stage.Stage;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Order / invoice history, opened from the POS screen's header. Built in code as its own plain
  * (non-modal) window rather than a new FXML screen: it needs no sidebar of its own, and a
  * non-modal window sidesteps the dialog-modality problems seen on Linux (progress.md, Sessions
  * 4-5). Lists past orders, re-opens any receipt, and lets an admin cancel (refund) a paid order.
+ *
+ * Filtering and paging both happen in SQL now (progress.md, "order-history paging" session) -
+ * the previous version loaded up to 500 rows into memory and filtered client-side, so a date
+ * range further back than the most recent 500 orders silently showed nothing even when matching
+ * orders existed. There is no upper bound on total history size anymore.
  */
 public final class OrderHistoryWindow {
 
-    private static final int HISTORY_LIMIT = 500;
+    private static final int PAGE_SIZE = 50;
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
     private static final String ALL_STATUSES = "Tất cả trạng thái";
     private static final String STATUS_PAID = "Đã thanh toán";
     private static final String STATUS_CANCELLED = "Đã hủy";
+
+    private record HistoryPage(List<OrderSummary> rows, int totalCount) {
+    }
 
     private final OrderDAO orderDAO = new OrderDAO();
     private final TableView<OrderSummary> table = new TableView<>();
@@ -52,9 +60,13 @@ public final class OrderHistoryWindow {
     private final DatePicker fromPicker = new DatePicker();
     private final DatePicker toPicker = new DatePicker();
     private final Label countLabel = new Label();
+    private final Label pageLabel = new Label();
+    private final Button previousPageButton = new Button("‹ Trang trước");
+    private final Button nextPageButton = new Button("Trang sau ›");
     private final Button viewButton = new Button("Xem hóa đơn");
     private final Button cancelButton = new Button("Hủy đơn (hoàn tiền)");
-    private List<OrderSummary> all = List.of();
+    private int currentPage = 1;
+    private int totalCount = 0;
 
     private OrderHistoryWindow() {
     }
@@ -68,43 +80,58 @@ public final class OrderHistoryWindow {
 
         searchField.setPromptText("Tìm theo mã đơn, nhân viên, khách hàng...");
         searchField.setPrefWidth(340);
-        searchField.textProperty().addListener((obs, old, value) -> applyFilter());
+        searchField.textProperty().addListener((obs, old, value) -> resetAndReload());
         statusFilter.getItems().setAll(ALL_STATUSES, STATUS_PAID, STATUS_CANCELLED);
         statusFilter.getSelectionModel().selectFirst();
-        statusFilter.setOnAction(e -> applyFilter());
+        statusFilter.setOnAction(e -> resetAndReload());
 
         viewButton.setDisable(true);
         cancelButton.setDisable(true);
         viewButton.setOnAction(e -> viewSelectedReceipt());
         cancelButton.setOnAction(e -> cancelSelectedOrder());
         table.getSelectionModel().selectedItemProperty().addListener((obs, old, selected) -> updateButtons(selected));
-        table.setPlaceholder(new Label("Chưa có đơn hàng nào"));
+        table.setPlaceholder(new Label("Không có đơn hàng nào khớp"));
         table.setOnMouseClicked(e -> {
             if (e.getClickCount() == 2) viewSelectedReceipt();
         });
 
         fromPicker.setPromptText("Từ ngày");
         toPicker.setPromptText("Đến ngày");
-        fromPicker.setOnAction(e -> applyFilter());
-        toPicker.setOnAction(e -> applyFilter());
+        fromPicker.setOnAction(e -> resetAndReload());
+        toPicker.setOnAction(e -> resetAndReload());
         Button clearDatesButton = new Button("Xóa lọc ngày");
         clearDatesButton.setOnAction(e -> {
             fromPicker.setValue(null);
             toPicker.setValue(null);
-            applyFilter();
+            resetAndReload();
+        });
+
+        previousPageButton.setOnAction(e -> {
+            if (currentPage > 1) {
+                currentPage--;
+                reload();
+            }
+        });
+        nextPageButton.setOnAction(e -> {
+            if (currentPage < totalPages()) {
+                currentPage++;
+                reload();
+            }
         });
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
         HBox top = new HBox(10, searchField, statusFilter, fromPicker, toPicker, clearDatesButton, spacer, countLabel);
-        HBox bottom = new HBox(10, viewButton, cancelButton);
+        HBox paging = new HBox(10, previousPageButton, pageLabel, nextPageButton);
+        HBox bottom = new HBox(10, viewButton, cancelButton, new Region(), paging);
+        HBox.setHgrow(bottom.getChildren().get(2), Priority.ALWAYS);
         VBox root = new VBox(12, top, table, bottom);
         root.setPadding(new Insets(16));
         VBox.setVgrow(table, Priority.ALWAYS);
 
         Stage stage = new Stage();
         stage.setTitle("Lịch sử đơn hàng");
-        stage.setScene(new Scene(root, 960, 560));
+        stage.setScene(new Scene(root, 960, 600));
         stage.show();
 
         reload();
@@ -142,34 +169,46 @@ public final class OrderHistoryWindow {
         };
     }
 
-    private void reload() {
-        Async.run(
-                () -> orderDAO.findHistory(HISTORY_LIMIT),
-                result -> { all = result; applyFilter(); },
-                error -> AlertUtil.error("Lỗi tải dữ liệu", "Không thể tải lịch sử đơn hàng: " + error.getMessage())
-        );
+    private HistoryFilter currentFilter() {
+        String statusChoice = statusFilter.getValue();
+        OrderStatus status = STATUS_PAID.equals(statusChoice) ? OrderStatus.PAID
+                : STATUS_CANCELLED.equals(statusChoice) ? OrderStatus.CANCELLED : null;
+        return new HistoryFilter(searchField.getText(), status, fromPicker.getValue(), toPicker.getValue());
     }
 
-    private void applyFilter() {
-        String keyword = searchField.getText() != null ? searchField.getText().trim().toLowerCase() : "";
-        String statusChoice = statusFilter.getValue();
-        java.time.LocalDate from = fromPicker.getValue();
-        java.time.LocalDate to = toPicker.getValue();
-        List<OrderSummary> filtered = all.stream()
-                .filter(s -> statusChoice == null || ALL_STATUSES.equals(statusChoice)
-                        || statusLabel(s.order().getStatus()).equals(statusChoice))
-                .filter(s -> from == null || (s.order().getOrderDate() != null
-                        && !s.order().getOrderDate().toLocalDate().isBefore(from)))
-                .filter(s -> to == null || (s.order().getOrderDate() != null
-                        && !s.order().getOrderDate().toLocalDate().isAfter(to)))
-                .filter(s -> keyword.isEmpty()
-                        || String.valueOf(s.order().getId()).contains(keyword.replace("#", ""))
-                        || orDash(s.employeeName()).toLowerCase().contains(keyword)
-                        || (s.customerName() != null && s.customerName().toLowerCase().contains(keyword)))
-                .collect(Collectors.toList());
-        table.getItems().setAll(filtered);
-        countLabel.setText(filtered.size() + " đơn" + (all.size() >= HISTORY_LIMIT
-                ? " (trong " + HISTORY_LIMIT + " đơn mới nhất)" : ""));
+    private int totalPages() {
+        return Math.max(1, (int) Math.ceil(totalCount / (double) PAGE_SIZE));
+    }
+
+    /** A search/status/date change invalidates whatever page we were on (there may not even be
+     *  that many pages of the new, narrower result set), so always jump back to page 1. */
+    private void resetAndReload() {
+        currentPage = 1;
+        reload();
+    }
+
+    private void reload() {
+        HistoryFilter filter = currentFilter();
+        int page = currentPage;
+        table.setDisable(true);
+        Async.run(
+                () -> new HistoryPage(
+                        orderDAO.findHistoryPage(filter, PAGE_SIZE, (page - 1) * PAGE_SIZE),
+                        orderDAO.countHistory(filter)),
+                result -> {
+                    table.setDisable(false);
+                    table.getItems().setAll(result.rows());
+                    totalCount = result.totalCount();
+                    countLabel.setText(totalCount + " đơn khớp bộ lọc");
+                    pageLabel.setText("Trang " + currentPage + "/" + totalPages());
+                    previousPageButton.setDisable(currentPage <= 1);
+                    nextPageButton.setDisable(currentPage >= totalPages());
+                },
+                error -> {
+                    table.setDisable(false);
+                    AlertUtil.error("Lỗi tải dữ liệu", "Không thể tải lịch sử đơn hàng: " + error.getMessage());
+                }
+        );
     }
 
     private void updateButtons(OrderSummary selected) {
@@ -218,3 +257,4 @@ public final class OrderHistoryWindow {
         );
     }
 }
+

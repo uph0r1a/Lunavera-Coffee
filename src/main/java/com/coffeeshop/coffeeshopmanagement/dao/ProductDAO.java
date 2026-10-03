@@ -3,7 +3,6 @@ package com.coffeeshop.coffeeshopmanagement.dao;
 import com.coffeeshop.coffeeshopmanagement.config.DatabaseConfig;
 import com.coffeeshop.coffeeshopmanagement.model.Product;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -199,11 +198,12 @@ public class ProductDAO {
         } else {
             statement.setNull(2, Types.INTEGER);
         }
-        statement.setBigDecimal(3, product.getPrice());
-        if (product.getCost() != null) {
-            statement.setBigDecimal(4, product.getCost());
+        statement.setLong(3, com.coffeeshop.coffeeshopmanagement.util.Money.toDong(product.getPrice()));
+        Long costDong = com.coffeeshop.coffeeshopmanagement.util.Money.toDongOrNull(product.getCost());
+        if (costDong != null) {
+            statement.setLong(4, costDong);
         } else {
-            statement.setNull(4, Types.DECIMAL);
+            statement.setNull(4, Types.INTEGER);
         }
         statement.setInt(5, product.getStock());
         statement.setString(6, product.getDescription());
@@ -218,9 +218,9 @@ public class ProductDAO {
         int categoryId = rs.getInt("category_id");
         product.setCategoryId(rs.wasNull() ? null : categoryId);
         product.setCategoryName(rs.getString("category_name"));
-        product.setPrice(rs.getBigDecimal("price"));
-        BigDecimal cost = rs.getBigDecimal("cost");
-        product.setCost(cost);
+        product.setPrice(com.coffeeshop.coffeeshopmanagement.util.Money.fromDong(rs.getLong("price")));
+        long costDong = rs.getLong("cost");
+        product.setCost(com.coffeeshop.coffeeshopmanagement.util.Money.fromDongOrNull(costDong, rs.wasNull()));
         product.setStock(rs.getInt("stock"));
         product.setDescription(rs.getString("description"));
         product.setImagePath(rs.getString("image_path"));

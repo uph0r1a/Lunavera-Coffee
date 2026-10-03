@@ -1,7 +1,5 @@
 package org.example.controller;
 
-import com.coffeeshop.coffeeshopmanagement.dao.TableDAO;
-import com.coffeeshop.coffeeshopmanagement.model.DiningTable;
 import com.coffeeshop.coffeeshopmanagement.service.DashboardStatsService;
 import com.coffeeshop.coffeeshopmanagement.service.DashboardStatsService.DashboardStats;
 import com.coffeeshop.coffeeshopmanagement.util.AlertUtil;
@@ -14,7 +12,6 @@ import com.coffeeshop.coffeeshopmanagement.util.SceneNavigator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 /**
@@ -43,12 +40,11 @@ public class EmployeeController {
     @FXML
     private Label dashboardAccountNameLabel;
     @FXML
-    private GridPane homeTableGrid;
+    private VBox recentOrdersList;
     @FXML
     private VBox lowStockList;
 
     private final DashboardStatsService dashboardStatsService = new DashboardStatsService();
-    private final TableDAO tableDAO = new TableDAO();
 
     @FXML
     private void initialize() {
@@ -89,24 +85,12 @@ public class EmployeeController {
         if (lowStockList != null) {
             DashboardWidgets.fillLowStock(lowStockList, stats.lowStockProducts());
         }
-        loadHomeTableGrid();
-    }
-
-    private void loadHomeTableGrid() {
-        if (homeTableGrid == null) return;
-        Async.run(
-                tableDAO::findAll,
-                tables -> DashboardWidgets.fillTableGrid(homeTableGrid, tables, this::handleHomeTableClick),
-                error -> AlertUtil.error("Lỗi", "Không thể tải sơ đồ bàn: " + error.getMessage())
-        );
-    }
-
-    private void handleHomeTableClick(DiningTable table) {
-        if (homeTableGrid == null || homeTableGrid.getScene() == null) return;
-        javafx.stage.Stage stage = (javafx.stage.Stage) homeTableGrid.getScene().getWindow();
-        OrderController controller = SceneNavigator.switchSceneAndGetController(stage, "/fxml/quanlydonhang.fxml");
-        if (controller != null) {
-            controller.selectTable(table.getTableNumber());
+        if (recentOrdersList != null) {
+            DashboardWidgets.fillRecentOrders(recentOrdersList, stats.recentOrders());
+        }
+        if (recentOrdersNoteLabel != null) {
+            recentOrdersNoteLabel.setText(stats.recentOrders().isEmpty()
+                    ? "Chưa có đơn" : stats.recentOrders().size() + " đơn mới nhất");
         }
     }
 

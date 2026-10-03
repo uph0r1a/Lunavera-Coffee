@@ -6,6 +6,7 @@ import com.coffeeshop.coffeeshopmanagement.model.OrderItem;
 import com.coffeeshop.coffeeshopmanagement.model.OrderStatus;
 import com.coffeeshop.coffeeshopmanagement.model.PaymentMethod;
 import com.coffeeshop.coffeeshopmanagement.service.LoyaltyPolicy;
+import com.coffeeshop.coffeeshopmanagement.util.Money;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -31,7 +32,7 @@ public class OrderDAO {
 
     public Order insert(Order order, List<OrderItem> items) {
         String orderSql = "INSERT INTO orders (order_date, employee_id, customer_id, status, subtotal, discount, " +
-                "total, payment_method, paid_at, table_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "total, payment_method, paid_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String itemSql = "INSERT INTO order_items (order_id, product_id, product_name, quantity, unit_price, line_total) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection connection = DatabaseConfig.getConnection()) {
@@ -42,12 +43,11 @@ public class OrderDAO {
                 setNullableInt(statement, 2, order.getEmployeeId());
                 setNullableInt(statement, 3, order.getCustomerId());
                 statement.setString(4, order.getStatus().name());
-                statement.setBigDecimal(5, order.getSubtotal());
-                statement.setBigDecimal(6, order.getDiscount());
-                statement.setBigDecimal(7, order.getTotal());
+                statement.setLong(5, Money.toDong(order.getSubtotal()));
+                statement.setLong(6, Money.toDong(order.getDiscount()));
+                statement.setLong(7, Money.toDong(order.getTotal()));
                 statement.setString(8, order.getPaymentMethod() != null ? order.getPaymentMethod().name() : null);
                 statement.setString(9, order.getPaidAt() != null ? order.getPaidAt().toString() : null);
-                setNullableInt(statement, 10, order.getTableNumber());
                 statement.executeUpdate();
                 try (ResultSet keys = statement.getGeneratedKeys()) {
                     keys.next();
@@ -60,8 +60,8 @@ public class OrderDAO {
                     setNullableInt(statement, 2, item.getProductId());
                     statement.setString(3, item.getProductName());
                     statement.setInt(4, item.getQuantity());
-                    statement.setBigDecimal(5, item.getUnitPrice());
-                    statement.setBigDecimal(6, item.getLineTotal());
+                    statement.setLong(5, Money.toDong(item.getUnitPrice()));
+                    statement.setLong(6, Money.toDong(item.getLineTotal()));
                     statement.addBatch();
                 }
                 statement.executeBatch();
@@ -139,67 +139,73 @@ public class OrderDAO {
         return result;
     }
 
-    /** All orders created today, newest first. */
-    public List<Order> findTodayOrders() {
-        List<Order> result = new ArrayList<>();
-        String sql = "SELECT * FROM orders WHERE DATE(order_date) = DATE('now', 'localtime') ORDER BY id DESC";
-        try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet rs = statement.executeQuery()) {
-            while (rs.next()) {
-                result.add(map(rs));
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException("Failed to load today's orders", e);
-        }
-        return result;
-    }
-
-    /** Find open order for a table if exists. */
-    public Optional<Order> findOpenOrderByTable(int tableNumber) {
-        String sql = "SELECT * FROM orders WHERE table_number = ? AND status = 'OPEN' ORDER BY id DESC LIMIT 1";
-        try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, tableNumber);
-            try (ResultSet rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    return Optional.of(map(rs));
-                }
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException("Failed to load open order for table " + tableNumber, e);
-        }
-        return Optional.empty();
-    }
-
-    /** Returns the next order id (1 if empty, or max(id) + 1). */
-    public int getNextOrderId() {
-        String sql = "SELECT COALESCE(MAX(id), 0) + 1 FROM orders";
-        try (Connection connection = DatabaseConfig.getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet rs = statement.executeQuery(sql)) {
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-            return 1;
-        } catch (SQLException e) {
-            throw new DataAccessException("Failed to get next order id", e);
-        }
-    }
-
     /** An order plus the display names the history screen needs (avoids N+1 lookups per row). */
     public record OrderSummary(Order order, String employeeName, String customerName) {
     }
 
-    /** Newest first. Capped so the history window stays fast on a long-running database. */
-    public List<OrderSummary> findHistory(int limit) {
-        String sql = "SELECT o.*, e.full_name AS employee_name, c.full_name AS customer_name FROM orders o " +
-                "LEFT JOIN employees e ON o.employee_id = e.id " +
-                "LEFT JOIN customers c ON o.customer_id = c.id ORDER BY o.id DESC LIMIT ?";
+    /** Search/status/date-range criteria for the history screen. Any field left null/blank is
+     *  not applied. Its own type rather than passing four loose parameters, since
+     *  {@link #findHistoryPage} and {@link #countHistory} both need to build the exact same
+     *  WHERE clause from it and must never drift apart. */
+    public record HistoryFilter(String keyword, OrderStatus status, LocalDate from, LocalDate to) {
+        public static final HistoryFilter NONE = new HistoryFilter(null, null, null, null);
+    }
+
+    private static final class FilterSql {
+        final String whereClause;
+        final List<Object> params = new ArrayList<>();
+
+        FilterSql(HistoryFilter filter) {
+            List<String> conditions = new ArrayList<>();
+            if (filter.status() != null) {
+                conditions.add("o.status = ?");
+                params.add(filter.status().name());
+            }
+            if (filter.from() != null) {
+                conditions.add("DATE(o.order_date) >= ?");
+                params.add(filter.from().toString());
+            }
+            if (filter.to() != null) {
+                conditions.add("DATE(o.order_date) <= ?");
+                params.add(filter.to().toString());
+            }
+            if (filter.keyword() != null && !filter.keyword().isBlank()) {
+                conditions.add("(CAST(o.id AS TEXT) LIKE ? OR e.full_name LIKE ? OR c.full_name LIKE ?)");
+                String like = "%" + filter.keyword().trim().replace("#", "") + "%";
+                params.add(like);
+                params.add(like);
+                params.add(like);
+            }
+            whereClause = conditions.isEmpty() ? "" : " WHERE " + String.join(" AND ", conditions);
+        }
+
+        int bind(PreparedStatement statement) throws SQLException {
+            int index = 1;
+            for (Object param : params) {
+                statement.setString(index++, (String) param);
+            }
+            return index;
+        }
+    }
+
+    private static final String HISTORY_FROM =
+            " FROM orders o LEFT JOIN employees e ON o.employee_id = e.id LEFT JOIN customers c ON o.customer_id = c.id";
+
+    /** One page of order history, newest first, matching {@code filter} - real server-side
+     *  paging (TODO.md: the old {@code findHistory(int limit)} loaded up to 500 rows into
+     *  memory and filtered client-side, so a date range further back than the most recent 500
+     *  orders silently showed nothing even when matching orders existed). Use with
+     *  {@link #countHistory} for the total row count driving the page controls. */
+    public List<OrderSummary> findHistoryPage(HistoryFilter filter, int pageSize, int offset) {
+        FilterSql filterSql = new FilterSql(filter);
+        String sql = "SELECT o.*, e.full_name AS employee_name, c.full_name AS customer_name"
+                + HISTORY_FROM + filterSql.whereClause + " ORDER BY o.id DESC LIMIT ? OFFSET ?";
         List<OrderSummary> result = new ArrayList<>();
         try (Connection connection = DatabaseConfig.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, limit);
+            int index = filterSql.bind(statement);
+            statement.setInt(index++, pageSize);
+            statement.setInt(index, offset);
             try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
                     result.add(new OrderSummary(map(rs), rs.getString("employee_name"), rs.getString("customer_name")));
@@ -209,6 +215,22 @@ public class OrderDAO {
             throw new DataAccessException("Failed to load order history", e);
         }
         return result;
+    }
+
+    /** Total rows matching {@code filter}, ignoring paging - for the page-count/"N đơn" label. */
+    public int countHistory(HistoryFilter filter) {
+        FilterSql filterSql = new FilterSql(filter);
+        String sql = "SELECT COUNT(*)" + HISTORY_FROM + filterSql.whereClause;
+        try (Connection connection = DatabaseConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            filterSql.bind(statement);
+            try (ResultSet rs = statement.executeQuery()) {
+                rs.next();
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to count order history", e);
+        }
     }
 
     /**
@@ -235,7 +257,7 @@ public class OrderDAO {
                         }
                         int cid = rs.getInt("customer_id");
                         customerId = rs.wasNull() ? null : cid;
-                        total = rs.getBigDecimal("total");
+                        total = Money.fromDong(rs.getLong("total"));
                     }
                 }
                 try (PreparedStatement items = connection.prepareStatement(
@@ -293,8 +315,8 @@ public class OrderDAO {
                     item.setProductId(rs.wasNull() ? null : productId);
                     item.setProductName(rs.getString("product_name"));
                     item.setQuantity(rs.getInt("quantity"));
-                    item.setUnitPrice(rs.getBigDecimal("unit_price"));
-                    item.setLineTotal(rs.getBigDecimal("line_total"));
+                    item.setUnitPrice(Money.fromDong(rs.getLong("unit_price")));
+                    item.setLineTotal(Money.fromDong(rs.getLong("line_total")));
                     items.add(item);
                 }
             }
@@ -329,8 +351,7 @@ public class OrderDAO {
              Statement statement = connection.createStatement();
              ResultSet rs = statement.executeQuery(sql)) {
             rs.next();
-            BigDecimal value = rs.getBigDecimal(1);
-            return value != null ? value : BigDecimal.ZERO;
+            return Money.fromDong(rs.getLong(1)); // COALESCE(...,0) guarantees a non-null row
         } catch (SQLException e) {
             throw new DataAccessException("Failed to sum today's revenue", e);
         }
@@ -367,7 +388,7 @@ public class OrderDAO {
              ResultSet rs = statement.executeQuery(sql)) {
             while (rs.next()) {
                 LocalDate date = LocalDate.parse(rs.getString("d"));
-                byDate.put(date, rs.getBigDecimal("revenue"));
+                byDate.put(date, Money.fromDong(rs.getLong("revenue")));
             }
         } catch (SQLException e) {
             throw new DataAccessException("Failed to load 7-day revenue", e);
@@ -404,17 +425,12 @@ public class OrderDAO {
         int customerId = rs.getInt("customer_id");
         order.setCustomerId(rs.wasNull() ? null : customerId);
         order.setStatus(OrderStatus.fromDb(rs.getString("status")));
-        order.setSubtotal(rs.getBigDecimal("subtotal"));
-        order.setDiscount(rs.getBigDecimal("discount"));
-        order.setTotal(rs.getBigDecimal("total"));
+        order.setSubtotal(Money.fromDong(rs.getLong("subtotal")));
+        order.setDiscount(Money.fromDong(rs.getLong("discount")));
+        order.setTotal(Money.fromDong(rs.getLong("total")));
         order.setPaymentMethod(PaymentMethod.fromDb(rs.getString("payment_method")));
         String paidAt = rs.getString("paid_at");
         order.setPaidAt(paidAt != null ? LocalDateTime.parse(paidAt) : null);
-        try {
-            int tableNumber = rs.getInt("table_number");
-            order.setTableNumber(rs.wasNull() ? null : tableNumber);
-        } catch (SQLException ignored) {
-        }
         return order;
     }
 }

@@ -33,16 +33,6 @@ public final class SceneNavigator {
     }
 
     public static void switchScene(Stage stage, String fxmlPath) {
-        switchSceneAndGetController(stage, fxmlPath);
-    }
-
-    public static <T> T switchSceneAndGetController(ActionEvent event, String fxmlPath) {
-        Node source = (Node) event.getSource();
-        Stage stage = (Stage) source.getScene().getWindow();
-        return switchSceneAndGetController(stage, fxmlPath);
-    }
-
-    public static <T> T switchSceneAndGetController(Stage stage, String fxmlPath) {
         // A locked/deactivated account (Account Management -> lock, or the last-admin guard
         // taking effect from another session) used to be checked only here, on screen changes.
         // SessionGuard (progress.md, latest session) now also covers a background 30s tick, the
@@ -51,19 +41,17 @@ public final class SceneNavigator {
         if (!LOGIN_FXML.equals(fxmlPath) && !DANGKY_FXML.equals(fxmlPath)
                 && Session.getCurrentUser() != null && !SessionGuard.validateNow()) {
             SessionGuard.forceLogout();
-            return null;
+            return;
         }
         try {
             FXMLLoader loader = new FXMLLoader(SceneNavigator.class.getResource(fxmlPath));
             Parent root = loader.load();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            return loader.getController();
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Failed to load screen: " + fxmlPath, e);
             AlertUtil.error("Lỗi điều hướng",
                     "Không thể mở màn hình được yêu cầu. Vui lòng thử lại hoặc liên hệ quản trị viên.");
-            return null;
         }
     }
 

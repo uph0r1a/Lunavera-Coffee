@@ -3,7 +3,6 @@ package com.coffeeshop.coffeeshopmanagement.dao;
 import com.coffeeshop.coffeeshopmanagement.config.DatabaseConfig;
 import com.coffeeshop.coffeeshopmanagement.model.Employee;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -108,10 +107,11 @@ public class EmployeeDAO {
         statement.setString(3, employee.getEmail());
         statement.setString(4, employee.getAddress());
         statement.setString(5, employee.getPosition());
-        if (employee.getSalary() != null) {
-            statement.setBigDecimal(6, employee.getSalary());
+        Long salaryDong = com.coffeeshop.coffeeshopmanagement.util.Money.toDongOrNull(employee.getSalary());
+        if (salaryDong != null) {
+            statement.setLong(6, salaryDong);
         } else {
-            statement.setNull(6, java.sql.Types.DECIMAL);
+            statement.setNull(6, java.sql.Types.INTEGER);
         }
         statement.setString(7, employee.getHireDate() != null ? employee.getHireDate().toString() : null);
         statement.setBoolean(8, employee.isActive());
@@ -125,8 +125,8 @@ public class EmployeeDAO {
         employee.setEmail(rs.getString("email"));
         employee.setAddress(rs.getString("address"));
         employee.setPosition(rs.getString("position"));
-        BigDecimal salary = rs.getBigDecimal("salary");
-        employee.setSalary(salary);
+        long salaryDong = rs.getLong("salary");
+        employee.setSalary(com.coffeeshop.coffeeshopmanagement.util.Money.fromDongOrNull(salaryDong, rs.wasNull()));
         String hireDate = rs.getString("hire_date");
         employee.setHireDate(hireDate != null ? LocalDate.parse(hireDate) : null);
         employee.setActive(rs.getBoolean("active"));

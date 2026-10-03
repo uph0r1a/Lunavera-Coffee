@@ -14,13 +14,9 @@ public class Order {
     private BigDecimal total;
     private PaymentMethod paymentMethod;
     private LocalDateTime paidAt;
-    private Integer tableNumber;
 
     public Order() {
     }
-
-    public Integer getTableNumber() { return tableNumber; }
-    public void setTableNumber(Integer tableNumber) { this.tableNumber = tableNumber; }
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
