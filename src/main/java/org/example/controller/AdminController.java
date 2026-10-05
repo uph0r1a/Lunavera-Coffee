@@ -4,9 +4,11 @@ import com.coffeeshop.coffeeshopmanagement.dao.CategoryDAO;
 import com.coffeeshop.coffeeshopmanagement.dao.DataAccessException;
 import com.coffeeshop.coffeeshopmanagement.dao.EmployeeDAO;
 import com.coffeeshop.coffeeshopmanagement.dao.ProductDAO;
+import com.coffeeshop.coffeeshopmanagement.dao.TableDAO;
 import com.coffeeshop.coffeeshopmanagement.dao.UserDAO;
 import com.coffeeshop.coffeeshopmanagement.model.AccountStatus;
 import com.coffeeshop.coffeeshopmanagement.model.Category;
+import com.coffeeshop.coffeeshopmanagement.model.DiningTable;
 import com.coffeeshop.coffeeshopmanagement.model.Employee;
 import com.coffeeshop.coffeeshopmanagement.model.Product;
 import com.coffeeshop.coffeeshopmanagement.model.Role;
@@ -28,6 +30,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
@@ -47,8 +50,12 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.Node;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.io.IOException;
@@ -76,6 +83,7 @@ public class AdminController {
     private final UserDAO userDAO = new UserDAO();
     private final EmployeeDAO employeeDAO = new EmployeeDAO();
     private final ProductDAO productDAO = new ProductDAO();
+    private final TableDAO tableDAO = new TableDAO();
 
     // ---------------------------------------------------------------- Dashboard (admin-trangchu.fxml)
     @FXML private Label dashboardProductCountLabel;
@@ -96,6 +104,8 @@ public class AdminController {
     @FXML private Label recentOrdersNoteLabel;
     @FXML private VBox recentOrdersList;
     @FXML private VBox lowStockList;
+    @FXML private GridPane homeTableGrid;
+    @FXML private VBox todayOrdersContainer;
 
     // ---------------------------------------------------------------- Category management
     @FXML private Label totalCategoryLabel;
@@ -171,18 +181,10 @@ public class AdminController {
     private User selectedAccount;
 
     // ---------------------------------------------------------------- Product management
-    @FXML private Button allCategoryButton;
-    @FXML private Button coffeeCategoryButton;
-    @FXML private Button cakeCategoryButton;
-    @FXML private Button juiceCategoryButton;
-    @FXML private Button allCategoryListButton;
-    @FXML private Button coffeeCategoryListButton;
-    @FXML private Button cakeCategoryListButton;
-    @FXML private Button juiceCategoryListButton;
-    @FXML private Label allProductCountLabel;
-    @FXML private Label coffeeCountLabel;
-    @FXML private Label cakeCountLabel;
-    @FXML private Label juiceCountLabel;
+    @FXML private HBox productCategoryTabsBox;
+    @FXML private VBox categoryListBox;
+    private Integer selectedProductCategoryId = null;
+
     @FXML private TextField searchField;
     @FXML private ComboBox<String> categoryFilter;
     @FXML private ComboBox<String> statusFilter;
@@ -201,13 +203,23 @@ public class AdminController {
     private final Pager<Product> productPager = new Pager<>(PAGE_SIZE);
     private List<Product> allProducts = List.of();
     private List<Category> allActiveCategories = List.of();
-    /** "ALL" / "COFFEE" / "CAKE" / "JUICE" - the quick-filter tabs already in the FXML. */
-    private String productCategoryTab = "ALL";
 
     // =================================================================== initialize
 
     @FXML
     private void initialize() {
+        if (!Session.isAdmin() && (categoryTable != null || accountTable != null || productTable != null)) {
+            javafx.application.Platform.runLater(() -> {
+                AlertUtil.warning("Không đủ quyền", "Chức năng này chỉ dành cho Quản trị viên.");
+                Node refNode = categoryTable != null ? categoryTable : (accountTable != null ? accountTable : productTable);
+                if (refNode != null && refNode.getScene() != null && refNode.getScene().getWindow() instanceof Stage stage) {
+                    SceneNavigator.switchScene(stage, "/fxml/employee-trangchu.fxml");
+                }
+            });
+            return;
+        }
+
+        loadHomeTableGrid();
         if (todayOrderLabel != null || todayRevenueLabel != null) {
             loadDashboardStats();
         }
@@ -278,6 +290,10 @@ public class AdminController {
 
     @FXML
     public void openProductManagement(ActionEvent event) {
+        if (!Session.isAdmin()) {
+            AlertUtil.warning("Không đủ quyền", "Chức năng này chỉ dành cho Quản trị viên.");
+            return;
+        }
         SceneNavigator.switchScene(event, "/fxml/quanlysanpham.fxml");
     }
 
@@ -303,6 +319,10 @@ public class AdminController {
 
     @FXML
     public void openCategoryManagement(ActionEvent event) {
+        if (!Session.isAdmin()) {
+            AlertUtil.warning("Không đủ quyền", "Chức năng này chỉ dành cho Quản trị viên.");
+            return;
+        }
         SceneNavigator.switchScene(event, "/fxml/quanlydanhmuc.fxml");
     }
 
@@ -320,6 +340,10 @@ public class AdminController {
 
     @FXML
     public void openEmployeeManagement(ActionEvent event) {
+        if (!Session.isAdmin()) {
+            AlertUtil.warning("Không đủ quyền", "Chức năng này chỉ dành cho Quản trị viên.");
+            return;
+        }
         // There is no separate employee-CRUD screen in this project; Account Management
         // (quanlytaikhoan.fxml) is the screen that creates/edits employee + login records,
         // so employee management is routed there. Documented as a deliberate decision in
@@ -329,6 +353,10 @@ public class AdminController {
 
     @FXML
     public void openAccountManagement(ActionEvent event) {
+        if (!Session.isAdmin()) {
+            AlertUtil.warning("Không đủ quyền", "Chức năng này chỉ dành cho Quản trị viên.");
+            return;
+        }
         SceneNavigator.switchScene(event, "/fxml/quanlytaikhoan.fxml");
     }
 
@@ -392,9 +420,7 @@ public class AdminController {
             dashboardProductCountLabel.setText(String.valueOf(stats.totalProducts()));
         }
         if (dashboardLowStockNoteLabel != null) {
-            dashboardLowStockNoteLabel.setText(stats.lowStockCount() == 0
-                    ? "Không có sản phẩm sắp hết hàng"
-                    : "Cần nhập thêm: " + stats.lowStockCount() + " sản phẩm");
+            dashboardLowStockNoteLabel.setText("Đang kinh doanh");
         }
         if (lowStockList != null) {
             DashboardWidgets.fillLowStock(lowStockList, stats.lowStockProducts());
@@ -405,6 +431,28 @@ public class AdminController {
         if (recentOrdersNoteLabel != null) {
             recentOrdersNoteLabel.setText(stats.recentOrders().isEmpty()
                     ? "Chưa có đơn" : stats.recentOrders().size() + " đơn mới nhất");
+        }
+        if (todayOrdersContainer != null) {
+            DashboardWidgets.fillTodayOrders(todayOrdersContainer, stats.todayOrdersList());
+        }
+        loadHomeTableGrid();
+    }
+
+    private void loadHomeTableGrid() {
+        if (homeTableGrid == null) return;
+        Async.run(
+                tableDAO::findAll,
+                tables -> DashboardWidgets.fillTableGrid(homeTableGrid, tables, this::handleHomeTableClick),
+                error -> AlertUtil.error("Lỗi", "Không thể tải sơ đồ bàn: " + error.getMessage())
+        );
+    }
+
+    private void handleHomeTableClick(DiningTable table) {
+        if (homeTableGrid == null || homeTableGrid.getScene() == null) return;
+        javafx.stage.Stage stage = (javafx.stage.Stage) homeTableGrid.getScene().getWindow();
+        OrderController controller = SceneNavigator.switchSceneAndGetController(stage, "/fxml/quanlydonhang.fxml");
+        if (controller != null) {
+            controller.selectTable(table.getTableNumber());
         }
     }
 
@@ -1080,108 +1128,142 @@ public class AdminController {
                 () -> {
                     List<Category> categories = categoryDAO.findAll();
                     List<Product> products = productDAO.findAll();
-                    return new Object[]{categories, products};
+                    Map<Integer, Integer> counts = categoryDAO.countProductsByCategory();
+                    return new Object[]{categories, products, counts};
                 },
                 result -> {
-                    allActiveCategories = ((List<Category>) result[0]).stream()
+                    allCategories = castList(result[0]);
+                    allActiveCategories = allCategories.stream()
                             .filter(Category::isActive).collect(Collectors.toList());
                     allProducts = (List<Product>) result[1];
+                    categoryProductCounts = castCountMap(result[2]);
 
-                    String currentCategoryChoice = categoryFilter.getValue();
-                    categoryFilter.getItems().setAll("Tất cả danh mục");
-                    allActiveCategories.forEach(c -> categoryFilter.getItems().add(c.getName()));
-                    categoryFilter.setValue(
-                            currentCategoryChoice != null && categoryFilter.getItems().contains(currentCategoryChoice)
-                                    ? currentCategoryChoice : "Tất cả danh mục");
+                    if (categoryFilter != null) {
+                        String currentCategoryChoice = categoryFilter.getValue();
+                        categoryFilter.getItems().setAll("Tất cả danh mục");
+                        allActiveCategories.forEach(c -> categoryFilter.getItems().add(c.getName()));
+                        categoryFilter.setValue(
+                                currentCategoryChoice != null && categoryFilter.getItems().contains(currentCategoryChoice)
+                                        ? currentCategoryChoice : "Tất cả danh mục");
+                    }
 
+                    renderProductCategoryTabs();
+                    renderProductCategoryList();
                     applyProductFilter();
                 },
                 error -> AlertUtil.error("Lỗi tải dữ liệu", "Không thể tải danh sách sản phẩm: " + error.getMessage())
         );
     }
 
+    private void renderProductCategoryTabs() {
+        if (productCategoryTabsBox == null) return;
+        productCategoryTabsBox.getChildren().clear();
+
+        Button allBtn = new Button("▦   Tất cả");
+        allBtn.getStyleClass().add("category-button");
+        if (selectedProductCategoryId == null) {
+            allBtn.getStyleClass().add("category-button-active");
+        }
+        allBtn.setOnAction(e -> setProductCategoryTab(null));
+        productCategoryTabsBox.getChildren().add(allBtn);
+
+        for (Category cat : allActiveCategories) {
+            String icon = getCategoryIcon(cat.getName());
+            Button catBtn = new Button(icon + "   " + cat.getName());
+            catBtn.getStyleClass().add("category-button");
+            if (selectedProductCategoryId != null && selectedProductCategoryId.equals(cat.getId())) {
+                catBtn.getStyleClass().add("category-button-active");
+            }
+            catBtn.setOnAction(e -> setProductCategoryTab(cat.getId()));
+            productCategoryTabsBox.getChildren().add(catBtn);
+        }
+    }
+
+    private void renderProductCategoryList() {
+        if (categoryListBox == null) return;
+        categoryListBox.getChildren().clear();
+
+        Button allBtn = createCategoryListRow(null, "▦", "Tất cả", allProducts.size());
+        categoryListBox.getChildren().add(allBtn);
+
+        for (Category cat : allActiveCategories) {
+            int count = categoryProductCounts.getOrDefault(cat.getId(), 0);
+            String icon = getCategoryIcon(cat.getName());
+            Button catBtn = createCategoryListRow(cat.getId(), icon, cat.getName(), count);
+            categoryListBox.getChildren().add(catBtn);
+        }
+    }
+
+    private Button createCategoryListRow(Integer categoryId, String icon, String name, int count) {
+        Button btn = new Button();
+        btn.setMaxWidth(Double.MAX_VALUE);
+        btn.setPrefHeight(36);
+        btn.getStyleClass().add("category-list-button");
+        boolean isSelected = (selectedProductCategoryId == null && categoryId == null) ||
+                             (selectedProductCategoryId != null && selectedProductCategoryId.equals(categoryId));
+        if (isSelected) {
+            btn.getStyleClass().add("category-list-active");
+        }
+
+        Label iconLbl = new Label(icon);
+        Label nameLbl = new Label(name);
+        nameLbl.setMaxWidth(110);
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        Label countLbl = new Label(String.valueOf(count));
+        countLbl.setStyle("-fx-font-size: 11px; -fx-text-fill: #7d8b72; -fx-font-weight: bold;");
+
+        HBox graphic = new HBox(8, iconLbl, nameLbl, spacer, countLbl);
+        graphic.setAlignment(Pos.CENTER_LEFT);
+        btn.setGraphic(graphic);
+
+        btn.setOnAction(e -> setProductCategoryTab(categoryId));
+        return btn;
+    }
+
+    private String getCategoryIcon(String name) {
+        if (name == null) return "●";
+        String lower = name.toLowerCase();
+        if (lower.contains("phê") || lower.contains("coffee")) return "☕";
+        if (lower.contains("bánh") || lower.contains("cake")) return "♨";
+        if (lower.contains("trà") || lower.contains("tea")) return "🍵";
+        if (lower.contains("nước") || lower.contains("juice") || lower.contains("sinh tố")) return "▣";
+        return "●";
+    }
+
+    private void setProductCategoryTab(Integer categoryId) {
+        selectedProductCategoryId = categoryId;
+        productPager.goToPage(1);
+        renderProductCategoryTabs();
+        renderProductCategoryList();
+        applyProductFilter();
+    }
+
     private void applyProductFilter() {
-        String keyword = searchField.getText() != null ? searchField.getText().trim().toLowerCase() : "";
-        String categoryChoice = categoryFilter.getValue();
-        String statusChoice = statusFilter.getValue();
+        String keyword = searchField != null && searchField.getText() != null ? searchField.getText().trim().toLowerCase() : "";
+        String categoryChoice = categoryFilter != null ? categoryFilter.getValue() : null;
+        String statusChoice = statusFilter != null ? statusFilter.getValue() : null;
 
         List<Product> filtered = allProducts.stream()
-                .filter(p -> matchesCategoryTab(p, productCategoryTab))
+                .filter(p -> selectedProductCategoryId == null || (p.getCategoryId() != null && p.getCategoryId().equals(selectedProductCategoryId)))
                 .filter(p -> keyword.isEmpty() || p.getName().toLowerCase().contains(keyword))
                 .filter(p -> categoryChoice == null || categoryChoice.startsWith("Tất cả")
-                        || categoryChoice.equals(p.getCategoryName()))
+                        || (p.getCategoryName() != null && categoryChoice.equals(p.getCategoryName())))
                 .filter(p -> statusChoice == null || statusChoice.startsWith("Tất cả")
                         || p.isActive() == statusChoice.equals("Đang bán"))
                 .collect(Collectors.toList());
 
         productPager.setItems(filtered);
-        productTable.getItems().setAll(productPager.getCurrentPageItems());
-        productTable.refresh();
+        if (productTable != null) {
+            productTable.getItems().setAll(productPager.getCurrentPageItems());
+            productTable.refresh();
+        }
 
         if (totalProductLabel != null) {
             totalProductLabel.setText("Tổng cộng: " + filtered.size() + " sản phẩm");
         }
-        // Tab counts reflect the true category, independent of the search box/filters above -
-        // they answer "how many products are in this category overall", not "how many match
-        // what's currently typed".
-        if (allProductCountLabel != null) allProductCountLabel.setText(String.valueOf(allProducts.size()));
-        if (coffeeCountLabel != null) {
-            coffeeCountLabel.setText(String.valueOf(allProducts.stream().filter(p -> matchesCategoryTab(p, "COFFEE")).count()));
-        }
-        if (cakeCountLabel != null) {
-            cakeCountLabel.setText(String.valueOf(allProducts.stream().filter(p -> matchesCategoryTab(p, "CAKE")).count()));
-        }
-        if (juiceCountLabel != null) {
-            juiceCountLabel.setText(String.valueOf(allProducts.stream().filter(p -> matchesCategoryTab(p, "JUICE")).count()));
-        }
     }
 
-    /**
-     * The four quick-filter tabs (All/Coffee/Cake/Juice) are static UI carried over from the
-     * original design rather than generated from the live category list (see progress.md for
-     * why: turning them into a dynamic, arbitrary-length tab bar is an FXML layout change, not
-     * just a controller change). They still reflect real data: a product only counts under
-     * "Coffee" etc. if its actual category name contains the matching keyword. A shop that
-     * never creates a category with these words simply sees 0 there - never a fake count.
-     */
-    private boolean matchesCategoryTab(Product product, String tab) {
-        if ("ALL".equals(tab)) {
-            return true;
-        }
-        String category = product.getCategoryName() != null ? product.getCategoryName().toLowerCase() : "";
-        return switch (tab) {
-            case "COFFEE" -> category.contains("phê") || category.contains("coffee");
-            case "CAKE" -> category.contains("bánh") || category.contains("cake");
-            case "JUICE" -> category.contains("nước") || category.contains("juice");
-            default -> true;
-        };
-    }
-
-    private void setProductCategoryTab(String tab) {
-        productCategoryTab = tab;
-        productPager.goToPage(1);
-        applyProductFilter();
-
-        Button[] activeTabs = {allCategoryButton, coffeeCategoryButton, cakeCategoryButton, juiceCategoryButton};
-        Button[] activeListButtons = {allCategoryListButton, coffeeCategoryListButton, cakeCategoryListButton, juiceCategoryListButton};
-        String[] tabKeys = {"ALL", "COFFEE", "CAKE", "JUICE"};
-        for (int i = 0; i < tabKeys.length; i++) {
-            boolean active = tabKeys[i].equals(tab);
-            toggleStyleClass(activeTabs[i], "category-button-active", active);
-            toggleStyleClass(activeListButtons[i], "category-list-active", active);
-        }
-    }
-
-    private void toggleStyleClass(Button button, String styleClass, boolean present) {
-        if (button == null) return;
-        button.getStyleClass().remove(styleClass);
-        if (present) button.getStyleClass().add(styleClass);
-    }
-
-    @FXML public void handleAllCategory() { setProductCategoryTab("ALL"); }
-    @FXML public void handleCoffeeCategory() { setProductCategoryTab("COFFEE"); }
-    @FXML public void handleCakeCategory() { setProductCategoryTab("CAKE"); }
-    @FXML public void handleJuiceCategory() { setProductCategoryTab("JUICE"); }
     @FXML public void handleCategoryFilter() { applyProductFilter(); }
     @FXML public void handleStatusFilter() { applyProductFilter(); }
 

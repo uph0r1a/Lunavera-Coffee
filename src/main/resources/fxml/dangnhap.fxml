@@ -84,12 +84,12 @@
 
       <!-- Username -->
       <VBox maxWidth="310" prefWidth="310" spacing="6">
-         <Label styleClass="field-label" text="Tên đăng nhập"/>
+         <Label styleClass="field-label" text="Tên đăng nhập hoặc SĐT"/>
          <TextField fx:id="usernameField"
                     maxWidth="310"
                     prefHeight="42"
                     prefWidth="310"
-                    promptText="Nhập tên đăng nhập"
+                    promptText="Nhập tên đăng nhập hoặc số điện thoại"
                     styleClass="login-field"/>
       </VBox>
 

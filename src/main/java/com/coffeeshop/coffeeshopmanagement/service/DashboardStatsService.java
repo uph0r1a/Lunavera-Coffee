@@ -33,7 +33,8 @@ public class DashboardStatsService {
             Map<LocalDate, BigDecimal> revenueLast7Days,
             int lowStockCount,
             List<Product> lowStockProducts,
-            List<Order> recentOrders
+            List<Order> recentOrders,
+            List<Order> todayOrdersList
     ) {
     }
 
@@ -71,7 +72,8 @@ public class DashboardStatsService {
                 orderDAO.revenueForLast7Days(),
                 productDAO.countLowStock(ProductDAO.LOW_STOCK_THRESHOLD),
                 productDAO.findLowStock(ProductDAO.LOW_STOCK_THRESHOLD, LOW_STOCK_ROWS),
-                orderDAO.findRecent(RECENT_ORDER_ROWS)
+                orderDAO.findRecent(RECENT_ORDER_ROWS),
+                orderDAO.findTodayOrders()
         );
     }
 }

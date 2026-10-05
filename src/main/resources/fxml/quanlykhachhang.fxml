@@ -50,7 +50,8 @@
                         styleClass="menu-button"
                         onAction="#openDashboard"/>
 
-                <Button text="▣   Quản lý sản phẩm"
+                <Button fx:id="productMenuButton"
+                        text="▣   Quản lý sản phẩm"
                         prefHeight="48.0"
                         maxWidth="1.7976931348623157E308"
                         styleClass="menu-button"
@@ -68,32 +69,18 @@
                         styleClass="menu-button,menu-button-active"/>
             </VBox>
 
-            <Separator styleClass="sidebar-separator"/>
+            <Separator fx:id="categorySeparator" styleClass="sidebar-separator"/>
 
-            <VBox spacing="6.0">
-                <Button text="▦   Quản lý danh mục"
+            <VBox fx:id="adminMenuBox" spacing="6.0">
+                <Button fx:id="categoryMenuButton"
+                        text="▦   Quản lý danh mục"
                         prefHeight="48.0"
                         maxWidth="1.7976931348623157E308"
                         styleClass="menu-button"
                         onAction="#openCategoryManagement"/>
 
-                <Button text="▣   Quản lý kho"
-                        prefHeight="48.0"
-                        maxWidth="1.7976931348623157E308"
-                        styleClass="menu-button"
-                        onAction="#openInventoryManagement"/>
-            </VBox>
-
-            <Separator styleClass="sidebar-separator"/>
-
-            <VBox spacing="6.0">
-                <Button text="♙   Quản lý nhân viên"
-                        prefHeight="48.0"
-                        maxWidth="1.7976931348623157E308"
-                        styleClass="menu-button"
-                        onAction="#openEmployeeManagement"/>
-
-                <Button text="♙   Quản lý tài khoản"
+                <Button fx:id="accountMenuButton"
+                        text="♙   Quản lý tài khoản"
                         prefHeight="48.0"
                         maxWidth="1.7976931348623157E308"
                         styleClass="menu-button"

@@ -7,6 +7,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
@@ -189,6 +190,24 @@ public final class DatabaseConfig {
                     FOREIGN KEY (product_id) REFERENCES products(id)
                 )
                 """);
+
+            statement.execute("""
+                CREATE TABLE IF NOT EXISTS dining_tables (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    table_number INTEGER UNIQUE NOT NULL,
+                    name TEXT NOT NULL,
+                    status TEXT NOT NULL DEFAULT 'EMPTY',
+                    capacity INTEGER DEFAULT 4,
+                    current_order_id INTEGER,
+                    FOREIGN KEY (current_order_id) REFERENCES orders(id)
+                )
+                """);
+
+            try {
+                statement.execute("ALTER TABLE orders ADD COLUMN table_number INTEGER");
+            } catch (SQLException ignored) {
+                // Column already exists
+            }
             }
 
             if (preexisting) {
@@ -198,11 +217,33 @@ public final class DatabaseConfig {
             }
 
             seedDefaultAdmin(connection);
+            seedDiningTables(connection);
             MenuSeeder.seedIfNeeded(connection);
+            syncCategoriesAndProducts(connection);
             initialized = true;
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Database initialization failed", e);
             throw new IllegalStateException("Could not initialize the database", e);
+        }
+    }
+
+    private static void syncCategoriesAndProducts(Connection connection) throws SQLException {
+        try (Statement statement = connection.createStatement()) {
+            Integer caPheWithAccentId = null;
+            Integer caPheNoAccentId = null;
+            try (ResultSet rs = statement.executeQuery("SELECT id, name FROM categories WHERE name = 'Cà phê' OR name = 'Ca Phe'")) {
+                while (rs.next()) {
+                    if ("Cà phê".equals(rs.getString("name"))) {
+                        caPheWithAccentId = rs.getInt("id");
+                    } else if ("Ca Phe".equals(rs.getString("name"))) {
+                        caPheNoAccentId = rs.getInt("id");
+                    }
+                }
+            }
+            if (caPheWithAccentId != null && caPheNoAccentId != null && !caPheWithAccentId.equals(caPheNoAccentId)) {
+                statement.executeUpdate("UPDATE products SET category_id = " + caPheWithAccentId + " WHERE category_id = " + caPheNoAccentId);
+                statement.executeUpdate("DELETE FROM categories WHERE id = " + caPheNoAccentId);
+            }
         }
     }
 
@@ -260,5 +301,27 @@ public final class DatabaseConfig {
 
         LOGGER.info("Seeded default admin account (username: admin / password: Admin@123). " +
                 "Change this password after first login.");
+    }
+
+    private static void seedDiningTables(Connection connection) throws SQLException {
+        try (Statement check = connection.createStatement()) {
+            var rs = check.executeQuery("SELECT COUNT(*) FROM dining_tables");
+            rs.next();
+            if (rs.getInt(1) > 0) {
+                return; // already seeded
+            }
+        }
+
+        String insertSql = "INSERT INTO dining_tables (table_number, name, status, capacity) VALUES (?, ?, 'EMPTY', ?)";
+        try (var insert = connection.prepareStatement(insertSql)) {
+            for (int i = 1; i <= 12; i++) {
+                insert.setInt(1, i);
+                insert.setString(2, "Bàn " + i);
+                insert.setInt(3, 4);
+                insert.addBatch();
+            }
+            insert.executeBatch();
+        }
+        LOGGER.info("Seeded 12 dining tables into dining_tables.");
     }
 }

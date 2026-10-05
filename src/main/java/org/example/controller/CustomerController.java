@@ -59,12 +59,33 @@ public class CustomerController {
     @FXML private TableColumn<Customer, String> customerTierColumn;
     @FXML private TableColumn<Customer, Void> customerActionColumn;
 
+    @FXML private Button productMenuButton;
+    @FXML private Button categoryMenuButton;
+    @FXML private Button accountMenuButton;
+    @FXML private javafx.scene.control.Separator categorySeparator;
+    @FXML private javafx.scene.layout.VBox adminMenuBox;
+
     private List<Customer> allCustomers = List.of();
 
     @FXML
     private void initialize() {
         if (accountNameLabel != null) accountNameLabel.setText(Session.getDisplayName());
         if (accountRoleLabel != null) accountRoleLabel.setText(Session.isAdmin() ? "Quản trị viên" : "Nhân viên");
+
+        if (!Session.isAdmin()) {
+            if (productMenuButton != null) {
+                productMenuButton.setVisible(false);
+                productMenuButton.setManaged(false);
+            }
+            if (categorySeparator != null) {
+                categorySeparator.setVisible(false);
+                categorySeparator.setManaged(false);
+            }
+            if (adminMenuBox != null) {
+                adminMenuBox.setVisible(false);
+                adminMenuBox.setManaged(false);
+            }
+        }
 
         customerIndexColumn.setCellValueFactory(data -> new SimpleIntegerProperty(
                 customerTable.getItems().indexOf(data.getValue()) + 1));
@@ -214,6 +235,10 @@ public class CustomerController {
 
     @FXML
     public void openProductManagement(ActionEvent event) {
+        if (!Session.isAdmin()) {
+            AlertUtil.warning("Không đủ quyền", "Chức năng này chỉ dành cho Quản trị viên.");
+            return;
+        }
         SceneNavigator.switchScene(event, "/fxml/quanlysanpham.fxml");
     }
 
@@ -224,6 +249,10 @@ public class CustomerController {
 
     @FXML
     public void openCategoryManagement(ActionEvent event) {
+        if (!Session.isAdmin()) {
+            AlertUtil.warning("Không đủ quyền", "Chức năng này chỉ dành cho Quản trị viên.");
+            return;
+        }
         SceneNavigator.switchScene(event, "/fxml/quanlydanhmuc.fxml");
     }
 
@@ -236,11 +265,19 @@ public class CustomerController {
 
     @FXML
     public void openEmployeeManagement(ActionEvent event) {
+        if (!Session.isAdmin()) {
+            AlertUtil.warning("Không đủ quyền", "Chức năng này chỉ dành cho Quản trị viên.");
+            return;
+        }
         SceneNavigator.switchScene(event, "/fxml/quanlytaikhoan.fxml");
     }
 
     @FXML
     public void openAccountManagement(ActionEvent event) {
+        if (!Session.isAdmin()) {
+            AlertUtil.warning("Không đủ quyền", "Chức năng này chỉ dành cho Quản trị viên.");
+            return;
+        }
         SceneNavigator.switchScene(event, "/fxml/quanlytaikhoan.fxml");
     }
 
