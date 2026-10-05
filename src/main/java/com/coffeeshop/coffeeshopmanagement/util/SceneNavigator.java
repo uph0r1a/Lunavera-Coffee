@@ -55,6 +55,26 @@ public final class SceneNavigator {
         }
     }
 
+    public static <T> T switchSceneAndGetController(Stage stage, String fxmlPath) {
+        if (!LOGIN_FXML.equals(fxmlPath) && !DANGKY_FXML.equals(fxmlPath)
+                && Session.getCurrentUser() != null && !SessionGuard.validateNow()) {
+            SessionGuard.forceLogout();
+            return null;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(SceneNavigator.class.getResource(fxmlPath));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            return loader.getController();
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Failed to load screen: " + fxmlPath, e);
+            AlertUtil.error("Lỗi điều hướng",
+                    "Không thể mở màn hình được yêu cầu. Vui lòng thử lại hoặc liên hệ quản trị viên.");
+            return null;
+        }
+    }
+
     /**
      * Loads an FXML file and returns its controller as well, for callers that need to push
      * data into the new screen (e.g. opening the invoice window for a specific order).

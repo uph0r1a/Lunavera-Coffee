@@ -66,22 +66,6 @@
                         maxWidth="1.7976931348623157E308"
                         styleClass="menu-button,menu-button-active"/>
 
-                <Button text="▣   Quản lý kho"
-                        prefHeight="48.0"
-                        maxWidth="1.7976931348623157E308"
-                        styleClass="menu-button"
-                        onAction="#openInventoryManagement"/>
-            </VBox>
-
-            <Separator styleClass="sidebar-separator"/>
-
-            <VBox spacing="6.0">
-                <Button text="♙   Quản lý nhân viên"
-                        prefHeight="48.0"
-                        maxWidth="1.7976931348623157E308"
-                        styleClass="menu-button"
-                        onAction="#openEmployeeManagement"/>
-
                 <Button text="♙   Quản lý tài khoản"
                         prefHeight="48.0"
                         maxWidth="1.7976931348623157E308"

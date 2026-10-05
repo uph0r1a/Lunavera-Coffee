@@ -467,3 +467,65 @@
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
 }
+
+/* ==================== SƠ ĐỒ BÀN PHỤC VỤ (12 BÀN) ==================== */
+
+.status-dot-occupied {
+    -fx-text-fill: #2e7d32;
+    -fx-font-size: 13px;
+}
+
+.status-dot-empty {
+    -fx-text-fill: #adb5bd;
+    -fx-font-size: 13px;
+}
+
+.status-legend-text {
+    -fx-text-fill: #586949;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 12px;
+    -fx-font-weight: 500;
+}
+
+.table-button-occupied {
+    -fx-background-color: #e8f5e9;
+    -fx-text-fill: #1b5e20;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10px;
+    -fx-border-color: #4caf50;
+    -fx-border-radius: 10px;
+    -fx-border-width: 1.5px;
+    -fx-alignment: CENTER;
+    -fx-cursor: hand;
+    -fx-line-spacing: 3px;
+    -fx-effect: dropshadow(gaussian, rgba(46, 125, 50, 0.15), 5, 0, 0, 1);
+}
+
+.table-button-occupied:hover {
+    -fx-background-color: #c8e6c9;
+    -fx-border-color: #2e7d32;
+    -fx-effect: dropshadow(gaussian, rgba(46, 125, 50, 0.25), 6, 0, 0, 2);
+}
+
+.table-button-empty {
+    -fx-background-color: #f1f3f5;
+    -fx-text-fill: #6c757d;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-background-radius: 10px;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 10px;
+    -fx-border-width: 1px;
+    -fx-alignment: CENTER;
+    -fx-cursor: hand;
+    -fx-line-spacing: 3px;
+}
+
+.table-button-empty:hover {
+    -fx-background-color: #e9ecef;
+    -fx-border-color: #adb5bd;
+    -fx-text-fill: #495057;
+}

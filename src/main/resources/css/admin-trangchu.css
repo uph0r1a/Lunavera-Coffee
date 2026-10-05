@@ -467,3 +467,178 @@
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
 }
+
+/* ==================== TODAY ORDERS & SUMMARY BOX ==================== */
+
+.order-summary-box {
+    -fx-background-color: #f7faf3;
+    -fx-background-radius: 9px;
+    -fx-border-color: #e5edd9;
+    -fx-border-width: 1px;
+    -fx-border-radius: 9px;
+    -fx-padding: 12px 14px;
+}
+
+.today-orders-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.today-orders-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.today-orders-container {
+    -fx-background-color: transparent;
+    -fx-padding: 2px 2px 2px 0;
+}
+
+.today-order-item {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 8px;
+    -fx-border-color: #e5edd9;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-padding: 9px 12px;
+}
+
+.today-order-item:hover {
+    -fx-background-color: #f7faf2;
+    -fx-border-color: #b7d598;
+}
+
+.today-order-id {
+    -fx-text-fill: #1d3e12;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.today-order-table {
+    -fx-text-fill: #55793e;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+}
+
+.today-order-time {
+    -fx-text-fill: #829a70;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 11px;
+}
+
+.today-order-badge-paid {
+    -fx-background-color: #eaf6ea;
+    -fx-background-radius: 5px;
+    -fx-text-fill: #194d1c;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 3px 7px;
+}
+
+.today-order-badge-open {
+    -fx-background-color: #fef6e7;
+    -fx-background-radius: 5px;
+    -fx-text-fill: #ad6d14;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 3px 7px;
+}
+
+.today-order-badge-cancelled {
+    -fx-background-color: #fde8e6;
+    -fx-background-radius: 5px;
+    -fx-text-fill: #c63321;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 3px 7px;
+}
+
+.today-order-total {
+    -fx-text-fill: #1c3c10;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.today-orders-empty {
+    -fx-text-fill: #7c936b;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 13px;
+    -fx-font-style: italic;
+    -fx-alignment: CENTER;
+}
+
+/* ==================== TABLE MAP STYLES ==================== */
+
+.section-subtitle {
+    -fx-text-fill: #78896a;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 13px;
+    -fx-font-weight: 500;
+}
+
+.status-dot-occupied {
+    -fx-text-fill: #2e7d32;
+    -fx-font-size: 13px;
+}
+
+.status-dot-empty {
+    -fx-text-fill: #adb5bd;
+    -fx-font-size: 13px;
+}
+
+.status-legend-text {
+    -fx-text-fill: #586949;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 12px;
+    -fx-font-weight: 500;
+}
+
+.table-button-occupied {
+    -fx-background-color: #e8f5e9;
+    -fx-text-fill: #1b5e20;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10px;
+    -fx-border-color: #4caf50;
+    -fx-border-radius: 10px;
+    -fx-border-width: 1.5px;
+    -fx-alignment: CENTER;
+    -fx-cursor: hand;
+    -fx-line-spacing: 3px;
+    -fx-effect: dropshadow(gaussian, rgba(46, 125, 50, 0.15), 5, 0, 0, 1);
+}
+
+.table-button-occupied:hover {
+    -fx-background-color: #c8e6c9;
+    -fx-border-color: #2e7d32;
+    -fx-effect: dropshadow(gaussian, rgba(46, 125, 50, 0.25), 6, 0, 0, 2);
+}
+
+.table-button-empty {
+    -fx-background-color: #f1f3f5;
+    -fx-text-fill: #6c757d;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-background-radius: 10px;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 10px;
+    -fx-border-width: 1px;
+    -fx-alignment: CENTER;
+    -fx-cursor: hand;
+    -fx-line-spacing: 3px;
+}
+
+.table-button-empty:hover {
+    -fx-background-color: #e9ecef;
+    -fx-border-color: #adb5bd;
+    -fx-text-fill: #495057;
+}

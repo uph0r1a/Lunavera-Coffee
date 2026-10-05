@@ -18,10 +18,15 @@ import java.util.Optional;
 public class UserDAO {
 
     public Optional<User> findByUsername(String username) {
-        String sql = "SELECT * FROM users WHERE username = ?";
+        String sql = "SELECT u.* FROM users u " +
+                "LEFT JOIN employees e ON u.employee_id = e.id " +
+                "LEFT JOIN customers c ON u.customer_id = c.id " +
+                "WHERE u.username = ? OR e.phone = ? OR c.phone = ? LIMIT 1";
         try (Connection connection = DatabaseConfig.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, username);
+            statement.setString(2, username);
+            statement.setString(3, username);
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
                     return Optional.of(map(rs));

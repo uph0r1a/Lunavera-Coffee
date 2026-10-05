@@ -1,15 +1,20 @@
 package org.example.controller;
 
+import com.coffeeshop.coffeeshopmanagement.dao.CategoryDAO;
 import com.coffeeshop.coffeeshopmanagement.dao.CustomerDAO;
 import com.coffeeshop.coffeeshopmanagement.dao.DataAccessException;
 import com.coffeeshop.coffeeshopmanagement.dao.OrderDAO;
 import com.coffeeshop.coffeeshopmanagement.dao.ProductDAO;
+import com.coffeeshop.coffeeshopmanagement.dao.TableDAO;
+import com.coffeeshop.coffeeshopmanagement.model.Category;
 import com.coffeeshop.coffeeshopmanagement.model.Customer;
+import com.coffeeshop.coffeeshopmanagement.model.DiningTable;
 import com.coffeeshop.coffeeshopmanagement.model.Order;
 import com.coffeeshop.coffeeshopmanagement.model.OrderItem;
 import com.coffeeshop.coffeeshopmanagement.model.OrderStatus;
 import com.coffeeshop.coffeeshopmanagement.model.PaymentMethod;
 import com.coffeeshop.coffeeshopmanagement.model.Product;
+import com.coffeeshop.coffeeshopmanagement.model.TableStatus;
 import com.coffeeshop.coffeeshopmanagement.util.AlertUtil;
 import com.coffeeshop.coffeeshopmanagement.util.Async;
 import com.coffeeshop.coffeeshopmanagement.util.CurrencyUtil;
@@ -17,6 +22,9 @@ import com.coffeeshop.coffeeshopmanagement.util.SceneNavigator;
 import com.coffeeshop.coffeeshopmanagement.util.Session;
 import com.coffeeshop.coffeeshopmanagement.util.SessionGuard;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -37,8 +45,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -52,51 +64,27 @@ import java.util.stream.Collectors;
 
 /**
  * Backs the POS/order-creation screen (quanlydonhang.fxml) - a dine-in table grid + a live
- * cart + checkout. Deliberately its own class rather than a 7th screen folded into
- * AdminController: that class was already ~1300 lines across 6 screens and had already needed
- * 5 field/method-name collision renames for the 6th (see progress.md, Session 6) - adding the
- * single largest remaining screen on top of that was the point to stop growing the shared
- * class further. The ~9 simple one-line navigation methods below are duplicated from
- * AdminController rather than factored into a shared base class; that's a deliberate, minor,
- * low-risk tradeoff for now (see progress.md) - worth revisiting if a third controller needs
- * the same methods.
- *
- * ⚠️ Decision (see progress.md): there is no dine-in table/seating entity in the schema. The
- * 16-button table grid in the FXML is kept exactly as designed, but table selection is treated
- * as decorative, in-memory-only UI state - it is never persisted and never blocks starting an
- * order. The real, persisted entity this screen builds and saves is the Order/OrderItem cart.
+ * cart + checkout.
  */
 public class OrderController {
 
-    private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
+    private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
 
     private final ProductDAO productDAO = new ProductDAO();
     private final OrderDAO orderDAO = new OrderDAO();
     private final CustomerDAO customerDAO = new CustomerDAO();
+    private final TableDAO tableDAO = new TableDAO();
+    private final CategoryDAO categoryDAO = new CategoryDAO();
 
     @FXML private Label adminNameLabel;
     @FXML private Label adminRoleLabel;
 
-    @FXML private Button table1Button;
-    @FXML private Button table2Button;
-    @FXML private Button table3Button;
-    @FXML private Button table4Button;
-    @FXML private Button table5Button;
-    @FXML private Button table6Button;
-    @FXML private Button table7Button;
-    @FXML private Button table8Button;
-    @FXML private Button table9Button;
-    @FXML private Button table10Button;
-    @FXML private Button table11Button;
-    @FXML private Button table12Button;
-    @FXML private Button table13Button;
-    @FXML private Button table14Button;
-    @FXML private Button table15Button;
-    @FXML private Button table16Button;
+    @FXML private GridPane tableGrid;
     @FXML private Label selectedTableLabel;
     @FXML private Label selectedTableStatusLabel;
     @FXML private Label selectedTableCapacityLabel;
     @FXML private Button startOrderButton;
+    @FXML private Button toggleStatusButton;
     @FXML private Button tableDetailButton;
 
     @FXML private Label orderStatusLabel;
@@ -104,6 +92,10 @@ public class OrderController {
     @FXML private Label customerLabel;
     @FXML private Label orderTableLabel;
     @FXML private Label orderTimeLabel;
+
+    @FXML private TextField customerNameField;
+    @FXML private TextField customerPhoneField;
+    @FXML private Label cartItemCountLabel;
 
     @FXML private TableView<OrderItem> orderDetailTable;
     @FXML private TableColumn<OrderItem, Number> detailIndexColumn;
@@ -114,20 +106,37 @@ public class OrderController {
 
     @FXML private TextField productSearchField;
     @FXML private Button addProductButton;
+    @FXML private HBox categoryTabBox;
+    @FXML private FlowPane productCatalogFlow;
+
     @FXML private Label totalAmountLabel;
     @FXML private Button printOrderButton;
     @FXML private Button orderHistoryButton;
     @FXML private Button editOrderButton;
     @FXML private Button paymentButton;
 
+    @FXML private Button productMenuButton;
+    @FXML private Button categoryMenuButton;
+    @FXML private Button accountMenuButton;
+    @FXML private javafx.scene.control.Separator categorySeparator;
+    @FXML private javafx.scene.layout.VBox adminMenuBox;
+
     private final ObservableList<OrderItem> cart = FXCollections.observableArrayList();
-    private Map<Button, Integer> tableButtons;
+    private final Map<Integer, Button> tableButtonByNumber = new LinkedHashMap<>();
+    private final Map<Integer, DiningTable> tableDataByNumber = new LinkedHashMap<>();
     private List<Product> allProducts = List.of();
+    private List<Category> allCategories = List.of();
+    private Integer selectedCategoryId = null;
     private Integer selectedTableNumber;
     private boolean orderInProgress;
     private Customer attachedCustomer;
+    private Timeline realTimeClock;
+    private Order activeOpenOrder;
     private Order lastCompletedOrder;
     private List<OrderItem> lastCompletedItems = List.of();
+
+    private record TableOrderData(Order order, List<OrderItem> items, Customer customer) {
+    }
 
     private record PaymentResult(PaymentMethod method, BigDecimal discount, BigDecimal total) {
     }
@@ -144,26 +153,33 @@ public class OrderController {
             adminRoleLabel.setText(Session.isAdmin() ? "Quản trị viên" : "Nhân viên");
         }
 
-        tableButtons = new LinkedHashMap<>();
-        tableButtons.put(table1Button, 1);
-        tableButtons.put(table2Button, 2);
-        tableButtons.put(table3Button, 3);
-        tableButtons.put(table4Button, 4);
-        tableButtons.put(table5Button, 5);
-        tableButtons.put(table6Button, 6);
-        tableButtons.put(table7Button, 7);
-        tableButtons.put(table8Button, 8);
-        tableButtons.put(table9Button, 9);
-        tableButtons.put(table10Button, 10);
-        tableButtons.put(table11Button, 11);
-        tableButtons.put(table12Button, 12);
-        tableButtons.put(table13Button, 13);
-        tableButtons.put(table14Button, 14);
-        tableButtons.put(table15Button, 15);
-        tableButtons.put(table16Button, 16);
-        // The FXML ships with table2Button statically marked "selected" as mockup content;
-        // clear that so the screen doesn't claim a table is picked before the user picks one.
-        highlightSelectedTableButton(-1);
+        if (!Session.isAdmin()) {
+            if (productMenuButton != null) {
+                productMenuButton.setVisible(false);
+                productMenuButton.setManaged(false);
+            }
+            if (categorySeparator != null) {
+                categorySeparator.setVisible(false);
+                categorySeparator.setManaged(false);
+            }
+            if (adminMenuBox != null) {
+                adminMenuBox.setVisible(false);
+                adminMenuBox.setManaged(false);
+            }
+        }
+
+        if (orderStatusLabel != null) {
+            orderStatusLabel.setText("Không hoạt động");
+            orderStatusLabel.getStyleClass().setAll("order-status-badge-empty");
+        }
+        if (orderIdLabel != null) orderIdLabel.setText("Chưa có đơn");
+        if (customerLabel != null) customerLabel.setText("-");
+        if (orderTableLabel != null) orderTableLabel.setText("-");
+        if (totalAmountLabel != null) totalAmountLabel.setText("0 đ");
+
+        initRealTimeClock();
+        initCustomerInputs();
+        loadTablesFromDb();
 
         detailIndexColumn.setCellValueFactory(data -> new SimpleIntegerProperty(
                 orderDetailTable.getItems().indexOf(data.getValue()) + 1));
@@ -174,8 +190,254 @@ public class OrderController {
         subtotalColumn.setCellValueFactory(data ->
                 new SimpleStringProperty(CurrencyUtil.format(data.getValue().getLineTotal())));
 
-        loadProducts();
+        if (productSearchField != null) {
+            productSearchField.textProperty().addListener((obs, o, n) -> renderProductCatalog());
+        }
+
+        loadCategoriesAndProducts();
         refreshCart();
+    }
+
+    // =================================================================== Real-Time Clock
+    private void initRealTimeClock() {
+        realTimeClock = new Timeline(new KeyFrame(Duration.seconds(1), e -> updateClockDisplay()));
+        realTimeClock.setCycleCount(Animation.INDEFINITE);
+        realTimeClock.play();
+        updateClockDisplay();
+    }
+
+    private void updateClockDisplay() {
+        if (orderTimeLabel != null) {
+            String nowStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy"));
+            if (activeOpenOrder != null && activeOpenOrder.getOrderDate() != null) {
+                orderTimeLabel.setText(nowStr + " (Đơn: " + activeOpenOrder.getOrderDate().format(DateTimeFormatter.ofPattern("HH:mm")) + ")");
+            } else {
+                orderTimeLabel.setText(nowStr);
+            }
+        }
+    }
+
+    // =================================================================== Customer Auto-Link
+    private void initCustomerInputs() {
+        if (customerPhoneField != null) {
+            customerPhoneField.textProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal != null && newVal.trim().length() >= 9) {
+                    lookupCustomerByPhone(newVal.trim());
+                }
+            });
+        }
+        if (customerNameField != null) {
+            customerNameField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+                if (!isNowFocused) {
+                    handleCustomerInfoChanged();
+                }
+            });
+        }
+    }
+
+    private void lookupCustomerByPhone(String phone) {
+        Async.run(
+                () -> customerDAO.findByPhone(phone),
+                optCust -> {
+                    if (optCust.isPresent()) {
+                        attachedCustomer = optCust.get();
+                        if (customerNameField != null && (customerNameField.getText() == null || customerNameField.getText().isBlank() || "Khách vãng lai".equals(customerNameField.getText()))) {
+                            customerNameField.setText(attachedCustomer.getFullName());
+                        }
+                        if (customerLabel != null) {
+                            customerLabel.setText(attachedCustomer.getFullName());
+                        }
+                        syncOpenOrderToDb();
+                    }
+                },
+                err -> {}
+        );
+    }
+
+    private void handleCustomerInfoChanged() {
+        String name = customerNameField != null && customerNameField.getText() != null ? customerNameField.getText().trim() : "";
+        String phone = customerPhoneField != null && customerPhoneField.getText() != null ? customerPhoneField.getText().trim() : "";
+        if (name.isEmpty() && phone.isEmpty()) return;
+
+        Async.run(
+                () -> ensureCustomerInDb(name, phone),
+                cust -> {
+                    if (cust != null) {
+                        attachedCustomer = cust;
+                        if (customerLabel != null) {
+                            customerLabel.setText(cust.getFullName());
+                        }
+                        syncOpenOrderToDb();
+                    }
+                },
+                err -> {}
+        );
+    }
+
+    private Customer ensureCustomerInDb(String name, String phone) {
+        if (!phone.isEmpty()) {
+            Optional<Customer> existing = customerDAO.findByPhone(phone);
+            if (existing.isPresent()) {
+                Customer c = existing.get();
+                if (!name.isEmpty() && !name.equals(c.getFullName())) {
+                    c.setFullName(name);
+                    try { customerDAO.update(c); } catch (Exception ignored) {}
+                }
+                return c;
+            }
+        }
+        if (name.isEmpty() && phone.isEmpty()) return null;
+        Customer newCust = new Customer();
+        newCust.setFullName(name.isEmpty() ? "Khách vãng lai" : name);
+        newCust.setPhone(phone.isEmpty() ? null : phone);
+        newCust.setLoyaltyPoints(0);
+        try {
+            return customerDAO.insert(newCust);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private Customer ensureCustomerFromFields() {
+        String name = customerNameField != null && customerNameField.getText() != null ? customerNameField.getText().trim() : "";
+        String phone = customerPhoneField != null && customerPhoneField.getText() != null ? customerPhoneField.getText().trim() : "";
+        return ensureCustomerInDb(name, phone);
+    }
+
+    // =================================================================== Category & Product Catalog
+    private void loadCategoriesAndProducts() {
+        Async.run(
+                () -> {
+                    List<Category> categories = categoryDAO.findAll();
+                    List<Product> products = productDAO.findAll();
+                    return Map.entry(categories, products);
+                },
+                entry -> {
+                    allCategories = entry.getKey();
+                    allProducts = entry.getValue();
+                    renderCategoryChips();
+                    renderProductCatalog();
+                },
+                err -> AlertUtil.error("Lỗi", "Không thể tải danh mục và sản phẩm: " + err.getMessage())
+        );
+    }
+
+    private void renderCategoryChips() {
+        if (categoryTabBox == null) return;
+        categoryTabBox.getChildren().clear();
+
+        Button allBtn = new Button("Tất cả");
+        allBtn.getStyleClass().add(selectedCategoryId == null ? "category-chip-active" : "category-chip");
+        allBtn.setOnAction(e -> {
+            selectedCategoryId = null;
+            renderCategoryChips();
+            renderProductCatalog();
+        });
+        categoryTabBox.getChildren().add(allBtn);
+
+        for (Category cat : allCategories) {
+            if (!cat.isActive()) continue;
+            Button catBtn = new Button(cat.getName());
+            boolean isSelected = selectedCategoryId != null && selectedCategoryId == cat.getId();
+            catBtn.getStyleClass().add(isSelected ? "category-chip-active" : "category-chip");
+            catBtn.setOnAction(e -> {
+                selectedCategoryId = cat.getId();
+                renderCategoryChips();
+                renderProductCatalog();
+            });
+            categoryTabBox.getChildren().add(catBtn);
+        }
+    }
+
+    private void renderProductCatalog() {
+        if (productCatalogFlow == null) return;
+        productCatalogFlow.getChildren().clear();
+
+        String keyword = productSearchField != null && productSearchField.getText() != null
+                ? productSearchField.getText().trim().toLowerCase() : "";
+
+        List<Product> filtered = allProducts.stream()
+                .filter(Product::isActive)
+                .filter(p -> selectedCategoryId == null || p.getCategoryId() == selectedCategoryId)
+                .filter(p -> keyword.isEmpty() || p.getName().toLowerCase().contains(keyword))
+                .collect(Collectors.toList());
+
+        for (Product product : filtered) {
+            VBox card = new VBox(4);
+            card.getStyleClass().add("product-card-item");
+
+            Label nameLabel = new Label(product.getName());
+            nameLabel.getStyleClass().add("product-card-name");
+            nameLabel.setMaxWidth(130);
+            nameLabel.setWrapText(true);
+
+            Label priceLabel = new Label(CurrencyUtil.format(product.getPrice()));
+            priceLabel.getStyleClass().add("product-card-price");
+
+            card.getChildren().addAll(nameLabel, priceLabel);
+
+            if (product.getStock() <= 0) {
+                Label outOfStock = new Label("Hết hàng");
+                outOfStock.setStyle("-fx-text-fill: #b33939; -fx-font-size: 10px; -fx-font-weight: bold;");
+                card.getChildren().add(outOfStock);
+                card.setOpacity(0.55);
+            } else {
+                card.setOnMouseClicked(e -> handleQuickAddProduct(product));
+            }
+
+            productCatalogFlow.getChildren().add(card);
+        }
+    }
+
+    private void handleQuickAddProduct(Product product) {
+        if (selectedTableNumber == null) {
+            AlertUtil.warning("Chưa chọn bàn", "Vui lòng chọn một bàn ở sơ đồ bên trái trước khi gọi món.");
+            return;
+        }
+
+        if (!orderInProgress || activeOpenOrder == null) {
+            final int tNum = selectedTableNumber;
+            Customer cust = ensureCustomerFromFields();
+            attachedCustomer = cust;
+            Async.run(
+                    () -> {
+                        tableDAO.setOccupied(tNum, null);
+                        Order order = new Order();
+                        order.setOrderDate(LocalDateTime.now());
+                        order.setEmployeeId(Session.getCurrentEmployee() != null ? Session.getCurrentEmployee().getId() : null);
+                        order.setCustomerId(cust != null ? cust.getId() : null);
+                        order.setStatus(OrderStatus.OPEN);
+                        order.setSubtotal(BigDecimal.ZERO);
+                        order.setDiscount(BigDecimal.ZERO);
+                        order.setTotal(BigDecimal.ZERO);
+                        order.setTableNumber(tNum);
+                        Order saved = orderDAO.insert(order, List.of());
+                        tableDAO.updateStatus(tNum, TableStatus.OCCUPIED, saved.getId());
+                        return saved;
+                    },
+                    savedOrder -> {
+                        activeOpenOrder = savedOrder;
+                        orderInProgress = true;
+                        cart.clear();
+                        if (orderStatusLabel != null) {
+                            orderStatusLabel.setText("Đang phục vụ");
+                            orderStatusLabel.getStyleClass().setAll("order-status-badge");
+                        }
+                        if (orderIdLabel != null) {
+                            orderIdLabel.setText("#DH" + String.format("%06d", savedOrder.getId()));
+                        }
+                        if (orderTableLabel != null) {
+                            orderTableLabel.setText("Bàn " + tNum + " (Tầng 1)");
+                        }
+                        updateClockDisplay();
+                        loadTablesFromDb();
+                        addToCart(product);
+                    },
+                    error -> AlertUtil.error("Lỗi", "Không thể tạo đơn hàng cho bàn " + tNum + ": " + error.getMessage())
+            );
+        } else {
+            addToCart(product);
+        }
     }
 
     private void loadProducts() {
@@ -186,10 +448,7 @@ public class OrderController {
         }
     }
 
-    /** Renders "[-]  qty  [+]" inline in the quantity column - narrower than a dedicated
-     *  action column would need, and doubles as the "remove an item" control: decrementing
-     *  past 1 removes the line, matching common POS UX rather than needing a separate button
-     *  the table's column widths don't really have room for. */
+    /** Renders "[-]  qty  [+]" inline in the quantity column */
     private TableCell<OrderItem, Void> quantityCell() {
         return new TableCell<>() {
             private final Button minus = new Button("−");
@@ -216,30 +475,212 @@ public class OrderController {
         };
     }
 
-    // =================================================================== Table selection (decorative only)
+    // =================================================================== Table selection & management (3 CỘT x 4 DÒNG)
 
-    @FXML
-    public void handleTableClick(ActionEvent event) {
-        Integer number = tableButtons.get(event.getSource());
-        if (number != null) {
-            selectTable(number);
+    public void loadTablesFromDb() {
+        if (tableGrid == null) return;
+        Async.run(
+                tableDAO::findAll,
+                tables -> {
+                    tableGrid.getChildren().clear();
+                    tableButtonByNumber.clear();
+                    tableDataByNumber.clear();
+                    for (DiningTable table : tables) {
+                        int num = table.getTableNumber();
+                        tableDataByNumber.put(num, table);
+                        int col = (num - 1) % 3;
+                        int row = (num - 1) / 3;
+
+                        String statusText = table.isOccupied() ? "Đang sử dụng" : "Không hoạt động";
+                        Button btn = new Button("☕  " + table.getName() + "\n" + statusText);
+                        btn.setMaxWidth(Double.MAX_VALUE);
+                        btn.setMaxHeight(Double.MAX_VALUE);
+                        btn.getStyleClass().add(table.isOccupied() ? "table-button-occupied" : "table-button-empty");
+                        if (selectedTableNumber != null && selectedTableNumber == num) {
+                            btn.getStyleClass().add("table-button-selected");
+                        }
+                        GridPane.setHgrow(btn, Priority.ALWAYS);
+                        GridPane.setVgrow(btn, Priority.ALWAYS);
+                        btn.setOnAction(e -> selectTable(num));
+                        tableGrid.add(btn, col, row);
+                        tableButtonByNumber.put(num, btn);
+                    }
+                    if (selectedTableNumber == null && !tables.isEmpty()) {
+                        selectTable(tables.get(0).getTableNumber());
+                    } else if (selectedTableNumber != null) {
+                        updateSelectedTableInfo(selectedTableNumber);
+                    }
+                },
+                error -> AlertUtil.error("Lỗi", "Không thể tải danh sách bàn: " + error.getMessage())
+        );
+    }
+
+    public void selectTable(int number) {
+        selectedTableNumber = number;
+        highlightSelectedTableButton(number);
+        updateSelectedTableInfo(number);
+        loadTableOrderFromDb(number);
+    }
+
+    private void updateSelectedTableInfo(int number) {
+        if (selectedTableLabel != null) {
+            selectedTableLabel.setText("Bàn " + number);
+        }
+        DiningTable table = tableDataByNumber.get(number);
+        boolean occupied = table != null && table.isOccupied();
+        if (selectedTableStatusLabel != null) {
+            selectedTableStatusLabel.setText(occupied ? "Đang sử dụng" : "Không hoạt động");
+            selectedTableStatusLabel.getStyleClass().setAll(occupied ? "occupied-badge" : "empty-badge");
+        }
+        if (selectedTableCapacityLabel != null && table != null) {
+            selectedTableCapacityLabel.setText("Sức chứa: " + table.getCapacity() + " người   •   Khu vực: Tầng 1");
         }
     }
 
-    private void selectTable(int number) {
-        selectedTableNumber = number;
-        selectedTableLabel.setText("Bàn " + number);
-        selectedTableStatusLabel.setText("Đã chọn");
-        highlightSelectedTableButton(number);
+    private void loadTableOrderFromDb(int number) {
+        Async.run(
+                () -> {
+                    Optional<Order> openOrder = orderDAO.findOpenOrderByTable(number);
+                    if (openOrder.isPresent()) {
+                        List<OrderItem> items = orderDAO.findItemsByOrderId(openOrder.get().getId());
+                        Customer cust = null;
+                        if (openOrder.get().getCustomerId() != null) {
+                            cust = customerDAO.findById(openOrder.get().getCustomerId()).orElse(null);
+                        }
+                        return new TableOrderData(openOrder.get(), items, cust);
+                    }
+                    return new TableOrderData(null, List.of(), null);
+                },
+                data -> {
+                    DiningTable table = tableDataByNumber.get(number);
+                    boolean occupied = table != null && table.isOccupied();
+                    if (data.order() != null) {
+                        activeOpenOrder = data.order();
+                        attachedCustomer = data.customer();
+                        cart.setAll(data.items());
+                        orderInProgress = true;
+                        if (orderStatusLabel != null) {
+                            orderStatusLabel.setText("Đang phục vụ");
+                            orderStatusLabel.getStyleClass().setAll("order-status-badge");
+                        }
+                        if (orderIdLabel != null) {
+                            orderIdLabel.setText("#DH" + String.format("%06d", data.order().getId()));
+                        }
+                        if (orderTableLabel != null) {
+                            orderTableLabel.setText("Bàn " + number + " (Tầng 1)");
+                        }
+                        updateClockDisplay();
+                        if (customerNameField != null) {
+                            customerNameField.setText(data.customer() != null ? data.customer().getFullName() : "Khách vãng lai");
+                        }
+                        if (customerPhoneField != null) {
+                            customerPhoneField.setText(data.customer() != null && data.customer().getPhone() != null ? data.customer().getPhone() : "");
+                        }
+                        if (customerLabel != null) {
+                            customerLabel.setText(data.customer() != null ? data.customer().getFullName() : "Khách vãng lai");
+                        }
+                        orderDetailTable.getItems().setAll(cart);
+                        totalAmountLabel.setText(CurrencyUtil.format(cartSubtotal()));
+                    } else if (occupied) {
+                        activeOpenOrder = null;
+                        attachedCustomer = null;
+                        cart.clear();
+                        orderInProgress = true;
+                        if (orderStatusLabel != null) {
+                            orderStatusLabel.setText("Đang phục vụ");
+                            orderStatusLabel.getStyleClass().setAll("order-status-badge");
+                        }
+                        if (orderIdLabel != null) {
+                            orderIdLabel.setText("Đang phục vụ");
+                        }
+                        if (orderTableLabel != null) {
+                            orderTableLabel.setText("Bàn " + number + " (Tầng 1)");
+                        }
+                        updateClockDisplay();
+                        if (customerNameField != null) {
+                            customerNameField.setText("Khách vãng lai");
+                        }
+                        if (customerPhoneField != null) {
+                            customerPhoneField.setText("");
+                        }
+                        if (customerLabel != null) {
+                            customerLabel.setText("Khách vãng lai");
+                        }
+                        orderDetailTable.getItems().setAll(cart);
+                        totalAmountLabel.setText("0 đ");
+                    } else {
+                        activeOpenOrder = null;
+                        attachedCustomer = null;
+                        cart.clear();
+                        orderInProgress = false;
+                        if (orderStatusLabel != null) {
+                            orderStatusLabel.setText("Không hoạt động");
+                            orderStatusLabel.getStyleClass().setAll("order-status-badge-empty");
+                        }
+                        if (orderIdLabel != null) {
+                            orderIdLabel.setText("Chưa có đơn");
+                        }
+                        if (orderTableLabel != null) {
+                            orderTableLabel.setText("Bàn " + number + " (Tầng 1)");
+                        }
+                        updateClockDisplay();
+                        if (customerNameField != null) {
+                            customerNameField.setText("");
+                        }
+                        if (customerPhoneField != null) {
+                            customerPhoneField.setText("");
+                        }
+                        if (customerLabel != null) {
+                            customerLabel.setText("Trống");
+                        }
+                        orderDetailTable.getItems().setAll(cart);
+                        totalAmountLabel.setText("0 đ");
+                    }
+                    if (cartItemCountLabel != null) {
+                        int totalQty = cart.stream().mapToInt(OrderItem::getQuantity).sum();
+                        cartItemCountLabel.setText(cart.size() + " món (" + totalQty + " phần)");
+                    }
+                },
+                error -> {}
+        );
     }
 
     private void highlightSelectedTableButton(int number) {
-        for (Map.Entry<Button, Integer> entry : tableButtons.entrySet()) {
-            entry.getKey().getStyleClass().remove("table-button-selected");
-            if (entry.getValue() == number) {
-                entry.getKey().getStyleClass().add("table-button-selected");
+        for (Map.Entry<Integer, Button> entry : tableButtonByNumber.entrySet()) {
+            entry.getValue().getStyleClass().remove("table-button-selected");
+            if (entry.getKey() == number) {
+                entry.getValue().getStyleClass().add("table-button-selected");
             }
         }
+    }
+
+    @FXML
+    public void handleToggleTableStatus() {
+        if (selectedTableNumber == null) {
+            AlertUtil.info("Chưa chọn bàn", "Vui lòng chọn một bàn để đổi trạng thái.");
+            return;
+        }
+        DiningTable table = tableDataByNumber.get(selectedTableNumber);
+        if (table == null) return;
+
+        boolean newOccupied = !table.isOccupied();
+        final int tNum = selectedTableNumber;
+        Async.run(
+                () -> {
+                    if (newOccupied) {
+                        tableDAO.setOccupied(tNum, null);
+                    } else {
+                        tableDAO.setEmpty(tNum);
+                    }
+                    return null;
+                },
+                result -> {
+                    loadTablesFromDb();
+                    AlertUtil.info("Thành công",
+                            "Bàn " + tNum + " đã đổi sang: " + (newOccupied ? "Đang sử dụng" : "Không hoạt động"));
+                },
+                error -> AlertUtil.error("Lỗi", "Không thể cập nhật trạng thái bàn: " + error.getMessage())
+        );
     }
 
     @FXML
@@ -248,7 +689,11 @@ public class OrderController {
             AlertUtil.info("Chưa chọn bàn", "Vui lòng chọn một bàn để xem chi tiết.");
             return;
         }
-        AlertUtil.info("Chi tiết " + selectedTableLabel.getText(), selectedTableCapacityLabel.getText());
+        DiningTable table = tableDataByNumber.get(selectedTableNumber);
+        String status = (table != null && table.isOccupied()) ? "Đang sử dụng" : "Không hoạt động";
+        AlertUtil.info("Chi tiết " + selectedTableLabel.getText(),
+                (table != null ? "Sức chứa: " + table.getCapacity() + " người\n" : "") +
+                "Trạng thái: " + status);
     }
 
     @FXML
@@ -257,32 +702,55 @@ public class OrderController {
             AlertUtil.warning("Chưa chọn bàn", "Vui lòng chọn một bàn trước khi bắt đầu đặt đơn.");
             return;
         }
-        if (orderInProgress && !cart.isEmpty()) {
-            boolean confirmed = AlertUtil.confirm("Bắt đầu đơn mới",
-                    "Đơn hàng hiện tại chưa được thanh toán và sẽ bị hủy. Tiếp tục?");
-            if (!confirmed) {
-                return;
-            }
-        }
-        orderInProgress = true;
-        cart.clear();
-        attachedCustomer = null;
-        orderStatusLabel.setText("Đang phục vụ");
-        orderIdLabel.setText("Đơn mới");
-        orderTableLabel.setText(selectedTableLabel.getText());
-        orderTimeLabel.setText(LocalDateTime.now().format(TIME_FORMAT));
-        customerLabel.setText("Khách vãng lai");
-        refreshCart();
+        final int tNum = selectedTableNumber;
+        Customer cust = ensureCustomerFromFields();
+        attachedCustomer = cust;
+        Async.run(
+                () -> {
+                    tableDAO.setOccupied(tNum, null);
+                    Order order = new Order();
+                    order.setOrderDate(LocalDateTime.now());
+                    order.setEmployeeId(Session.getCurrentEmployee() != null ? Session.getCurrentEmployee().getId() : null);
+                    order.setCustomerId(cust != null ? cust.getId() : null);
+                    order.setStatus(OrderStatus.OPEN);
+                    order.setSubtotal(BigDecimal.ZERO);
+                    order.setDiscount(BigDecimal.ZERO);
+                    order.setTotal(BigDecimal.ZERO);
+                    order.setTableNumber(tNum);
+                    Order saved = orderDAO.insert(order, List.of());
+                    tableDAO.updateStatus(tNum, TableStatus.OCCUPIED, saved.getId());
+                    return saved;
+                },
+                savedOrder -> {
+                    activeOpenOrder = savedOrder;
+                    orderInProgress = true;
+                    cart.clear();
+                    if (orderStatusLabel != null) {
+                        orderStatusLabel.setText("Đang phục vụ");
+                        orderStatusLabel.getStyleClass().setAll("order-status-badge");
+                    }
+                    if (orderIdLabel != null) {
+                        orderIdLabel.setText("#DH" + String.format("%06d", savedOrder.getId()));
+                    }
+                    if (orderTableLabel != null) {
+                        orderTableLabel.setText("Bàn " + tNum + " (Tầng 1)");
+                    }
+                    updateClockDisplay();
+                    if (customerLabel != null) {
+                        customerLabel.setText(cust != null ? cust.getFullName() : "Khách vãng lai");
+                    }
+                    orderDetailTable.getItems().setAll(cart);
+                    totalAmountLabel.setText("0 đ");
+                    loadTablesFromDb();
+                },
+                error -> AlertUtil.error("Lỗi", "Không thể bắt đầu đặt đơn: " + error.getMessage())
+        );
     }
 
     // =================================================================== Cart
 
     @FXML
     public void handleAddProductToCart() {
-        if (!orderInProgress) {
-            AlertUtil.warning("Chưa bắt đầu đơn hàng", "Vui lòng chọn bàn và bấm \"Bắt đầu đặt đơn\" trước.");
-            return;
-        }
         String keyword = productSearchField.getText() == null ? "" : productSearchField.getText().trim();
         if (keyword.isEmpty()) {
             AlertUtil.warning("Thiếu thông tin", "Vui lòng nhập tên món cần thêm.");
@@ -312,7 +780,7 @@ public class OrderController {
             }
             chosen = result.get();
         }
-        addToCart(chosen);
+        handleQuickAddProduct(chosen);
         productSearchField.clear();
     }
 
@@ -378,6 +846,26 @@ public class OrderController {
     private void refreshCart() {
         orderDetailTable.getItems().setAll(cart);
         totalAmountLabel.setText(CurrencyUtil.format(cartSubtotal()));
+        if (cartItemCountLabel != null) {
+            int totalQty = cart.stream().mapToInt(OrderItem::getQuantity).sum();
+            cartItemCountLabel.setText(cart.size() + " món (" + totalQty + " phần)");
+        }
+        syncOpenOrderToDb();
+    }
+
+    private void syncOpenOrderToDb() {
+        if (activeOpenOrder != null && activeOpenOrder.getId() > 0) {
+            activeOpenOrder.setSubtotal(cartSubtotal());
+            activeOpenOrder.setTotal(cartSubtotal());
+            activeOpenOrder.setCustomerId(attachedCustomer != null ? attachedCustomer.getId() : null);
+            final Order orderToSave = activeOpenOrder;
+            final List<OrderItem> itemsToSave = new ArrayList<>(cart);
+            Async.run(
+                    () -> orderDAO.saveOrUpdateOpenOrder(orderToSave, itemsToSave),
+                    saved -> {},
+                    err -> {}
+            );
+        }
     }
 
     @FXML
@@ -404,7 +892,10 @@ public class OrderController {
         AlertUtil.configure(dialog);
         dialog.showAndWait().ifPresent(customer -> {
             attachedCustomer = customer;
-            customerLabel.setText(customer.getFullName());
+            if (customerNameField != null) customerNameField.setText(customer.getFullName());
+            if (customerPhoneField != null) customerPhoneField.setText(customer.getPhone() != null ? customer.getPhone() : "");
+            if (customerLabel != null) customerLabel.setText(customer.getFullName());
+            syncOpenOrderToDb();
         });
     }
 
@@ -531,61 +1022,61 @@ public class OrderController {
     }
 
     private void completeOrder(PaymentResult payment) {
-        Order order = new Order();
-        order.setOrderDate(LocalDateTime.now());
-        order.setEmployeeId(Session.getCurrentEmployee() != null ? Session.getCurrentEmployee().getId() : null);
-        order.setCustomerId(attachedCustomer != null ? attachedCustomer.getId() : null);
-        order.setStatus(OrderStatus.PAID);
-        order.setSubtotal(cartSubtotal());
-        order.setDiscount(payment.discount());
-        order.setTotal(payment.total());
-        order.setPaymentMethod(payment.method());
-        order.setPaidAt(LocalDateTime.now());
-
-        List<OrderItem> items = new ArrayList<>(cart);
-
+        final int tNum = selectedTableNumber;
+        final List<OrderItem> items = new ArrayList<>(cart);
+        if (attachedCustomer == null) {
+            attachedCustomer = ensureCustomerFromFields();
+        }
         paymentButton.setDisable(true);
         Async.run(
                 () -> {
-                    // OrderDAO.insert also decrements stock atomically (and refuses to go negative).
-                    return orderDAO.insert(order, items);
+                    Order savedOrder;
+                    if (activeOpenOrder != null && activeOpenOrder.getId() > 0) {
+                        savedOrder = orderDAO.payExistingOrder(activeOpenOrder.getId(), payment.method(), payment.discount(), payment.total(), items);
+                    } else {
+                        Order order = new Order();
+                        order.setOrderDate(LocalDateTime.now());
+                        order.setEmployeeId(Session.getCurrentEmployee() != null ? Session.getCurrentEmployee().getId() : null);
+                        order.setCustomerId(attachedCustomer != null ? attachedCustomer.getId() : null);
+                        order.setStatus(OrderStatus.PAID);
+                        order.setSubtotal(cartSubtotal());
+                        order.setDiscount(payment.discount());
+                        order.setTotal(payment.total());
+                        order.setPaymentMethod(payment.method());
+                        order.setPaidAt(LocalDateTime.now());
+                        order.setTableNumber(tNum);
+                        savedOrder = orderDAO.insert(order, items);
+                    }
+                    tableDAO.setEmpty(tNum);
+                    return savedOrder;
                 },
                 savedOrder -> {
                     paymentButton.setDisable(false);
                     lastCompletedOrder = savedOrder;
                     lastCompletedItems = items;
+                    activeOpenOrder = null;
+                    orderInProgress = false;
                     String customerName = attachedCustomer != null ? attachedCustomer.getFullName() : null;
                     AlertUtil.info("Thanh toán thành công", "Đơn hàng #" + savedOrder.getId() + " đã được thanh toán.");
                     openInvoiceWindow(savedOrder, items, customerName);
-                    loadProducts(); // stock just changed - refresh in-memory copy
+                    loadProducts();
+                    cart.clear();
+                    orderDetailTable.getItems().clear();
+                    totalAmountLabel.setText("0 đ");
                     resetOrderAfterPayment();
+                    loadTablesFromDb();
                 },
                 error -> {
                     paymentButton.setDisable(false);
                     AlertUtil.error("Lỗi thanh toán", "Không thể lưu đơn hàng: " + error.getMessage());
-                    loadProducts(); // stock may have changed elsewhere - refresh the in-memory copy
+                    loadProducts();
                 }
         );
     }
 
-    /**
-     * The unpaid cart only lives in memory, so leaving this screen (any sidebar/logout button) or
-     * closing the window would silently throw it away. Ask first; on "yes" the cart is cleared so
-     * the same prompt doesn't fire again on the next screen.
-     */
     private boolean confirmLeaveOrder() {
-        if (cart.isEmpty()) {
-            removeCloseGuard();
-            return true;
-        }
-        boolean leave = AlertUtil.confirm("Đơn hàng chưa thanh toán",
-                "Đơn hiện tại có " + cart.size() + " dòng sản phẩm chưa thanh toán và sẽ bị mất nếu bạn rời " +
-                        "khỏi màn hình này. Vẫn rời đi?");
-        if (leave) {
-            cart.clear();
-            removeCloseGuard();
-        }
-        return leave;
+        removeCloseGuard();
+        return true;
     }
 
     private void installCloseGuard() {
@@ -613,7 +1104,9 @@ public class OrderController {
         refreshCart();
         orderStatusLabel.setText("Chưa có đơn");
         orderIdLabel.setText("-");
-        customerLabel.setText("Khách vãng lai");
+        if (customerNameField != null) customerNameField.clear();
+        if (customerPhoneField != null) customerPhoneField.clear();
+        if (customerLabel != null) customerLabel.setText("Khách vãng lai");
     }
 
     private void openInvoiceWindow(Order order, List<OrderItem> items, String customerName) {
@@ -652,6 +1145,10 @@ public class OrderController {
 
     @FXML
     public void openProductManagement(ActionEvent event) {
+        if (!Session.isAdmin()) {
+            AlertUtil.warning("Không đủ quyền", "Chức năng này chỉ dành cho Quản trị viên.");
+            return;
+        }
         if (!confirmLeaveOrder()) return;
         SceneNavigator.switchScene(event, "/fxml/quanlysanpham.fxml");
     }
@@ -664,6 +1161,10 @@ public class OrderController {
 
     @FXML
     public void openCategoryManagement(ActionEvent event) {
+        if (!Session.isAdmin()) {
+            AlertUtil.warning("Không đủ quyền", "Chức năng này chỉ dành cho Quản trị viên.");
+            return;
+        }
         if (!confirmLeaveOrder()) return;
         SceneNavigator.switchScene(event, "/fxml/quanlydanhmuc.fxml");
     }
@@ -677,12 +1178,20 @@ public class OrderController {
 
     @FXML
     public void openEmployeeManagement(ActionEvent event) {
+        if (!Session.isAdmin()) {
+            AlertUtil.warning("Không đủ quyền", "Chức năng này chỉ dành cho Quản trị viên.");
+            return;
+        }
         if (!confirmLeaveOrder()) return;
         SceneNavigator.switchScene(event, "/fxml/quanlytaikhoan.fxml");
     }
 
     @FXML
     public void openAccountManagement(ActionEvent event) {
+        if (!Session.isAdmin()) {
+            AlertUtil.warning("Không đủ quyền", "Chức năng này chỉ dành cho Quản trị viên.");
+            return;
+        }
         if (!confirmLeaveOrder()) return;
         SceneNavigator.switchScene(event, "/fxml/quanlytaikhoan.fxml");
     }

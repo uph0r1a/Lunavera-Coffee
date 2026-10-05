@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -51,12 +52,6 @@
                         maxWidth="1.7976931348623157E308"
                         styleClass="menu-button,menu-button-active"/>
 
-                <Button text="▣   Quản lý sản phẩm"
-                        prefHeight="48.0"
-                        maxWidth="1.7976931348623157E308"
-                        styleClass="menu-button"
-                        onAction="#openProductManagement"/>
-
                 <Button text="▤   Quản lý đơn hàng"
                         prefHeight="48.0"
                         maxWidth="1.7976931348623157E308"
@@ -68,33 +63,6 @@
                         maxWidth="1.7976931348623157E308"
                         styleClass="menu-button"
                         onAction="#openCustomerManagement"/>
-            </VBox>
-
-            <Separator styleClass="sidebar-separator"/>
-
-            <VBox spacing="6.0">
-                <Button text="▦   Quản lý danh mục"
-                        prefHeight="48.0"
-                        maxWidth="1.7976931348623157E308"
-                        styleClass="menu-button"
-                        onAction="#openCategoryManagement"/>
-
-                <Button text="▣   Quản lý kho"
-                        prefHeight="48.0"
-                        maxWidth="1.7976931348623157E308"
-                        styleClass="menu-button"
-                        onAction="#openInventoryManagement"/>
-            </VBox>
-
-            <Separator styleClass="sidebar-separator"/>
-
-            <VBox spacing="6.0">
-
-                <Button text="♙   Quản lý tài khoản"
-                        prefHeight="48.0"
-                        maxWidth="1.7976931348623157E308"
-                        styleClass="menu-button"
-                        onAction="#openAccountManagement"/>
             </VBox>
 
             <Region VBox.vgrow="ALWAYS"/>
@@ -193,26 +161,53 @@
             <!-- TABLE + INVENTORY -->
             <HBox spacing="16.0" VBox.vgrow="ALWAYS">
 
-                <!-- TABLE STATUS -->
+                <!-- SƠ ĐỒ BÀN PHỤC VỤ (12 BÀN) -->
                 <VBox prefWidth="850.0"
-                      spacing="12.0"
+                      spacing="14.0"
                       styleClass="content-card"
                       HBox.hgrow="ALWAYS">
 
-                    <HBox alignment="CENTER_LEFT">
-                        <Label text="Đơn hàng gần đây"
-                               styleClass="section-title"/>
+                    <HBox alignment="CENTER_LEFT" spacing="12.0">
+                        <VBox spacing="3.0">
+                            <Label text="Sơ đồ bàn phục vụ"
+                                   styleClass="section-title"/>
+                            <Label text="Chọn bàn để tạo hoặc xem đơn"
+                                   styleClass="section-subtitle"/>
+                        </VBox>
 
                         <Region HBox.hgrow="ALWAYS"/>
 
-                        <Label fx:id="recentOrdersNoteLabel"
-                               text="Đang tải..."
-                               styleClass="filter-label"/>
+                        <!-- STATUS LEGENDS -->
+                        <HBox spacing="14.0" alignment="CENTER">
+                            <HBox spacing="6.0" alignment="CENTER">
+                                <Label text="●" styleClass="status-dot-occupied"/>
+                                <Label text="Đang sử dụng" styleClass="status-legend-text"/>
+                            </HBox>
+
+                            <HBox spacing="6.0" alignment="CENTER">
+                                <Label text="●" styleClass="status-dot-empty"/>
+                                <Label text="Không hoạt động" styleClass="status-legend-text"/>
+                            </HBox>
+                        </HBox>
                     </HBox>
 
-                    <VBox fx:id="recentOrdersList"
-                          spacing="12.0"
-                          VBox.vgrow="ALWAYS"/>
+                    <!-- GRID BÀN (3x4 = 12 BÀN) -->
+                    <GridPane fx:id="homeTableGrid"
+                              hgap="12.0"
+                              vgap="12.0"
+                              VBox.vgrow="ALWAYS">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="33.333" hgrow="ALWAYS"/>
+                            <ColumnConstraints percentWidth="33.333" hgrow="ALWAYS"/>
+                            <ColumnConstraints percentWidth="33.333" hgrow="ALWAYS"/>
+                        </columnConstraints>
+                        <rowConstraints>
+                            <RowConstraints minHeight="78.0" prefHeight="88.0" vgrow="ALWAYS"/>
+                            <RowConstraints minHeight="78.0" prefHeight="88.0" vgrow="ALWAYS"/>
+                            <RowConstraints minHeight="78.0" prefHeight="88.0" vgrow="ALWAYS"/>
+                            <RowConstraints minHeight="78.0" prefHeight="88.0" vgrow="ALWAYS"/>
+                        </rowConstraints>
+                    </GridPane>
                 </VBox>
 
                 <!-- INVENTORY -->
@@ -229,11 +224,7 @@
 
                     <Region VBox.vgrow="ALWAYS"/>
 
-                    <Button text="Xem sản phẩm →"
-                            maxWidth="1.7976931348623157E308"
-                            prefHeight="42.0"
-                            styleClass="secondary-button"
-                            onAction="#openProductManagement"/>
+
                 </VBox>
             </HBox>
 
