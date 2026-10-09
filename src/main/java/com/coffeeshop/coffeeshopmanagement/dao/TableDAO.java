@@ -48,42 +48,6 @@ public class TableDAO {
         return tables;
     }
 
-    public DiningTable findByNumber(int tableNumber) {
-        String sql = """
-            SELECT 
-                d.id, 
-                d.table_number, 
-                d.name, 
-                d.capacity, 
-                o.id AS open_order_id,
-                CASE 
-                    WHEN o.id IS NOT NULL OR d.status = 'OCCUPIED' THEN 'OCCUPIED' 
-                    ELSE 'EMPTY' 
-                END AS computed_status
-            FROM dining_tables d
-            LEFT JOIN (
-                SELECT id, table_number 
-                FROM orders 
-                WHERE status = 'OPEN' AND table_number = ?
-                LIMIT 1
-            ) o ON o.table_number = d.table_number
-            WHERE d.table_number = ?
-        """;
-        try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, tableNumber);
-            statement.setInt(2, tableNumber);
-            try (ResultSet rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    return mapRow(rs);
-                }
-                return null;
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException("Không thể tải thông tin bàn " + tableNumber + ": " + e.getMessage(), e);
-        }
-    }
-
     public void updateStatus(int tableNumber, TableStatus status, Integer orderId) {
         String sql = "UPDATE dining_tables SET status = ?, current_order_id = ? WHERE table_number = ?";
         try (Connection connection = DatabaseConfig.getConnection();
@@ -105,14 +69,23 @@ public class TableDAO {
         updateStatus(tableNumber, TableStatus.OCCUPIED, orderId);
     }
 
+    /** Frees the table and cancels its OPEN order, both or neither (one transaction). */
     public void setEmpty(int tableNumber) {
-        updateStatus(tableNumber, TableStatus.EMPTY, null);
-        String cancelSql = "UPDATE orders SET status = 'CANCELLED' WHERE table_number = ? AND status = 'OPEN'";
-        try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(cancelSql)) {
-            statement.setInt(1, tableNumber);
-            statement.executeUpdate();
-        } catch (SQLException ignored) {
+        try (Connection connection = DatabaseConfig.getConnection()) {
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection.prepareStatement(
+                    "UPDATE dining_tables SET status = 'EMPTY', current_order_id = NULL WHERE table_number = ?")) {
+                statement.setInt(1, tableNumber);
+                statement.executeUpdate();
+            }
+            try (PreparedStatement statement = connection.prepareStatement(
+                    "UPDATE orders SET status = 'CANCELLED' WHERE table_number = ? AND status = 'OPEN'")) {
+                statement.setInt(1, tableNumber);
+                statement.executeUpdate();
+            }
+            connection.commit();
+        } catch (SQLException e) {
+            throw new DataAccessException("Không thể giải phóng bàn " + tableNumber + ": " + e.getMessage(), e);
         }
     }
 

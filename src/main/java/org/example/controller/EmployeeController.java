@@ -37,13 +37,9 @@ public class EmployeeController {
     @FXML
     private Label todayCustomerLabel;
     @FXML
-    private Label recentOrdersNoteLabel;
-    @FXML
     private Label dashboardGreetingLabel;
     @FXML
     private Label dashboardAccountNameLabel;
-    @FXML
-    private VBox recentOrdersList;
     @FXML
     private VBox lowStockList;
     @FXML
@@ -62,6 +58,15 @@ public class EmployeeController {
             dashboardAccountNameLabel.setText(Session.getDisplayName());
         }
         loadDashboardStats();
+    }
+
+    private void handleHomeTableClick(DiningTable table) {
+        if (homeTableGrid == null || homeTableGrid.getScene() == null) return;
+        javafx.stage.Stage stage = (javafx.stage.Stage) homeTableGrid.getScene().getWindow();
+        OrderController controller = SceneNavigator.switchSceneAndGetController(stage, "/fxml/quanlydonhang.fxml");
+        if (controller != null) {
+            controller.selectTable(table.getTableNumber());
+        }
     }
 
     private void loadDashboardStats() {
@@ -92,13 +97,6 @@ public class EmployeeController {
         if (lowStockList != null) {
             DashboardWidgets.fillLowStock(lowStockList, stats.lowStockProducts());
         }
-        if (recentOrdersList != null) {
-            DashboardWidgets.fillRecentOrders(recentOrdersList, stats.recentOrders());
-        }
-        if (recentOrdersNoteLabel != null) {
-            recentOrdersNoteLabel.setText(stats.recentOrders().isEmpty()
-                    ? "Chưa có đơn" : stats.recentOrders().size() + " đơn mới nhất");
-        }
         loadHomeTableGrid();
     }
 
@@ -111,24 +109,6 @@ public class EmployeeController {
         );
     }
 
-    private void handleHomeTableClick(DiningTable table) {
-        if (homeTableGrid == null || homeTableGrid.getScene() == null) return;
-        javafx.stage.Stage stage = (javafx.stage.Stage) homeTableGrid.getScene().getWindow();
-        OrderController controller = SceneNavigator.switchSceneAndGetController(stage, "/fxml/quanlydonhang.fxml");
-        if (controller != null) {
-            controller.selectTable(table.getTableNumber());
-        }
-    }
-
-    @FXML
-    public void openProductManagement(ActionEvent event) {
-        if (!Session.isAdmin()) {
-            AlertUtil.warning("Không đủ quyền", "Chức năng này chỉ dành cho Quản trị viên.");
-            return;
-        }
-        SceneNavigator.switchScene(event, "/fxml/quanlysanpham.fxml");
-    }
-
     @FXML
     public void openOrderManagement(ActionEvent event) {
         SceneNavigator.switchScene(event, "/fxml/quanlydonhang.fxml");
@@ -137,31 +117,6 @@ public class EmployeeController {
     @FXML
     public void openCustomerManagement(ActionEvent event) {
         SceneNavigator.switchScene(event, "/fxml/quanlykhachhang.fxml");
-    }
-
-    @FXML
-    public void openCategoryManagement(ActionEvent event) {
-        if (!Session.isAdmin()) {
-            AlertUtil.warning("Không đủ quyền", "Chức năng này chỉ dành cho Quản trị viên.");
-            return;
-        }
-        SceneNavigator.switchScene(event, "/fxml/quanlydanhmuc.fxml");
-    }
-
-    @FXML
-    public void openInventoryManagement(ActionEvent event) {
-        AlertUtil.info("Chưa triển khai",
-                "Chức năng Quản lý kho riêng biệt chưa được xây dựng. Tồn kho hiện được " +
-                        "quản lý trực tiếp trong màn hình Quản lý sản phẩm.");
-    }
-
-    @FXML
-    public void openAccountManagement(ActionEvent event) {
-        if (!Session.isAdmin()) {
-            AlertUtil.warning("Không đủ quyền", "Chức năng này chỉ dành cho Quản trị viên.");
-            return;
-        }
-        SceneNavigator.switchScene(event, "/fxml/quanlytaikhoan.fxml");
     }
 
     @FXML

@@ -278,4 +278,142 @@ public class OrderDAOTest {
         assertEquals(1, descPage2.size());
         assertEquals(new BigDecimal("10000"), descPage2.get(0).order().getTotal());
     }
+
+    // ---- step 3: paying an order that was opened on a table -----------------------------------
+
+    private Order openOrderOnTable(int tableNumber, Integer customerId) {
+        Order order = new Order();
+        order.setOrderDate(LocalDateTime.now());
+        order.setTableNumber(tableNumber);
+        order.setCustomerId(customerId);
+        order.setStatus(OrderStatus.OPEN);
+        order.setSubtotal(BigDecimal.ZERO);
+        order.setDiscount(BigDecimal.ZERO);
+        order.setTotal(BigDecimal.ZERO);
+        return orderDAO.saveOrUpdateOpenOrder(order, List.of());
+    }
+
+    @Test
+    public void payExistingOrderLinksACustomerGivenAtPaymentAndAwardsThemPoints() {
+        Product product = newProduct(10, new BigDecimal("50000"));
+        Customer customer = newCustomer(); // created at the till, after the order was opened
+        Order open = openOrderOnTable(5, null);
+
+        Order paid = orderDAO.payExistingOrder(open.getId(), customer.getId(), PaymentMethod.CASH,
+                BigDecimal.ZERO, new BigDecimal("100000"), List.of(lineFor(product, 2)));
+
+        assertEquals(OrderStatus.PAID, paid.getStatus());
+        assertEquals(Integer.valueOf(customer.getId()), paid.getCustomerId());
+        assertEquals(LoyaltyPolicy.pointsFor(new BigDecimal("100000")),
+                customerDAO.findById(customer.getId()).orElseThrow().getLoyaltyPoints());
+    }
+
+    @Test
+    public void payExistingOrderKeepsTheOrdersCustomerWhenNoneIsGiven() {
+        Product product = newProduct(10, new BigDecimal("50000"));
+        Customer customer = newCustomer();
+        Order open = openOrderOnTable(5, customer.getId());
+
+        Order paid = orderDAO.payExistingOrder(open.getId(), null, PaymentMethod.CASH,
+                BigDecimal.ZERO, new BigDecimal("100000"), List.of(lineFor(product, 2)));
+
+        assertEquals(Integer.valueOf(customer.getId()), paid.getCustomerId());
+        assertEquals(LoyaltyPolicy.pointsFor(new BigDecimal("100000")),
+                customerDAO.findById(customer.getId()).orElseThrow().getLoyaltyPoints());
+    }
+
+    @Test
+    public void payExistingOrderFreesTheTableInTheSameTransaction() {
+        Product product = newProduct(10, new BigDecimal("50000"));
+        Order open = openOrderOnTable(6, null);
+        assertTrue(new TableDAO().findAll().stream().anyMatch(t -> t.getTableNumber() == 6 && t.isOccupied()));
+
+        orderDAO.payExistingOrder(open.getId(), null, PaymentMethod.CASH,
+                BigDecimal.ZERO, new BigDecimal("50000"), List.of(lineFor(product, 1)));
+
+        assertTrue(new TableDAO().findAll().stream().anyMatch(t -> t.getTableNumber() == 6 && !t.isOccupied()));
+    }
+
+    @Test
+    public void payingTheSameOrderTwiceFailsAndChangesNothing() {
+        Product product = newProduct(10, new BigDecimal("50000"));
+        Customer customer = newCustomer();
+        Order open = openOrderOnTable(7, customer.getId());
+        orderDAO.payExistingOrder(open.getId(), null, PaymentMethod.CASH,
+                BigDecimal.ZERO, new BigDecimal("50000"), List.of(lineFor(product, 1)));
+
+        try {
+            orderDAO.payExistingOrder(open.getId(), null, PaymentMethod.CASH,
+                    BigDecimal.ZERO, new BigDecimal("50000"), List.of(lineFor(product, 1)));
+            fail("a second payment of the same order must be refused");
+        } catch (DataAccessException expected) {
+            // expected
+        }
+        assertEquals("stock must only drop once", 9, productDAO.findAll().stream()
+                .filter(p -> p.getId() == product.getId()).findFirst().orElseThrow().getStock());
+        assertEquals("points must only be awarded once", LoyaltyPolicy.pointsFor(new BigDecimal("50000")),
+                customerDAO.findById(customer.getId()).orElseThrow().getLoyaltyPoints());
+    }
+
+    @Test
+    public void aCancelledOrderCannotBePaid() {
+        Product product = newProduct(10, new BigDecimal("50000"));
+        Order open = openOrderOnTable(8, null);
+        new TableDAO().setEmpty(8); // cancels the OPEN order
+
+        try {
+            orderDAO.payExistingOrder(open.getId(), null, PaymentMethod.CASH,
+                    BigDecimal.ZERO, new BigDecimal("50000"), List.of(lineFor(product, 1)));
+            fail("a cancelled order must not be payable");
+        } catch (DataAccessException expected) {
+            // expected
+        }
+        assertEquals(OrderStatus.CANCELLED, orderDAO.findById(open.getId()).orElseThrow().getStatus());
+    }
+
+    @Test
+    public void aLateAutosaveCannotTouchAnOrderThatWasAlreadyPaid() {
+        Product product = newProduct(10, new BigDecimal("50000"));
+        Order open = openOrderOnTable(9, null);
+        orderDAO.payExistingOrder(open.getId(), null, PaymentMethod.CASH,
+                BigDecimal.ZERO, new BigDecimal("50000"), List.of(lineFor(product, 1)));
+
+        open.setTotal(BigDecimal.ONE);
+        orderDAO.saveOrUpdateOpenOrder(open, List.of()); // the stale autosave arriving after payment
+
+        Order reloaded = orderDAO.findById(open.getId()).orElseThrow();
+        assertEquals(OrderStatus.PAID, reloaded.getStatus());
+        assertEquals("the paid total must survive", 0, new BigDecimal("50000").compareTo(reloaded.getTotal()));
+        assertEquals("the paid items must survive", 1, orderDAO.findItemsByOrderId(open.getId()).size());
+    }
+
+    @Test
+    public void historySearchTreatsPercentAndUnderscoreAsPlainCharacters() {
+        Product product = newProduct(20, new BigDecimal("10000"));
+        Customer plain = newCustomer(); // name has neither % nor _
+        Order plainOrder = orderDAO.insert(paidOrderTotaling(new BigDecimal("10000"), plain.getId()), List.of(lineFor(product, 1)));
+
+        Customer odd = new Customer();
+        odd.setFullName("50%off_" + UUID.randomUUID());
+        odd.setLoyaltyPoints(0);
+        odd = customerDAO.insert(odd);
+        Order oddOrder = orderDAO.insert(paidOrderTotaling(new BigDecimal("10000"), odd.getId()), List.of(lineFor(product, 1)));
+
+        for (String wildcard : new String[]{"%", "_"}) {
+            List<OrderDAO.OrderSummary> found = orderDAO.findHistoryPage(
+                    new OrderDAO.HistoryFilter(wildcard, null, null, null), 5000, 0);
+            assertTrue("\"" + wildcard + "\" must not match an order whose names do not contain it",
+                    found.stream().noneMatch(s -> s.order().getId() == plainOrder.getId()));
+            assertTrue("\"" + wildcard + "\" still finds a name that really contains it",
+                    found.stream().anyMatch(s -> s.order().getId() == oddOrder.getId()));
+        }
+        List<OrderDAO.OrderSummary> exact = orderDAO.findHistoryPage(
+                new OrderDAO.HistoryFilter(odd.getFullName(), null, null, null), 100, 0);
+        assertTrue(exact.stream().anyMatch(s -> s.order().getId() == oddOrder.getId()));
+    }
+
+    @Test
+    public void escapeLikeEscapesTheThreeSpecialCharacters() {
+        assertEquals("a\\%b\\_c\\\\d", OrderDAO.escapeLike("a%b_c\\d"));
+    }
 }

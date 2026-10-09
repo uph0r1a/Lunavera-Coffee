@@ -6,6 +6,7 @@ import com.coffeeshop.coffeeshopmanagement.model.PaymentMethod;
 import com.coffeeshop.coffeeshopmanagement.util.AlertUtil;
 import com.coffeeshop.coffeeshopmanagement.util.CurrencyUtil;
 import com.coffeeshop.coffeeshopmanagement.util.QrCode;
+import com.coffeeshop.coffeeshopmanagement.util.ReceiptQr;
 
 import javafx.fxml.FXML;
 import javafx.print.PrinterJob;
@@ -67,8 +68,6 @@ public class HoaDonController {
     @FXML
     private Label qrOrderIdLabel;
     @FXML
-    private Button printButton;
-    @FXML
     private Button closeButton;
 
     @FXML
@@ -97,23 +96,16 @@ public class HoaDonController {
         totalLabel.setText(CurrencyUtil.format(order.getTotal()));
         PaymentMethod method = order.getPaymentMethod();
         paymentMethodLabel.setText(method == PaymentMethod.CASH ? "Tiền mặt"
-                : (method == PaymentMethod.QR || method == PaymentMethod.CARD) ? "QR" : "-");
+                : method == PaymentMethod.CARD ? "Thẻ" : "-");
 
         qrOrderIdLabel.setText("#" + order.getId());
         showQrCode(order);
     }
 
-    /** What the receipt's QR code says: shop, order number, total and time - short enough to stay a small, easily scanned symbol. */
-    static String qrPayload(Order order) {
-        String time = order.getOrderDate() != null
-                ? order.getOrderDate().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) : "";
-        return "LUNAVERA|HD" + order.getId() + "|" + order.getTotal().toBigInteger() + "|" + time;
-    }
-
     private void showQrCode(Order order) {
         if (qrCodeImage == null) return;
         try {
-            qrCodeImage.setImage(renderQr(QrCode.encodeText(qrPayload(order))));
+            qrCodeImage.setImage(renderQr(QrCode.encodeText(ReceiptQr.payload(order))));
             qrCodeImage.setSmooth(false); // keep module edges crisp when scaled to the slot
         } catch (RuntimeException e) {
             qrCodeImage.setImage(null); // a receipt without a QR is better than no receipt

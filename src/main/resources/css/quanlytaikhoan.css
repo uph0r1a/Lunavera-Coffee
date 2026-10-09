@@ -1,19 +1,19 @@
 /* =========================================================
    ROOT
-   ========================================================= */
+========================================================= */
 
 .root {
     -fx-font-family: "System";
-    -fx-background-color: #ece9da;
+    -fx-background-color: #F4F1E8;
 }
 
 
 /* ==================== SIDEBAR ==================== */
 
 .sidebar {
-    -fx-background-color: #d3e2bf;
-    -fx-border-color: #a6c08e;
-    -fx-border-width: 0 1.5px 0 0;
+    -fx-background-color: #e4eed6;
+    -fx-border-color: #cbdbba;
+    -fx-border-width: 0 1px 0 0;
 }
 
 .logo-section {
@@ -22,15 +22,15 @@
 }
 
 .logo-title {
-    -fx-text-fill: #15300d;
+    -fx-text-fill: #224416;
     -fx-font-family: "Serif";
     -fx-font-size: 28px;
     -fx-font-weight: bold;
-    -fx-effect: dropshadow(gaussian, rgba(21, 48, 13, 0.22), 4, 0, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(34, 68, 22, 0.15), 4, 0, 0, 1);
 }
 
 .logo-subtitle {
-    -fx-text-fill: #2c541a;
+    -fx-text-fill: #4b7833;
     -fx-font-family: "Segoe UI", sans-serif;
     -fx-font-size: 11px;
     -fx-font-weight: bold;
@@ -38,13 +38,13 @@
 }
 
 .sidebar-separator {
-    -fx-background-color: #acc397;
+    -fx-background-color: #d1dfc1;
     -fx-padding: 0 15px;
 }
 
 .sidebar-separator .line {
-    -fx-border-color: #acc397;
-    -fx-border-width: 1px;
+    -fx-border-color: #d1dfc1;
+    -fx-border-width: 0.5px;
 }
 
 .menu-container {
@@ -56,7 +56,7 @@
     -fx-background-color: transparent;
     -fx-background-radius: 9px;
     -fx-border-radius: 9px;
-    -fx-text-fill: #1d3b10;
+    -fx-text-fill: #345823;
     -fx-font-family: "Segoe UI", "Serif", sans-serif;
     -fx-font-size: 14px;
     -fx-font-weight: 600;
@@ -66,21 +66,21 @@
 }
 
 .menu-button:hover {
-    -fx-background-color: #bed79f;
-    -fx-text-fill: #0d2506;
+    -fx-background-color: #d5e6bf;
+    -fx-text-fill: #1c380f;
 }
 
 /* Menu Active: Xanh lá mạ non đậm, tương phản cao */
 .menu-button-active {
-    -fx-background-color: #2b5a19;
+    -fx-background-color: #3e7728;
     -fx-background-radius: 9px;
     -fx-text-fill: #ffffff;
     -fx-font-weight: bold;
-    -fx-effect: dropshadow(gaussian, rgba(25, 60, 15, 0.35), 8, 0, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(45, 85, 25, 0.28), 8, 0, 0, 2);
 }
 
 .menu-button-active:hover {
-    -fx-background-color: #214912;
+    -fx-background-color: #356722;
     -fx-text-fill: #ffffff;
 }
 
@@ -89,12 +89,12 @@
 }
 
 .logout-button {
-    -fx-background-color: #c5dba9;
+    -fx-background-color: #d9e8c6;
     -fx-background-radius: 8px;
-    -fx-border-color: #9ebd7d;
+    -fx-border-color: #c4d9ab;
     -fx-border-radius: 8px;
-    -fx-border-width: 1.5px;
-    -fx-text-fill: #1e3e11;
+    -fx-border-width: 1px;
+    -fx-text-fill: #395f26;
     -fx-font-family: "Segoe UI", "Serif", sans-serif;
     -fx-font-size: 13px;
     -fx-font-weight: bold;
@@ -104,13 +104,13 @@
 }
 
 .logout-button:hover {
-    -fx-background-color: #b1cf8f;
-    -fx-text-fill: #0e2606;
-    -fx-border-color: #8bb166;
+    -fx-background-color: #cce0b5;
+    -fx-text-fill: #1d3a10;
+    -fx-border-color: #b0cb93;
 }
 
 .sidebar-footer, .coffee-slogan {
-    -fx-text-fill: #365624;
+    -fx-text-fill: #5b7e45;
     -fx-font-family: "Serif";
     -fx-font-size: 12px;
     -fx-font-style: italic;
@@ -121,50 +121,50 @@
 
 /* =========================================================
    MAIN CONTENT
-   ========================================================= */
+========================================================= */
 
 .content {
-    -fx-background-color: #ece9da;
+    -fx-background-color: #F7F5EE;
     -fx-padding: 18px 22px 22px 22px;
 }
 
 
 /* =========================================================
    HEADER
-   ========================================================= */
+========================================================= */
 
 .page-header {
-    -fx-background-color: #ffffff;
+    -fx-background-color: #FAF9F4;
     -fx-background-radius: 10px;
-    -fx-border-color: #b4c59d;
+    -fx-border-color: #E4E3D8;
     -fx-border-radius: 10px;
-    -fx-border-width: 1.5px;
+    -fx-border-width: 1px;
     -fx-padding: 14px 18px;
-    -fx-effect: dropshadow(gaussian, rgba(30,55,15,0.08), 8, 0.1, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(70,80,60,0.07), 8, 0.1, 0, 2);
 }
 
 .page-title {
     -fx-font-family: "Georgia";
     -fx-font-size: 25px;
     -fx-font-weight: bold;
-    -fx-text-fill: #14300c;
+    -fx-text-fill: #354D3B;
 }
 
 .page-description {
     -fx-font-family: "Georgia";
     -fx-font-size: 12px;
-    -fx-text-fill: #435235;
+    -fx-text-fill: #9A9B8B;
 }
 
 .header-icon {
-    -fx-background-color: #cce0ba;
+    -fx-background-color: #E8EBDD;
     -fx-background-radius: 50%;
     -fx-min-width: 34px;
     -fx-min-height: 34px;
     -fx-max-width: 34px;
     -fx-max-height: 34px;
     -fx-alignment: CENTER;
-    -fx-text-fill: #2c5a1d;
+    -fx-text-fill: #65745E;
     -fx-font-size: 15px;
 }
 
@@ -172,86 +172,144 @@
     -fx-font-family: "Georgia";
     -fx-font-size: 13px;
     -fx-font-weight: bold;
-    -fx-text-fill: #16320d;
+    -fx-text-fill: #435540;
 }
 
 .admin-role {
     -fx-font-size: 10px;
-    -fx-text-fill: #505e42;
+    -fx-text-fill: #999D8C;
 }
 
 .profile-icon {
-    -fx-background-color: #cce0ba;
+    -fx-background-color: #E2E7DA;
     -fx-background-radius: 50%;
     -fx-min-width: 34px;
     -fx-min-height: 34px;
     -fx-max-width: 34px;
     -fx-max-height: 34px;
     -fx-alignment: CENTER;
-    -fx-text-fill: #2c5a1d;
+    -fx-text-fill: #596954;
     -fx-font-size: 16px;
 }
 
 
 /* =========================================================
-   SEARCH & FILTER
-   ========================================================= */
+   STATISTICS
+========================================================= */
+
+.statistics {
+    -fx-padding: 0;
+}
+
+.stat-card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 10px;
+    -fx-border-color: #E0E3D7;
+    -fx-border-radius: 10px;
+    -fx-padding: 12px 15px;
+    -fx-spacing: 3px;
+    -fx-effect: dropshadow(gaussian, rgba(70,80,60,0.10), 10, 0.12, 0, 2);
+}
+
+.stat-card:hover {
+    -fx-border-color: #CBD4C1;
+}
+
+.stat-icon {
+    -fx-text-fill: #6F8068;
+    -fx-font-size: 17px;
+}
+
+.stat-icon-active {
+    -fx-text-fill: #45A864;
+    -fx-font-size: 17px;
+}
+
+.stat-icon-locked {
+    -fx-text-fill: #D96D68;
+    -fx-font-size: 17px;
+}
+
+.stat-title {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 12px;
+    -fx-text-fill: #6F8068;
+}
+
+.stat-value {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 25px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #405541;
+}
+
+.stat-description {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 10px;
+    -fx-text-fill: #A0A495;
+}
+
+
+/* =========================================================
+   SEARCH + FILTER
+========================================================= */
+
+.search-bar {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 10px;
+    -fx-border-color: #E0E3D7;
+    -fx-border-radius: 10px;
+    -fx-padding: 9px;
+    -fx-effect: dropshadow(gaussian, rgba(70,80,60,0.07), 8, 0.1, 0, 2);
+}
 
 .search-field {
-    -fx-background-color: #fbfaf5;
+    -fx-background-color: #F9F9F5;
     -fx-background-radius: 7px;
-    -fx-border-color: #aab99d;
+    -fx-border-color: #E0E2D6;
     -fx-border-radius: 7px;
-    -fx-border-width: 1.5px;
     -fx-padding: 9px 12px;
     -fx-font-family: "System";
     -fx-font-size: 12px;
-    -fx-text-fill: #18330c;
-    -fx-prompt-text-fill: #5f705a;
-}
-
-.search-field:hover {
-    -fx-border-color: #7b9468;
+    -fx-text-fill: #4E5C4D;
+    -fx-prompt-text-fill: #A4A79B;
 }
 
 .search-field:focused {
     -fx-background-color: #FFFFFF;
-    -fx-border-color: #2b5a19;
-    -fx-border-width: 2px;
+    -fx-border-color: #8B9B80;
+    -fx-border-width: 1.5px;
 }
 
 .filter-combo {
-    -fx-background-color: #fbfaf5;
+    -fx-background-color: #F9F9F5;
     -fx-background-radius: 7px;
-    -fx-border-color: #aab99d;
+    -fx-border-color: #E0E2D6;
     -fx-border-radius: 7px;
-    -fx-border-width: 1.5px;
-    -fx-padding: 4px 8px;
     -fx-font-size: 12px;
 }
 
 .filter-combo:hover {
-    -fx-border-color: #7b9468;
+    -fx-border-color: #B9C4B0;
 }
 
 .filter-combo:focused {
-    -fx-border-color: #2b5a19;
-    -fx-border-width: 2px;
+    -fx-border-color: #8B9B80;
 }
 
 .filter-combo .list-cell {
     -fx-background-color: transparent;
-    -fx-text-fill: #1e3817;
+    -fx-text-fill: #596557;
     -fx-font-size: 12px;
 }
 
 
 /* =========================================================
    PRIMARY BUTTON
-   ========================================================= */
+========================================================= */
 
 .primary-button {
-    -fx-background-color: #285915;
+    -fx-background-color: #6F8068;
     -fx-background-radius: 7px;
     -fx-text-fill: white;
     -fx-font-family: "Georgia";
@@ -259,21 +317,20 @@
     -fx-font-weight: bold;
     -fx-padding: 10px 15px;
     -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(30, 70, 15, 0.30), 6, 0, 0, 1.5);
 }
 
 .primary-button:hover {
-    -fx-background-color: #1e470d;
+    -fx-background-color: #596B54;
 }
 
 .primary-button:pressed {
-    -fx-background-color: #153507;
+    -fx-background-color: #4F604A;
 }
 
 
 /* =========================================================
    ACCOUNT AREA
-   ========================================================= */
+========================================================= */
 
 .account-area {
     -fx-padding: 0;
@@ -282,44 +339,41 @@
 
 /* =========================================================
    TABLE CARD
-   ========================================================= */
+========================================================= */
 
 .table-card {
     -fx-background-color: #FFFFFF;
     -fx-background-radius: 10px;
-    -fx-border-color: #adc697;
+    -fx-border-color: #E0E3D7;
     -fx-border-radius: 10px;
-    -fx-border-width: 1.5px;
     -fx-padding: 14px;
-    -fx-effect: dropshadow(gaussian, rgba(30,55,15,0.10), 10, 0.1, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(70,80,60,0.10), 10, 0.1, 0, 2);
 }
 
 .section-title {
     -fx-font-family: "Georgia";
     -fx-font-size: 15px;
     -fx-font-weight: bold;
-    -fx-text-fill: #14300c;
+    -fx-text-fill: #405741;
 }
 
 .account-count {
     -fx-font-family: "Georgia";
     -fx-font-size: 11px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #3b5230;
+    -fx-text-fill: #8D9585;
 }
 
 
 /* =========================================================
    ACCOUNT TABLE
-   ========================================================= */
+========================================================= */
 
 .account-table {
     -fx-background-color: transparent;
     -fx-background-radius: 6px;
-    -fx-border-color: #adc099;
+    -fx-border-color: #E0E3D7;
     -fx-border-radius: 6px;
-    -fx-border-width: 1.5px;
-    -fx-table-cell-border-color: #d9e3cd;
+    -fx-table-cell-border-color: #EEF0E9;
     -fx-fixed-cell-size: 42px;
 }
 
@@ -328,12 +382,12 @@
 }
 
 .account-table .column-header-background {
-    -fx-background-color: #dce6cd;
+    -fx-background-color: #EEF1E7;
 }
 
 .account-table .column-header {
-    -fx-background-color: #dce6cd;
-    -fx-border-color: #a8be93;
+    -fx-background-color: #EEF1E7;
+    -fx-border-color: #DEE2D7;
     -fx-border-width: 0 1px 1px 0;
     -fx-size: 38px;
 }
@@ -342,38 +396,38 @@
     -fx-font-family: "Georgia";
     -fx-font-size: 11px;
     -fx-font-weight: bold;
-    -fx-text-fill: #16340c;
+    -fx-text-fill: #526250;
 }
 
 .account-table .filler {
-    -fx-background-color: #dce6cd;
+    -fx-background-color: #EEF1E7;
 }
 
 .account-table .table-row-cell {
     -fx-background-color: #FFFFFF;
-    -fx-border-color: #d9e3cd;
+    -fx-border-color: #EEF0E9;
 }
 
 .account-table .table-row-cell:odd {
-    -fx-background-color: #f7f9f2;
+    -fx-background-color: #FCFCF9;
 }
 
 .account-table .table-row-cell:hover {
-    -fx-background-color: #e3eed3;
+    -fx-background-color: #F2F5EC;
 }
 
 .account-table .table-row-cell:selected {
-    -fx-background-color: #cadfb0;
+    -fx-background-color: #E6ECDD;
 }
 
 .account-table .table-row-cell:selected .table-cell {
-    -fx-text-fill: #14300c;
+    -fx-text-fill: #435542;
 }
 
 .account-table .table-cell {
     -fx-font-family: "Georgia";
     -fx-font-size: 11px;
-    -fx-text-fill: #182b14;
+    -fx-text-fill: #596557;
     -fx-alignment: CENTER_LEFT;
     -fx-border-color: transparent;
 }
@@ -385,13 +439,13 @@
 .empty-label {
     -fx-font-family: "Georgia";
     -fx-font-size: 12px;
-    -fx-text-fill: #53664c;
+    -fx-text-fill: #A0A495;
 }
 
 
 /* =========================================================
    TABLE SCROLLBAR
-   ========================================================= */
+========================================================= */
 
 .account-table .scroll-bar:vertical,
 .account-table .scroll-bar:horizontal {
@@ -403,12 +457,12 @@
 }
 
 .account-table .scroll-bar .thumb {
-    -fx-background-color: #9cb08e;
+    -fx-background-color: #C7CEC0;
     -fx-background-radius: 5px;
 }
 
 .account-table .scroll-bar .thumb:hover {
-    -fx-background-color: #799169;
+    -fx-background-color: #AEB9A5;
 }
 
 .account-table .scroll-bar .increment-button,
@@ -420,97 +474,94 @@
 
 /* =========================================================
    PAGINATION
-   ========================================================= */
+========================================================= */
 
 .table-footer {
     -fx-font-family: "Georgia";
     -fx-font-size: 11px;
-    -fx-text-fill: #435539;
+    -fx-text-fill: #8C9385;
 }
 
 .page-button {
-    -fx-background-color: #e6eed9;
+    -fx-background-color: #F8F8F3;
     -fx-background-radius: 6px;
-    -fx-border-color: #a6c091;
+    -fx-border-color: #DEE2D6;
     -fx-border-radius: 6px;
-    -fx-border-width: 1.5px;
     -fx-min-width: 32px;
     -fx-min-height: 30px;
     -fx-max-height: 30px;
     -fx-padding: 5px 9px;
-    -fx-text-fill: #284b15;
+    -fx-text-fill: #64705E;
     -fx-font-size: 11px;
     -fx-cursor: hand;
 }
 
 .page-button:hover {
-    -fx-background-color: #cee2b7;
-    -fx-border-color: #739b4f;
+    -fx-background-color: #EEF2E8;
+    -fx-border-color: #C9D1C2;
 }
 
 .page-button:pressed {
-    -fx-background-color: #b7d598;
+    -fx-background-color: #E2E9DA;
 }
 
 .page-button-active {
-    -fx-background-color: #274e14;
-    -fx-border-color: #274e14;
-    -fx-text-fill: #ffffff;
+    -fx-background-color: #E2E9DA;
+    -fx-border-color: #CBD6C3;
+    -fx-text-fill: #4F604A;
     -fx-font-weight: bold;
 }
 
 
 /* =========================================================
    DETAIL CARD
-   ========================================================= */
+========================================================= */
 
 .detail-card {
     -fx-background-color: #FFFFFF;
     -fx-background-radius: 10px;
-    -fx-border-color: #adc697;
+    -fx-border-color: #E0E3D7;
     -fx-border-radius: 10px;
-    -fx-border-width: 1.5px;
     -fx-padding: 15px;
-    -fx-effect: dropshadow(gaussian, rgba(30,55,15,0.12), 12, 0.12, 0, 3);
+    -fx-effect: dropshadow(gaussian, rgba(60,70,50,0.12), 12, 0.12, 0, 3);
 }
 
 .close-button {
     -fx-background-color: transparent;
     -fx-background-radius: 5px;
-    -fx-text-fill: #3b4e33;
+    -fx-text-fill: #75806F;
     -fx-font-size: 18px;
     -fx-padding: 2px 6px;
     -fx-cursor: hand;
 }
 
 .close-button:hover {
-    -fx-background-color: #e3eed3;
-    -fx-text-fill: #14300c;
+    -fx-background-color: #EEF1E7;
+    -fx-text-fill: #4F604A;
 }
 
 
 /* =========================================================
    PROFILE
-   ========================================================= */
+========================================================= */
 
 .profile-box {
-    -fx-background-color: #f5f7ee;
+    -fx-background-color: #F8F8F3;
     -fx-background-radius: 8px;
-    -fx-border-color: #b4c79e;
+    -fx-border-color: #E5E6DC;
     -fx-border-radius: 8px;
-    -fx-border-width: 1.5px;
     -fx-padding: 13px;
 }
 
 .avatar {
-    -fx-background-color: #cce0ba;
+    -fx-background-color: #E4E7DC;
     -fx-background-radius: 50%;
     -fx-min-width: 58px;
     -fx-min-height: 58px;
     -fx-max-width: 58px;
     -fx-max-height: 58px;
     -fx-alignment: CENTER;
-    -fx-text-fill: #2c5a1d;
+    -fx-text-fill: #65725E;
     -fx-font-size: 26px;
 }
 
@@ -518,14 +569,14 @@
     -fx-font-family: "Georgia";
     -fx-font-size: 15px;
     -fx-font-weight: bold;
-    -fx-text-fill: #14300c;
+    -fx-text-fill: #435542;
 }
 
 .role-badge {
-    -fx-background-color: #fae5bc;
+    -fx-background-color: #F1E7D2;
     -fx-background-radius: 15px;
     -fx-padding: 4px 10px;
-    -fx-text-fill: #734812;
+    -fx-text-fill: #9A7742;
     -fx-font-family: "Georgia";
     -fx-font-size: 10px;
     -fx-font-weight: bold;
@@ -534,7 +585,7 @@
 
 /* =========================================================
    INFORMATION
-   ========================================================= */
+========================================================= */
 
 .info-box {
     -fx-padding: 4px 2px;
@@ -543,26 +594,25 @@
 .info-label {
     -fx-font-family: "Georgia";
     -fx-font-size: 10px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #435539;
+    -fx-text-fill: #7A8375;
 }
 
 .info-value {
     -fx-font-family: "Georgia";
     -fx-font-size: 10px;
-    -fx-text-fill: #162d12;
+    -fx-text-fill: #4E5C4D;
 }
 
 
 /* =========================================================
    STATUS
-   ========================================================= */
+========================================================= */
 
 .status-active {
-    -fx-background-color: #c2e9be;
+    -fx-background-color: #DDEEDB;
     -fx-background-radius: 15px;
     -fx-padding: 4px 9px;
-    -fx-text-fill: #155823;
+    -fx-text-fill: #42814F;
     -fx-font-family: "Georgia";
     -fx-font-size: 10px;
     -fx-font-weight: bold;
@@ -571,42 +621,40 @@
 
 /* =========================================================
    PERMISSION
-   ========================================================= */
+========================================================= */
 
 .permission-title {
     -fx-font-family: "Georgia";
     -fx-font-size: 13px;
     -fx-font-weight: bold;
-    -fx-text-fill: #14300c;
+    -fx-text-fill: #526250;
 }
 
 .permission-box {
-    -fx-background-color: #f5f8ed;
+    -fx-background-color: #F5F6EF;
     -fx-background-radius: 7px;
-    -fx-border-color: #b4c79e;
+    -fx-border-color: #E4E6DB;
     -fx-border-radius: 7px;
-    -fx-border-width: 1.5px;
     -fx-padding: 10px;
 }
 
 .permission-item {
     -fx-font-family: "Georgia";
     -fx-font-size: 10px;
-    -fx-text-fill: #1f3818;
+    -fx-text-fill: #63705F;
 }
 
 
 /* =========================================================
    ACTION BUTTONS
-   ========================================================= */
+========================================================= */
 
 .secondary-button {
-    -fx-background-color: #e6eed9;
+    -fx-background-color: #FFFFFF;
     -fx-background-radius: 7px;
-    -fx-border-color: #9cb885;
+    -fx-border-color: #D8DDD1;
     -fx-border-radius: 7px;
-    -fx-border-width: 1.5px;
-    -fx-text-fill: #1d3e11;
+    -fx-text-fill: #5C6A57;
     -fx-font-family: "Georgia";
     -fx-font-size: 10px;
     -fx-font-weight: bold;
@@ -615,17 +663,16 @@
 }
 
 .secondary-button:hover {
-    -fx-background-color: #cbe0b6;
-    -fx-border-color: #789f5c;
-    -fx-text-fill: #0c2805;
+    -fx-background-color: #F1F3EB;
+    -fx-border-color: #C5CEC0;
 }
 
 .secondary-button:pressed {
-    -fx-background-color: #b4d19a;
+    -fx-background-color: #E7EBE1;
 }
 
 .danger-button {
-    -fx-background-color: #b3261e;
+    -fx-background-color: #6F8068;
     -fx-background-radius: 7px;
     -fx-text-fill: white;
     -fx-font-family: "Georgia";
@@ -633,21 +680,20 @@
     -fx-font-weight: bold;
     -fx-padding: 9px 8px;
     -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(179, 38, 30, 0.30), 6, 0, 0, 1.5);
 }
 
 .danger-button:hover {
-    -fx-background-color: #8c1d18;
+    -fx-background-color: #596B54;
 }
 
 .danger-button:pressed {
-    -fx-background-color: #68120e;
+    -fx-background-color: #4F604A;
 }
 
 
 /* =========================================================
    GENERAL FOCUS
-   ========================================================= */
+========================================================= */
 
 .button:focused,
 .text-field:focused,
@@ -659,36 +705,36 @@
 
 /* =========================================================
    COMBO BOX POPUP
-   ========================================================= */
+========================================================= */
 
 .combo-box-popup .list-view {
     -fx-background-color: #FFFFFF;
-    -fx-border-color: #adc099;
+    -fx-border-color: #DDE1D5;
 }
 
 .combo-box-popup .list-cell {
     -fx-background-color: #FFFFFF;
-    -fx-text-fill: #182b14;
+    -fx-text-fill: #596557;
     -fx-font-size: 12px;
     -fx-padding: 8px 10px;
 }
 
 .combo-box-popup .list-cell:hover {
-    -fx-background-color: #e3eed3;
+    -fx-background-color: #EEF2E8;
 }
 
 .combo-box-popup .list-cell:selected {
-    -fx-background-color: #cadfb0;
-    -fx-text-fill: #14300c;
+    -fx-background-color: #E2E9DA;
+    -fx-text-fill: #4F604A;
 }
 
 
 /* =========================================================
    TOOLTIP
-   ========================================================= */
+========================================================= */
 
 .tooltip {
-    -fx-background-color: #1a3014;
+    -fx-background-color: #435542;
     -fx-text-fill: #FFFFFF;
     -fx-font-size: 11px;
     -fx-background-radius: 5px;

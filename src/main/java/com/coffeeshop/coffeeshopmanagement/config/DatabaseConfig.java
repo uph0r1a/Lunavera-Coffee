@@ -172,6 +172,7 @@ public final class DatabaseConfig {
                     total INTEGER NOT NULL DEFAULT 0,
                     payment_method TEXT,
                     paid_at TEXT,
+                    table_number INTEGER,
                     FOREIGN KEY (employee_id) REFERENCES employees(id),
                     FOREIGN KEY (customer_id) REFERENCES customers(id)
                 )
@@ -203,11 +204,8 @@ public final class DatabaseConfig {
                 )
                 """);
 
-            try {
-                statement.execute("ALTER TABLE orders ADD COLUMN table_number INTEGER");
-            } catch (SQLException ignored) {
-                // Column already exists
-            }
+            // Databases created before dine-in tables existed have no orders.table_number yet.
+            addColumnIfMissing(connection, "orders", "table_number", "INTEGER");
             }
 
             if (preexisting) {
@@ -245,6 +243,21 @@ public final class DatabaseConfig {
                 statement.executeUpdate("UPDATE products SET category_id = " + caPheWithAccentId + " WHERE category_id = " + caPheNoAccentId);
                 statement.executeUpdate("DELETE FROM categories WHERE id = " + caPheNoAccentId);
             }
+        }
+    }
+
+    /** Adds a column to an existing table only when it is not there yet (checked, not guessed from an error). */
+    static void addColumnIfMissing(Connection connection, String table, String column, String definition) throws SQLException {
+        try (Statement statement = connection.createStatement();
+             ResultSet rs = statement.executeQuery("PRAGMA table_info(" + table + ")")) {
+            while (rs.next()) {
+                if (column.equalsIgnoreCase(rs.getString("name"))) {
+                    return;
+                }
+            }
+        }
+        try (Statement statement = connection.createStatement()) {
+            statement.execute("ALTER TABLE " + table + " ADD COLUMN " + column + " " + definition);
         }
     }
 
@@ -300,7 +313,8 @@ public final class DatabaseConfig {
             insertUser.executeUpdate();
         }
 
-        LOGGER.info("Seeded default admin account (username: admin / password: Admin@123). " +
+        // The password itself is deliberately not logged (the log is a file now).
+        LOGGER.info("Seeded default admin account (username: admin) with the default password. " +
                 "Change this password after first login.");
     }
 

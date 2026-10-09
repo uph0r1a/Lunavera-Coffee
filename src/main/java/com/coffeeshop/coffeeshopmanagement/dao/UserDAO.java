@@ -155,20 +155,6 @@ public Optional<User> findById(int id) {
         }
     }
 
-    public int countByRole(Role role) {
-        String sql = "SELECT COUNT(*) FROM users WHERE role = ?";
-        try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, role.name());
-            try (ResultSet rs = statement.executeQuery()) {
-                rs.next();
-                return rs.getInt(1);
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException("Failed to count users by role", e);
-        }
-    }
-
     public int countByStatus(AccountStatus status) {
         String sql = "SELECT COUNT(*) FROM users WHERE status = ?";
         try (Connection connection = DatabaseConfig.getConnection();

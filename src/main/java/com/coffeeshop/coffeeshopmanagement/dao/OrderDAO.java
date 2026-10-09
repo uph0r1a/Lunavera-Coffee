@@ -126,7 +126,12 @@ public class OrderDAO {
                 statement.setLong(3, Money.toDong(order.getTotal()));
                 setNullableInt(statement, 4, order.getCustomerId());
                 statement.setInt(5, order.getId());
-                statement.executeUpdate();
+                if (statement.executeUpdate() == 0) {
+                    // The order is no longer OPEN (paid or cancelled in the meantime). A late autosave
+                    // must not touch the items of a finished order.
+                    connection.rollback();
+                    return order;
+                }
             }
             try (PreparedStatement statement = connection.prepareStatement(deleteItemsSql)) {
                 statement.setInt(1, order.getId());
@@ -151,8 +156,18 @@ public class OrderDAO {
         }
     }
 
-    public Order payExistingOrder(int orderId, PaymentMethod method, BigDecimal discount, BigDecimal total, List<OrderItem> items) {
-        String orderSql = "UPDATE orders SET status = 'PAID', paid_at = ?, payment_method = ?, discount = ?, total = ? WHERE id = ?";
+    /**
+     * Pays an OPEN order in one transaction: marks it PAID (only if it is still OPEN), links the
+     * customer, rewrites the items, takes stock, awards loyalty points and frees the table.
+     *
+     * @param customerId customer to attach to the order, or {@code null} to keep whatever the order has
+     * @throws DataAccessException if the order is not OPEN any more, stock is short, or the save fails -
+     *                             in every case nothing is saved
+     */
+    public Order payExistingOrder(int orderId, Integer customerId, PaymentMethod method, BigDecimal discount,
+                                  BigDecimal total, List<OrderItem> items) {
+        String orderSql = "UPDATE orders SET status = 'PAID', paid_at = ?, payment_method = ?, discount = ?, total = ?, "
+                + "customer_id = COALESCE(?, customer_id) WHERE id = ? AND status = 'OPEN'";
         String deleteItemsSql = "DELETE FROM order_items WHERE order_id = ?";
         String itemSql = "INSERT INTO order_items (order_id, product_id, product_name, quantity, unit_price, line_total) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection connection = DatabaseConfig.getConnection()) {
@@ -162,8 +177,27 @@ public class OrderDAO {
                 statement.setString(2, method != null ? method.name() : null);
                 statement.setLong(3, Money.toDong(discount));
                 statement.setLong(4, Money.toDong(total));
-                statement.setInt(5, orderId);
-                statement.executeUpdate();
+                setNullableInt(statement, 5, customerId);
+                statement.setInt(6, orderId);
+                if (statement.executeUpdate() == 0) {
+                    connection.rollback();
+                    throw new DataAccessException("Đơn #" + orderId
+                            + " không còn ở trạng thái đang mở (đã thanh toán hoặc đã hủy), không thể thanh toán lại.");
+                }
+            }
+            Integer finalCustomerId = null;
+            Integer tableNumber = null;
+            try (PreparedStatement statement = connection.prepareStatement(
+                    "SELECT customer_id, table_number FROM orders WHERE id = ?")) {
+                statement.setInt(1, orderId);
+                try (ResultSet rs = statement.executeQuery()) {
+                    if (rs.next()) {
+                        int c = rs.getInt(1);
+                        finalCustomerId = rs.wasNull() ? null : c;
+                        int t = rs.getInt(2);
+                        tableNumber = rs.wasNull() ? null : t;
+                    }
+                }
             }
             try (PreparedStatement statement = connection.prepareStatement(deleteItemsSql)) {
                 statement.setInt(1, orderId);
@@ -195,16 +229,22 @@ public class OrderDAO {
                     }
                 }
             }
-            Optional<Order> current = findById(orderId);
-            if (current.isPresent() && current.get().getCustomerId() != null) {
+            if (finalCustomerId != null) {
                 int points = LoyaltyPolicy.pointsFor(total);
                 if (points > 0) {
                     try (PreparedStatement statement = connection.prepareStatement(
                             "UPDATE customers SET loyalty_points = loyalty_points + ? WHERE id = ?")) {
                         statement.setInt(1, points);
-                        statement.setInt(2, current.get().getCustomerId());
+                        statement.setInt(2, finalCustomerId);
                         statement.executeUpdate();
                     }
+                }
+            }
+            if (tableNumber != null) {
+                try (PreparedStatement statement = connection.prepareStatement(
+                        "UPDATE dining_tables SET status = 'EMPTY', current_order_id = NULL WHERE table_number = ?")) {
+                    statement.setInt(1, tableNumber);
+                    statement.executeUpdate();
                 }
             }
             connection.commit();
@@ -212,6 +252,11 @@ public class OrderDAO {
         } catch (SQLException e) {
             throw new DataAccessException("Failed to complete payment for order #" + orderId, e);
         }
+    }
+
+    /** Makes the text match literally in a LIKE ... ESCAPE '\\' query: a typed % or _ is not a wildcard. */
+    static String escapeLike(String text) {
+        return text.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_");
     }
 
     public Optional<Order> findById(int id) {
@@ -228,24 +273,6 @@ public class OrderDAO {
             throw new DataAccessException("Failed to load order", e);
         }
         return Optional.empty();
-    }
-
-    /** Newest orders first (by id, which is monotonic - more reliable than comparing dates). */
-    public List<Order> findRecent(int limit) {
-        List<Order> result = new ArrayList<>();
-        try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(
-                     "SELECT * FROM orders ORDER BY id DESC LIMIT ?")) {
-            statement.setInt(1, limit);
-            try (ResultSet rs = statement.executeQuery()) {
-                while (rs.next()) {
-                    result.add(map(rs));
-                }
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException("Failed to load recent orders", e);
-        }
-        return result;
     }
 
     /** All orders created today, newest first. */
@@ -312,8 +339,8 @@ public class OrderDAO {
                 params.add(filter.to().toString());
             }
             if (filter.keyword() != null && !filter.keyword().isBlank()) {
-                conditions.add("(CAST(o.id AS TEXT) LIKE ? OR e.full_name LIKE ? OR c.full_name LIKE ?)");
-                String like = "%" + filter.keyword().trim().replace("#", "") + "%";
+                conditions.add("(CAST(o.id AS TEXT) LIKE ? ESCAPE '\\' OR e.full_name LIKE ? ESCAPE '\\' OR c.full_name LIKE ? ESCAPE '\\')");
+                String like = "%" + escapeLike(filter.keyword().trim().replace("#", "")) + "%";
                 params.add(like);
                 params.add(like);
                 params.add(like);
@@ -478,7 +505,6 @@ public class OrderDAO {
                 while (rs.next()) {
                     OrderItem item = new OrderItem();
                     item.setId(rs.getInt("id"));
-                    item.setOrderId(rs.getInt("order_id"));
                     int productId = rs.getInt("product_id");
                     item.setProductId(rs.wasNull() ? null : productId);
                     item.setProductName(rs.getString("product_name"));

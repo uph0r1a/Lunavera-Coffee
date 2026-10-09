@@ -2,8 +2,6 @@ package com.coffeeshop.coffeeshopmanagement.util;
 
 import com.coffeeshop.coffeeshopmanagement.dao.ProductDAO;
 import com.coffeeshop.coffeeshopmanagement.model.Order;
-import com.coffeeshop.coffeeshopmanagement.model.OrderStatus;
-import com.coffeeshop.coffeeshopmanagement.model.PaymentMethod;
 import com.coffeeshop.coffeeshopmanagement.model.Product;
 
 import javafx.geometry.Pos;
@@ -44,25 +42,6 @@ public final class DashboardWidgets {
                     product.getName(),
                     "Còn " + stock + " (cảnh báo khi ≤ " + ProductDAO.LOW_STOCK_THRESHOLD + ")",
                     badge, badgeStyle));
-        }
-    }
-
-    public static void fillRecentOrders(VBox container, List<Order> orders) {
-        container.getChildren().clear();
-        if (orders.isEmpty()) {
-            container.getChildren().add(styled(new Label("Chưa có đơn hàng nào."), "inventory-description"));
-            return;
-        }
-        for (Order order : orders) {
-            LocalDateTime when = order.getPaidAt() != null ? order.getPaidAt() : order.getOrderDate();
-            StringBuilder detail = new StringBuilder(when != null ? when.format(TIME_FORMAT) : "-");
-            detail.append(" • ").append(order.getPaymentMethod() == PaymentMethod.CASH ? "Tiền mặt" : "QR");
-            if (order.getStatus() == OrderStatus.CANCELLED) {
-                detail.append(" • Đã hủy");
-            }
-            container.getChildren().add(row(
-                    "Đơn #" + order.getId(), detail.toString(),
-                    CurrencyUtil.format(order.getTotal()), "inventory-name"));
         }
     }
 

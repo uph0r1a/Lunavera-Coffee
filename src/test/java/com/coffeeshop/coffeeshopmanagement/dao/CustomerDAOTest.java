@@ -88,4 +88,21 @@ public class CustomerDAOTest {
         boolean present = customerDAO.findAll().stream().anyMatch(c -> c.getId() == customer.getId());
         assertTrue(present);
     }
+
+    @Test
+    public void thePhoneIsFoundWhicheverWayItIsTyped() {
+        String local = uniquePhone();               // 0901234567
+        String international = "+84" + local.substring(1);
+        String spaced = local.substring(0, 4) + " " + local.substring(4, 7) + " " + local.substring(7);
+
+        Customer customer = new Customer();
+        customer.setFullName("Test Customer " + UUID.randomUUID());
+        customer.setPhone(spaced);                  // stored in the one canonical form
+        customerDAO.insert(customer);
+
+        assertEquals(local, customerDAO.findById(customer.getId()).orElseThrow().getPhone());
+        assertEquals(customer.getId(), (int) customerDAO.findByPhone(international).orElseThrow().getId());
+        assertEquals(customer.getId(), (int) customerDAO.findByPhone(local).orElseThrow().getId());
+        assertTrue(customerDAO.existsByPhone(international, -1));
+    }
 }

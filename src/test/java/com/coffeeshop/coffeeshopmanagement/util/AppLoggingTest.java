@@ -11,9 +11,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * {@code AppLogging}'s own dev-checks/AppLoggingCheck.java verifies it end-to-end across a real
- * process restart; this adds the fast, `mvn test`-runnable unit-level coverage that was missing
- * (dev-checks/ isn't part of the Maven build - see its own header comment).
+ * Covers {@code AppLogging}: the log file is created, the message really lands in it, and a repeat
+ * {@code install()} is a no-op. (This replaced the old dev-checks/AppLoggingCheck.java.)
  *
  * {@code AppLogging.install()} is a one-time-per-process operation (a static {@code installed}
  * flag, exactly like {@code DatabaseConfig} - see its own javadoc), so this can't use a per-test
@@ -46,9 +45,16 @@ public class AppLoggingTest {
         // should already be on disk without needing an explicit flush/close from here.
         Path logsDir = TEMP_HOME.resolve(".lunavera-coffee").resolve("logs");
         assertTrue("logs directory should have been created", Files.isDirectory(logsDir));
+        boolean written = false;
         try (var files = Files.list(logsDir)) {
             assertTrue("at least one log file should exist", files.findAny().isPresent());
         }
+        try (var files = Files.list(logsDir)) {
+            for (Path file : (Iterable<Path>) files::iterator) {
+                if (Files.readString(file).contains(marker)) written = true;
+            }
+        }
+        assertTrue("the message must actually be in a log file", written);
     }
 
     @Test

@@ -2,7 +2,9 @@ package com.coffeeshop.coffeeshopmanagement.util;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class ValidationUtilTest {
@@ -74,5 +76,22 @@ public class ValidationUtilTest {
         assertFalse(ValidationUtil.isValidPassword("abc12")); // one under the length minimum
         assertFalse(ValidationUtil.isValidPassword("abcdef")); // no digit
         assertFalse(ValidationUtil.isValidPassword("123456")); // no letter
+    }
+
+    @Test
+    public void normalizePhoneGivesOneFormForEveryWayOfWritingTheSameNumber() {
+        assertEquals("0901111222", ValidationUtil.normalizePhone("0901111222"));
+        assertEquals("0901111222", ValidationUtil.normalizePhone("+84901111222"));
+        assertEquals("0901111222", ValidationUtil.normalizePhone("84901111222"));
+        assertEquals("0901111222", ValidationUtil.normalizePhone("0901 111 222"));
+        assertEquals("0901111222", ValidationUtil.normalizePhone("090-1111.222"));
+        assertEquals("0901111222", ValidationUtil.normalizePhone(" (0901) 111222 "));
+    }
+
+    @Test
+    public void normalizePhoneLeavesNonPhonesAloneAndHandlesNull() {
+        assertNull(ValidationUtil.normalizePhone(null));
+        assertEquals("abc", ValidationUtil.normalizePhone(" abc "));
+        assertEquals("", ValidationUtil.normalizePhone(""));
     }
 }

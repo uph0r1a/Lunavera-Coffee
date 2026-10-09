@@ -51,7 +51,6 @@ public class CustomerController {
     @FXML private Label accountNameLabel;
     @FXML private Label accountRoleLabel;
     @FXML private TextField customerSearchField;
-    @FXML private Button addCustomerButton;
     @FXML private TableView<Customer> customerTable;
     @FXML private TableColumn<Customer, Number> customerIndexColumn;
     @FXML private TableColumn<Customer, String> customerNameColumn;
@@ -65,8 +64,6 @@ public class CustomerController {
     private PagedTable<Customer> customerPaged;
 
     @FXML private Button productMenuButton;
-    @FXML private Button categoryMenuButton;
-    @FXML private Button accountMenuButton;
     @FXML private javafx.scene.control.Separator categorySeparator;
     @FXML private javafx.scene.layout.VBox adminMenuBox;
 
@@ -271,22 +268,6 @@ public class CustomerController {
             return;
         }
         SceneNavigator.switchScene(event, "/fxml/quanlydanhmuc.fxml");
-    }
-
-    @FXML
-    public void openInventoryManagement(ActionEvent event) {
-        AlertUtil.info("Chưa triển khai",
-                "Chức năng Quản lý kho riêng biệt chưa được xây dựng. Tồn kho hiện được " +
-                        "quản lý trực tiếp trong màn hình Quản lý sản phẩm.");
-    }
-
-    @FXML
-    public void openEmployeeManagement(ActionEvent event) {
-        if (!Session.isAdmin()) {
-            AlertUtil.warning("Không đủ quyền", "Chức năng này chỉ dành cho Quản trị viên.");
-            return;
-        }
-        SceneNavigator.switchScene(event, "/fxml/quanlytaikhoan.fxml");
     }
 
     @FXML

@@ -33,9 +33,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.chart.XYChart;
-import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
@@ -58,17 +56,12 @@ import javafx.scene.Node;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import javafx.util.StringConverter;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -94,19 +87,13 @@ public class AdminController {
     @FXML private Label todayOrderLabel;
     @FXML private Label dashboardGreetingLabel;
     @FXML private Label dashboardAccountNameLabel;
-    @FXML private Button reportButton;
     @FXML private Button backupButton;
     @FXML private Label todayRevenueLabel;
     @FXML private Label todayCustomerLabel;
     @FXML private LineChart<String, Number> revenueChart;
-    @FXML private CategoryAxis revenueXAxis;
-    @FXML private NumberAxis revenueYAxis;
     @FXML private Label paidOrderLabel;
     @FXML private Label openOrderLabel;
     @FXML private Label cancelledOrderLabel;
-    @FXML private Label recentOrdersNoteLabel;
-    @FXML private VBox recentOrdersList;
-    @FXML private VBox lowStockList;
     @FXML private GridPane homeTableGrid;
     @FXML private VBox todayOrdersContainer;
 
@@ -116,7 +103,6 @@ public class AdminController {
     @FXML private Label hiddenCategoryLabel;
     @FXML private Label totalCategoryProductLabel;
     @FXML private TextField categorySearchField;
-    @FXML private Button addCategoryButton;
     @FXML private TableView<Category> categoryTable;
     @FXML private TableColumn<Category, Number> categoryIndexColumn;
     @FXML private TableColumn<Category, Void> categoryImageColumn;
@@ -157,8 +143,6 @@ public class AdminController {
     @FXML private Label accountPaginationLabel;
     @FXML private HBox accountPagerBox;
     @FXML private javafx.scene.layout.VBox accountDetailCard;
-    @FXML private Button closeDetailButton;
-    @FXML private Label detailAvatar;
     @FXML private Label detailUsername;
     @FXML private Label detailRole;
     @FXML private Label detailUsernameLabel;
@@ -168,7 +152,6 @@ public class AdminController {
     @FXML private Label detailStatusLabel;
     @FXML private Label detailCreatedDateLabel;
     @FXML private javafx.scene.layout.VBox permissionBox;
-    @FXML private Button editAccountButton;
     @FXML private Button lockAccountButton;
 
     private PagedTable<User> accountPaged;
@@ -186,7 +169,6 @@ public class AdminController {
     @FXML private TextField searchField;
     @FXML private ComboBox<String> categoryFilter;
     @FXML private ComboBox<String> statusFilter;
-    @FXML private Button addProductButton;
     @FXML private TableView<Product> productTable;
     @FXML private TableColumn<Product, Void> imageColumn;
     @FXML private TableColumn<Product, String> nameColumn;
@@ -218,9 +200,6 @@ public class AdminController {
         }
 
         loadHomeTableGrid();
-        if (revenueYAxis != null) {
-            setupRevenueYAxis(null);
-        }
         if (todayOrderLabel != null || todayRevenueLabel != null) {
             loadDashboardStats();
         }
@@ -247,16 +226,6 @@ public class AdminController {
     public void openDashboard(ActionEvent event) {
         String target = Session.isAdmin() ? "/fxml/admin-trangchu.fxml" : "/fxml/employee-trangchu.fxml";
         SceneNavigator.switchScene(event, target);
-    }
-
-    @FXML
-    public void openHome(ActionEvent event) {
-        openDashboard(event);
-    }
-
-    @FXML
-    public void handleHome(ActionEvent event) {
-        openDashboard(event);
     }
 
     @FXML
@@ -299,18 +268,8 @@ public class AdminController {
     }
 
     @FXML
-    public void handleProducts(ActionEvent event) {
-        openProductManagement(event);
-    }
-
-    @FXML
     public void openOrderManagement(ActionEvent event) {
         SceneNavigator.switchScene(event, "/fxml/quanlydonhang.fxml");
-    }
-
-    @FXML
-    public void handleOrders(ActionEvent event) {
-        openOrderManagement(event);
     }
 
     @FXML
@@ -328,31 +287,6 @@ public class AdminController {
     }
 
     @FXML
-    public void handleCategories(ActionEvent event) {
-        openCategoryManagement(event);
-    }
-
-    @FXML
-    public void openInventoryManagement(ActionEvent event) {
-        AlertUtil.info("Chưa triển khai",
-                "Chức năng Quản lý kho riêng biệt chưa được xây dựng. Tồn kho hiện được " +
-                        "quản lý trực tiếp trong màn hình Quản lý sản phẩm.");
-    }
-
-    @FXML
-    public void openEmployeeManagement(ActionEvent event) {
-        if (!Session.isAdmin()) {
-            AlertUtil.warning("Không đủ quyền", "Chức năng này chỉ dành cho Quản trị viên.");
-            return;
-        }
-        // There is no separate employee-CRUD screen in this project; Account Management
-        // (quanlytaikhoan.fxml) is the screen that creates/edits employee + login records,
-        // so employee management is routed there. Documented as a deliberate decision in
-        // progress.md rather than a missing feature.
-        SceneNavigator.switchScene(event, "/fxml/quanlytaikhoan.fxml");
-    }
-
-    @FXML
     public void openAccountManagement(ActionEvent event) {
         if (!Session.isAdmin()) {
             AlertUtil.warning("Không đủ quyền", "Chức năng này chỉ dành cho Quản trị viên.");
@@ -362,25 +296,9 @@ public class AdminController {
     }
 
     @FXML
-    public void handleAccounts(ActionEvent event) {
-        openAccountManagement(event);
-    }
-
-    @FXML
     public void logout(ActionEvent event) {
         Session.clear();
         SceneNavigator.switchScene(event, "/fxml/dangnhap.fxml");
-    }
-
-    @FXML
-    public void handleLogout(ActionEvent event) {
-        logout(event);
-    }
-
-    @FXML
-    public void handleNavigation(ActionEvent event) {
-        // Generic fallback wired by some buttons in the original FXML skeletons; nothing to
-        // route without knowing an intended destination.
     }
 
     // =================================================================== Dashboard
@@ -406,7 +324,6 @@ public class AdminController {
         if (cancelledOrderLabel != null) cancelledOrderLabel.setText(String.valueOf(stats.cancelledOrders()));
 
         if (revenueChart != null) {
-            setupRevenueYAxis(stats);
             XYChart.Series<String, Number> series = new XYChart.Series<>();
             series.setName("Doanh thu");
             DateTimeFormatter dayLabel = DateTimeFormatter.ofPattern("dd/MM");
@@ -424,54 +341,10 @@ public class AdminController {
                     ? "Không có sản phẩm sắp hết hàng"
                     : "Cần nhập thêm: " + stats.lowStockCount() + " sản phẩm");
         }
-        if (lowStockList != null) {
-            DashboardWidgets.fillLowStock(lowStockList, stats.lowStockProducts());
-        }
-        if (recentOrdersList != null) {
-            DashboardWidgets.fillRecentOrders(recentOrdersList, stats.recentOrders());
-        }
-        if (recentOrdersNoteLabel != null) {
-            recentOrdersNoteLabel.setText(stats.recentOrders().isEmpty()
-                    ? "Chưa có đơn" : stats.recentOrders().size() + " đơn mới nhất");
-        }
         if (todayOrdersContainer != null) {
             DashboardWidgets.fillTodayOrders(todayOrdersContainer, stats.todayOrdersList());
         }
         loadHomeTableGrid();
-    }
-
-    private void setupRevenueYAxis(DashboardStats stats) {
-        if (revenueYAxis == null) return;
-        double max = 10_000_000.0;
-        if (stats != null && stats.revenueLast7Days() != null) {
-            for (BigDecimal rev : stats.revenueLast7Days().values()) {
-                if (rev != null && rev.doubleValue() > max) {
-                    max = Math.ceil(rev.doubleValue() / 2_000_000.0) * 2_000_000.0;
-                }
-            }
-        }
-        revenueYAxis.setAutoRanging(false);
-        revenueYAxis.setLowerBound(0);
-        revenueYAxis.setUpperBound(max);
-        revenueYAxis.setTickUnit(max > 10_000_000.0 ? max / 5.0 : 2_000_000.0);
-        revenueYAxis.setTickLabelFormatter(new StringConverter<Number>() {
-            private final DecimalFormat df = new DecimalFormat("#,###");
-
-            @Override
-            public String toString(Number object) {
-                if (object == null) return "0";
-                return df.format(object.longValue());
-            }
-
-            @Override
-            public Number fromString(String string) {
-                try {
-                    return df.parse(string);
-                } catch (ParseException e) {
-                    return 0;
-                }
-            }
-        });
     }
 
     private void loadHomeTableGrid() {

@@ -71,18 +71,6 @@ public class ProductDAO {
         }
     }
 
-    public void adjustStock(int id, int delta) {
-        String sql = "UPDATE products SET stock = stock + ? WHERE id = ?";
-        try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, delta);
-            statement.setInt(2, id);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new DataAccessException("Failed to adjust stock", e);
-        }
-    }
-
     public List<Product> findAll() {
         List<Product> result = new ArrayList<>();
         try (Connection connection = DatabaseConfig.getConnection();
@@ -93,23 +81,6 @@ public class ProductDAO {
             }
         } catch (SQLException e) {
             throw new DataAccessException("Failed to load products", e);
-        }
-        return result;
-    }
-
-    public List<Product> findByCategory(int categoryId) {
-        List<Product> result = new ArrayList<>();
-        try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(
-                     SELECT_WITH_CATEGORY + " WHERE p.category_id = ? ORDER BY p.id")) {
-            statement.setInt(1, categoryId);
-            try (ResultSet rs = statement.executeQuery()) {
-                while (rs.next()) {
-                    result.add(map(rs));
-                }
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException("Failed to load products by category", e);
         }
         return result;
     }
@@ -174,20 +145,6 @@ public class ProductDAO {
             return rs.getInt(1);
         } catch (SQLException e) {
             throw new DataAccessException("Failed to count products", e);
-        }
-    }
-
-    public int countByCategory(int categoryId) {
-        try (Connection connection = DatabaseConfig.getConnection();
-             PreparedStatement statement = connection.prepareStatement(
-                     "SELECT COUNT(*) FROM products WHERE category_id = ?")) {
-            statement.setInt(1, categoryId);
-            try (ResultSet rs = statement.executeQuery()) {
-                rs.next();
-                return rs.getInt(1);
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException("Failed to count products by category", e);
         }
     }
 

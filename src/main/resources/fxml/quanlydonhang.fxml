@@ -298,7 +298,7 @@
 
                         <VBox spacing="2.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
                             <Label text="Vị trí phục vụ" styleClass="info-label"/>
-                            <Label fx:id="orderTableLabel" text="Bàn 1 (Tầng 1)" styleClass="info-value"/>
+                            <Label fx:id="orderTableLabel" text="Bàn 1" styleClass="info-value"/>
                         </VBox>
 
                         <VBox spacing="2.0" GridPane.columnIndex="2" GridPane.rowIndex="0">
@@ -321,6 +321,8 @@
                                        promptText="Nhập SĐT khách..."
                                        prefHeight="32.0"
                                        styleClass="customer-input-field"/>
+                            <Label fx:id="customerInfoLabel" styleClass="info-label" wrapText="true"
+                                   visible="false" managed="false"/>
                         </VBox>
                     </GridPane>
 

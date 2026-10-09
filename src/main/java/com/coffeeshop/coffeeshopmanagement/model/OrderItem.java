@@ -9,7 +9,6 @@ import java.math.BigDecimal;
  */
 public class OrderItem {
     private int id;
-    private int orderId;
     private Integer productId;
     private String productName;
     private int quantity;
@@ -22,8 +21,6 @@ public class OrderItem {
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public int getOrderId() { return orderId; }
-    public void setOrderId(int orderId) { this.orderId = orderId; }
 
     public Integer getProductId() { return productId; }
     public void setProductId(Integer productId) { this.productId = productId; }

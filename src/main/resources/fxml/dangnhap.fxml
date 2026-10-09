@@ -28,7 +28,7 @@
               pickOnBounds="true"
               preserveRatio="false">
       <image>
-         <Image url="@../images/LoginBackgroung.png"/>
+         <Image url="@../images/LoginBackground.png"/>
       </image>
    </ImageView>
 

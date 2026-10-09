@@ -22,9 +22,9 @@ import java.nio.file.Path;
  * and no delete-after-test bookkeeping needed even for DAOs (like CustomerDAO) with no delete
  * method at all.
  */
-final class TestDatabaseSupport {
+public final class TestDatabaseSupport {
 
-    static final Path TEMP_HOME;
+    public static final Path TEMP_HOME;
 
     static {
         try {
@@ -41,7 +41,7 @@ final class TestDatabaseSupport {
     /** Call from @BeforeClass: touches TEMP_HOME (running the static block above if it hasn't
      *  run yet) then initializes the schema - safe to call from every DAO test class, since
      *  DatabaseConfig.initialize() is itself idempotent. */
-    static void ensureReady() {
+    public static void ensureReady() {
         Object forceStaticInit = TEMP_HOME;
         com.coffeeshop.coffeeshopmanagement.config.DatabaseConfig.initialize();
     }

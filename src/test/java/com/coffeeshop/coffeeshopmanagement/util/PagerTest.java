@@ -19,9 +19,9 @@ public class PagerTest {
         pager.setItems(numbers(25));
         assertEquals(3, pager.getTotalPages());
         assertEquals(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), pager.getCurrentPageItems());
-        pager.nextPage();
+        pager.goToPage(pager.getCurrentPage() + 1);
         assertEquals(List.of(11, 12, 13, 14, 15, 16, 17, 18, 19, 20), pager.getCurrentPageItems());
-        pager.nextPage();
+        pager.goToPage(pager.getCurrentPage() + 1);
         assertEquals(List.of(21, 22, 23, 24, 25), pager.getCurrentPageItems()); // partial last page
     }
 
@@ -29,11 +29,11 @@ public class PagerTest {
     public void cannotGoPastEitherEnd() {
         Pager<Integer> pager = new Pager<>(10);
         pager.setItems(numbers(25));
-        pager.previousPage(); // already on page 1
+        pager.goToPage(pager.getCurrentPage() - 1); // already on page 1
         assertEquals(1, pager.getCurrentPage());
         pager.goToPage(999);
         assertEquals(3, pager.getCurrentPage()); // clamped to the last real page
-        pager.nextPage(); // already on the last page
+        pager.goToPage(pager.getCurrentPage() + 1); // already on the last page
         assertEquals(3, pager.getCurrentPage());
     }
 

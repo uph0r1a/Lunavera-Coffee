@@ -4,20 +4,20 @@
 
 .root {
     -fx-font-family: "Georgia";
-    -fx-background-color: #ece9da;
+    -fx-background-color: #f8f7ef;
 }
 
 .content {
-    -fx-background-color: #ece9da;
+    -fx-background-color: rgba(248, 247, 239, 0.96);
 }
 
 
 /* ==================== SIDEBAR ==================== */
 
 .sidebar {
-    -fx-background-color: #d3e2bf;
-    -fx-border-color: #a6c08e;
-    -fx-border-width: 0 1.5px 0 0;
+    -fx-background-color: #e4eed6;
+    -fx-border-color: #cbdbba;
+    -fx-border-width: 0 1px 0 0;
 }
 
 .logo-section {
@@ -26,15 +26,15 @@
 }
 
 .logo-title {
-    -fx-text-fill: #15300d;
+    -fx-text-fill: #224416;
     -fx-font-family: "Serif";
     -fx-font-size: 28px;
     -fx-font-weight: bold;
-    -fx-effect: dropshadow(gaussian, rgba(21, 48, 13, 0.22), 4, 0, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(34, 68, 22, 0.15), 4, 0, 0, 1);
 }
 
 .logo-subtitle {
-    -fx-text-fill: #2c541a;
+    -fx-text-fill: #4b7833;
     -fx-font-family: "Segoe UI", sans-serif;
     -fx-font-size: 11px;
     -fx-font-weight: bold;
@@ -42,13 +42,13 @@
 }
 
 .sidebar-separator {
-    -fx-background-color: #acc397;
+    -fx-background-color: #d1dfc1;
     -fx-padding: 0 15px;
 }
 
 .sidebar-separator .line {
-    -fx-border-color: #acc397;
-    -fx-border-width: 1px;
+    -fx-border-color: #d1dfc1;
+    -fx-border-width: 0.5px;
 }
 
 .menu-container {
@@ -60,7 +60,7 @@
     -fx-background-color: transparent;
     -fx-background-radius: 9px;
     -fx-border-radius: 9px;
-    -fx-text-fill: #1d3b10;
+    -fx-text-fill: #345823;
     -fx-font-family: "Segoe UI", "Serif", sans-serif;
     -fx-font-size: 14px;
     -fx-font-weight: 600;
@@ -70,21 +70,21 @@
 }
 
 .menu-button:hover {
-    -fx-background-color: #bed79f;
-    -fx-text-fill: #0d2506;
+    -fx-background-color: #d5e6bf;
+    -fx-text-fill: #1c380f;
 }
 
-/* Menu Active: Xanh lá đậm nét, tương phản cao */
+/* Menu Active: Xanh lá mạ non đậm, tương phản cao */
 .menu-button-active {
-    -fx-background-color: #2b5a19;
+    -fx-background-color: #3e7728;
     -fx-background-radius: 9px;
     -fx-text-fill: #ffffff;
     -fx-font-weight: bold;
-    -fx-effect: dropshadow(gaussian, rgba(25, 60, 15, 0.35), 8, 0, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(45, 85, 25, 0.28), 8, 0, 0, 2);
 }
 
 .menu-button-active:hover {
-    -fx-background-color: #214912;
+    -fx-background-color: #356722;
     -fx-text-fill: #ffffff;
 }
 
@@ -93,12 +93,12 @@
 }
 
 .logout-button {
-    -fx-background-color: #c5dba9;
+    -fx-background-color: #d9e8c6;
     -fx-background-radius: 8px;
-    -fx-border-color: #9ebd7d;
+    -fx-border-color: #c4d9ab;
     -fx-border-radius: 8px;
-    -fx-border-width: 1.5px;
-    -fx-text-fill: #1e3e11;
+    -fx-border-width: 1px;
+    -fx-text-fill: #395f26;
     -fx-font-family: "Segoe UI", "Serif", sans-serif;
     -fx-font-size: 13px;
     -fx-font-weight: bold;
@@ -108,13 +108,13 @@
 }
 
 .logout-button:hover {
-    -fx-background-color: #b1cf8f;
-    -fx-text-fill: #0e2606;
-    -fx-border-color: #8bb166;
+    -fx-background-color: #cce0b5;
+    -fx-text-fill: #1d3a10;
+    -fx-border-color: #b0cb93;
 }
 
 .sidebar-footer, .coffee-slogan {
-    -fx-text-fill: #365624;
+    -fx-text-fill: #5b7e45;
     -fx-font-family: "Serif";
     -fx-font-size: 12px;
     -fx-font-style: italic;
@@ -137,46 +137,46 @@
    ========================================================= */
 
 .page-header {
-    -fx-background-color: #ffffff;
-    -fx-border-color: #b4c59d;
-    -fx-border-width: 0 0 1.5px 0;
+    -fx-background-color: rgba(250, 249, 243, 0.96);
+    -fx-border-color: #e6e4d9;
+    -fx-border-width: 0 0 1px 0;
     -fx-padding: 16px 24px;
 }
 
 .page-title {
-    -fx-text-fill: #14300c;
+    -fx-text-fill: #50634f;
     -fx-font-family: "Georgia";
     -fx-font-size: 24px;
     -fx-font-weight: bold;
 }
 
 .page-description {
-    -fx-text-fill: #435235;
+    -fx-text-fill: #929987;
     -fx-font-family: "Georgia";
     -fx-font-size: 12px;
 }
 
 .header-icon {
-    -fx-text-fill: #255513;
+    -fx-text-fill: #71836a;
     -fx-font-size: 17px;
     -fx-padding: 0 3px 0 0;
 }
 
 .admin-name {
-    -fx-text-fill: #16320d;
+    -fx-text-fill: #50634f;
     -fx-font-family: "Georgia";
     -fx-font-size: 13px;
     -fx-font-weight: bold;
 }
 
 .admin-role {
-    -fx-text-fill: #505e42;
+    -fx-text-fill: #9a9d88;
     -fx-font-family: "Georgia";
-    -fx-font-size: 11px;
+    -fx-font-size: 10px;
 }
 
 .profile-icon {
-    -fx-text-fill: #255513;
+    -fx-text-fill: #71836a;
     -fx-font-size: 15px;
 }
 
@@ -191,12 +191,12 @@
 }
 
 .category-button {
-    -fx-background-color: #edf1e4;
+    -fx-background-color: rgba(250, 249, 243, 0.90);
     -fx-background-radius: 18px;
-    -fx-border-color: #a7b899;
+    -fx-border-color: #dedfd3;
     -fx-border-radius: 18px;
-    -fx-border-width: 1.5px;
-    -fx-text-fill: #2c4723;
+    -fx-border-width: 1px;
+    -fx-text-fill: #71806b;
     -fx-font-family: "Georgia";
     -fx-font-size: 12px;
     -fx-padding: 8px 17px;
@@ -204,21 +204,21 @@
 }
 
 .category-button:hover {
-    -fx-background-color: #dbe6ce;
-    -fx-border-color: #7b9468;
-    -fx-text-fill: #132e0a;
+    -fx-background-color: #edf0e5;
+    -fx-border-color: #b9c2ad;
+    -fx-text-fill: #50634f;
 }
 
 .category-button-active {
-    -fx-background-color: #2b5a19;
-    -fx-border-color: #2b5a19;
+    -fx-background-color: #71836a;
+    -fx-border-color: #71836a;
     -fx-text-fill: white;
     -fx-font-weight: bold;
 }
 
 .category-button-active:hover {
-    -fx-background-color: #214912;
-    -fx-border-color: #214912;
+    -fx-background-color: #65785f;
+    -fx-border-color: #65785f;
 }
 
 
@@ -228,12 +228,11 @@
 
 .category-card,
 .table-card {
-    -fx-background-color: #ffffff;
+    -fx-background-color: rgba(250, 249, 243, 0.96);
     -fx-background-radius: 13px;
-    -fx-border-color: #adc29a;
+    -fx-border-color: #e2e3d8;
     -fx-border-radius: 13px;
-    -fx-border-width: 1.5px;
-    -fx-effect: dropshadow(gaussian, rgba(30, 55, 15, 0.08), 8, 0, 0, 2);
+    -fx-border-width: 1px;
 }
 
 .category-card {
@@ -249,60 +248,55 @@
    CARD TITLE
    ========================================================= */
 
-.section-title {
-    -fx-text-fill: #14300c;
+.card-title {
+    -fx-text-fill: #50634f;
     -fx-font-family: "Georgia";
-    -fx-font-size: 15px;
+    -fx-font-size: 14px;
     -fx-font-weight: bold;
+    -fx-padding: 0 0 6px 0;
 }
 
-.category-count {
-    -fx-font-size: 11px;
-    -fx-font-weight: bold;
-}
 
-.category-list-button .category-count {
-    -fx-text-fill: #3b5230;
-}
-
-.category-list-active .category-count {
-    -fx-text-fill: white;
-}
+/* =========================================================
+   CATEGORY LIST
+   ========================================================= */
 
 .category-list-button {
     -fx-background-color: transparent;
     -fx-background-radius: 8px;
-    -fx-border-radius: 8px;
-    -fx-text-fill: #1d3817;
+    -fx-border-color: transparent;
+    -fx-text-fill: #71806b;
     -fx-font-family: "Georgia";
     -fx-font-size: 12px;
-    -fx-padding: 9px 12px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 0 10px;
     -fx-cursor: hand;
 }
 
+/* Labels inside the button graphic don't inherit the button's text fill, so set them explicitly */
 .category-list-button .label {
-    -fx-text-fill: #1d3817;
+    -fx-text-fill: #50634f;
     -fx-font-family: "Georgia";
     -fx-font-size: 12px;
 }
 
 .category-list-button:hover {
-    -fx-background-color: #dfead3;
-    -fx-text-fill: #0c2b05;
-}
-
-.category-list-button:hover .label {
-    -fx-text-fill: #0c2b05;
+    -fx-background-color: rgba(113, 131, 106, 0.10);
+    -fx-text-fill: #50634f;
 }
 
 .category-list-active {
-    -fx-background-color: #2b5a19;
+    -fx-background-color: #71836a;
     -fx-text-fill: white;
     -fx-font-weight: bold;
 }
 
 .category-list-active:hover {
-    -fx-background-color: #214912;
+    -fx-background-color: #65785f;
+}
+
+.category-list-button:hover .label {
+    -fx-text-fill: #50634f;
 }
 
 .category-list-active .label,
@@ -315,21 +309,19 @@
 .add-category-button {
     -fx-background-color: transparent;
     -fx-background-radius: 8px;
-    -fx-border-color: #9ab385;
+    -fx-border-color: #c8cfbf;
     -fx-border-radius: 8px;
-    -fx-border-width: 1.5px;
-    -fx-text-fill: #265418;
+    -fx-text-fill: #71836a;
     -fx-font-family: "Georgia";
     -fx-font-size: 11px;
-    -fx-font-weight: bold;
     -fx-padding: 8px 10px;
     -fx-cursor: hand;
 }
 
 .add-category-button:hover {
-    -fx-background-color: #dceaca;
-    -fx-border-color: #2b5a19;
-    -fx-text-fill: #14300c;
+    -fx-background-color: #edf1e8;
+    -fx-border-color: #71836a;
+    -fx-text-fill: #50634f;
 }
 
 
@@ -340,11 +332,11 @@
 .search-field {
     -fx-background-color: #fbfaf5;
     -fx-background-radius: 9px;
-    -fx-border-color: #aab99d;
+    -fx-border-color: #dedfd5;
     -fx-border-radius: 9px;
-    -fx-border-width: 1.5px;
-    -fx-text-fill: #18330c;
-    -fx-prompt-text-fill: #5f705a;
+    -fx-border-width: 1px;
+    -fx-text-fill: #50634f;
+    -fx-prompt-text-fill: #aaaE9d;
     -fx-font-family: "Georgia";
     -fx-font-size: 11px;
     -fx-padding: 9px 12px;
@@ -352,9 +344,8 @@
 
 .search-field:focused {
     -fx-background-color: white;
-    -fx-border-color: #2b5a19;
-    -fx-border-width: 2px;
-    -fx-effect: dropshadow(gaussian, rgba(43, 90, 25, 0.25), 7, 0, 0, 1);
+    -fx-border-color: #aab8a0;
+    -fx-effect: dropshadow(gaussian, rgba(113, 131, 106, 0.16), 7, 0, 0, 1);
 }
 
 
@@ -365,26 +356,25 @@
 .filter-combo {
     -fx-background-color: #fbfaf5;
     -fx-background-radius: 9px;
-    -fx-border-color: #aab99d;
+    -fx-border-color: #dedfd5;
     -fx-border-radius: 9px;
-    -fx-border-width: 1.5px;
+    -fx-border-width: 1px;
     -fx-font-family: "Georgia";
     -fx-font-size: 11px;
-    -fx-text-fill: #1e3817;
+    -fx-text-fill: #65745f;
 }
 
 .filter-combo:hover {
-    -fx-border-color: #7b9468;
+    -fx-border-color: #aab8a0;
 }
 
 .filter-combo:focused {
-    -fx-border-color: #2b5a19;
-    -fx-border-width: 2px;
+    -fx-border-color: #71836a;
 }
 
 .filter-combo .list-cell {
     -fx-background-color: transparent;
-    -fx-text-fill: #1e3817;
+    -fx-text-fill: #65745f;
     -fx-font-family: "Georgia";
     -fx-font-size: 11px;
 }
@@ -395,9 +385,9 @@
    ========================================================= */
 
 .primary-button {
-    -fx-background-color: #285915;
+    -fx-background-color: #71836a;
     -fx-background-radius: 9px;
-    -fx-border-color: #285915;
+    -fx-border-color: #71836a;
     -fx-border-radius: 9px;
     -fx-text-fill: white;
     -fx-font-family: "Georgia";
@@ -405,17 +395,16 @@
     -fx-font-weight: bold;
     -fx-padding: 9px 15px;
     -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(30, 70, 15, 0.30), 6, 0, 0, 1.5);
 }
 
 .primary-button:hover {
-    -fx-background-color: #1e470d;
-    -fx-border-color: #1e470d;
+    -fx-background-color: #61745b;
+    -fx-border-color: #61745b;
 }
 
 .primary-button:pressed {
-    -fx-background-color: #153507;
-    -fx-border-color: #153507;
+    -fx-background-color: #50634f;
+    -fx-border-color: #50634f;
 }
 
 
@@ -425,53 +414,52 @@
 
 .product-table {
     -fx-background-color: transparent;
-    -fx-border-color: #adc099;
+    -fx-border-color: #e0e2d7;
     -fx-border-radius: 9px;
     -fx-background-radius: 9px;
-    -fx-border-width: 1.5px;
     -fx-padding: 0;
 }
 
 .product-table .column-header-background {
-    -fx-background-color: #dce6cd;
+    -fx-background-color: #eef1e8;
     -fx-background-radius: 8px 8px 0 0;
 }
 
 .product-table .column-header {
     -fx-background-color: transparent;
-    -fx-border-color: transparent #a8be93 transparent transparent;
+    -fx-border-color: transparent #dfe2d8 transparent transparent;
     -fx-border-width: 0 1px 0 0;
     -fx-padding: 9px 7px;
 }
 
 .product-table .column-header .label {
-    -fx-text-fill: #16340c;
+    -fx-text-fill: #65745f;
     -fx-font-family: "Georgia";
     -fx-font-size: 11px;
     -fx-font-weight: bold;
 }
 
 .product-table .table-row-cell {
-    -fx-background-color: #ffffff;
-    -fx-border-color: transparent transparent #d9e3cd transparent;
+    -fx-background-color: #fbfaf6;
+    -fx-border-color: transparent transparent #ecece4 transparent;
     -fx-border-width: 0 0 1px 0;
     -fx-cell-size: 48px;
 }
 
 .product-table .table-row-cell:odd {
-    -fx-background-color: #f7f9f2;
+    -fx-background-color: #f8f8f2;
 }
 
 .product-table .table-row-cell:hover {
-    -fx-background-color: #e3eed3;
+    -fx-background-color: #f0f3eb;
 }
 
 .product-table .table-row-cell:selected {
-    -fx-background-color: #cadfb0;
+    -fx-background-color: #e3eadd;
 }
 
 .product-table .table-cell {
-    -fx-text-fill: #182b14;
+    -fx-text-fill: #687563;
     -fx-font-family: "Georgia";
     -fx-font-size: 11px;
     -fx-border-color: transparent;
@@ -480,7 +468,7 @@
 }
 
 .product-table .placeholder .label {
-    -fx-text-fill: #53664c;
+    -fx-text-fill: #a3a796;
     -fx-font-family: "Georgia";
     -fx-font-size: 12px;
 }
@@ -500,12 +488,12 @@
 }
 
 .product-table .scroll-bar:vertical .thumb {
-    -fx-background-color: #9cb08e;
+    -fx-background-color: #c5ccbd;
     -fx-background-radius: 8px;
 }
 
 .product-table .scroll-bar:vertical .thumb:hover {
-    -fx-background-color: #799169;
+    -fx-background-color: #aeb8a4;
 }
 
 .product-table .scroll-bar:horizontal {
@@ -518,23 +506,28 @@
 }
 
 .product-table .scroll-bar:horizontal .thumb {
-    -fx-background-color: #9cb08e;
+    -fx-background-color: #c5ccbd;
     -fx-background-radius: 8px;
 }
 
 
 /* =========================================================
-   EMPTY LABEL & TABLE FOOTER
+   EMPTY LABEL
    ========================================================= */
 
 .empty-label {
-    -fx-text-fill: #53664c;
+    -fx-text-fill: #a1a595;
     -fx-font-family: "Georgia";
     -fx-font-size: 12px;
 }
 
+
+/* =========================================================
+   TABLE FOOTER
+   ========================================================= */
+
 .table-footer {
-    -fx-text-fill: #435539;
+    -fx-text-fill: #8b9282;
     -fx-font-family: "Georgia";
     -fx-font-size: 11px;
 }
@@ -545,12 +538,11 @@
    ========================================================= */
 
 .page-button {
-    -fx-background-color: #e6eed9;
+    -fx-background-color: #f8f8f2;
     -fx-background-radius: 7px;
-    -fx-border-color: #a6c091;
+    -fx-border-color: #dfe1d7;
     -fx-border-radius: 7px;
-    -fx-border-width: 1.5px;
-    -fx-text-fill: #284b15;
+    -fx-text-fill: #71806b;
     -fx-font-family: "Georgia";
     -fx-font-size: 11px;
     -fx-min-width: 30px;
@@ -560,19 +552,19 @@
 }
 
 .page-button:hover {
-    -fx-background-color: #cee2b7;
-    -fx-border-color: #739b4f;
+    -fx-background-color: #e9eee3;
+    -fx-border-color: #b8c2ae;
 }
 
 .page-button-active {
-    -fx-background-color: #274e14;
-    -fx-border-color: #274e14;
+    -fx-background-color: #71836a;
+    -fx-border-color: #71836a;
     -fx-text-fill: white;
     -fx-font-weight: bold;
 }
 
 .page-button-active:hover {
-    -fx-background-color: #1e3e0f;
+    -fx-background-color: #61745b;
 }
 
 
@@ -590,5 +582,17 @@
 }
 
 .primary-button:focused {
-    -fx-effect: dropshadow(gaussian, rgba(40, 89, 21, 0.35), 6, 0, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(113, 131, 106, 0.25), 6, 0, 0, 1);
+}
+.category-count {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.category-list-button .category-count {
+    -fx-text-fill: #7d8b72;
+}
+
+.category-list-active .category-count {
+    -fx-text-fill: white;
 }

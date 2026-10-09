@@ -20,6 +20,29 @@ public final class ValidationUtil {
         return phone != null && PHONE_PATTERN.matcher(phone.trim()).matches();
     }
 
+    /**
+     * One canonical form for a Vietnamese phone number, so the same person is never stored twice:
+     * spaces, dots and dashes are dropped and a leading {@code +84} or {@code 84} becomes {@code 0}
+     * ({@code +84 901 111 222} and {@code 0901111222} are the same customer). Anything that is not
+     * a phone number is returned trimmed and otherwise unchanged; null stays null.
+     */
+    public static String normalizePhone(String phone) {
+        if (phone == null) {
+            return null;
+        }
+        String compact = phone.replaceAll("[\\s.\\-()]", "");
+        if (!PHONE_PATTERN.matcher(compact).matches()) {
+            return phone.trim();
+        }
+        if (compact.startsWith("+84")) {
+            return "0" + compact.substring(3);
+        }
+        if (compact.startsWith("84")) {
+            return "0" + compact.substring(2);
+        }
+        return compact;
+    }
+
     public static boolean isValidEmail(String email) {
         return email != null && EMAIL_PATTERN.matcher(email.trim()).matches();
     }

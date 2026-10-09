@@ -70,14 +70,6 @@ public class ProductDAOTest {
     }
 
     @Test
-    public void findByCategoryOnlyReturnsThatCategorysProducts() {
-        Product inThisCategory = newProduct(new BigDecimal("1000"), 1);
-        List<Product> results = productDAO.findByCategory(category.getId());
-        assertTrue(results.stream().allMatch(p -> category.getId() == p.getCategoryId()));
-        assertTrue(results.stream().anyMatch(p -> p.getId() == inThisCategory.getId()));
-    }
-
-    @Test
     public void countOrderReferencesIsZeroForAProductNeverSold() {
         Product product = newProduct(new BigDecimal("1000"), 1);
         assertEquals(0, productDAO.countOrderReferences(product.getId()));

@@ -91,13 +91,11 @@ public class UserDAOTest {
     }
 
     @Test
-    public void countByRoleAndCountByStatusMoveByExactlyOneForOneNewUser() {
-        int adminsBefore = userDAO.countByRole(Role.ADMIN);
+    public void countByStatusMovesByExactlyOneForOneNewUser() {
         int activeBefore = userDAO.countByStatus(AccountStatus.ACTIVE);
 
         newUser(Role.ADMIN, AccountStatus.ACTIVE);
 
-        assertEquals(adminsBefore + 1, userDAO.countByRole(Role.ADMIN));
         assertEquals(activeBefore + 1, userDAO.countByStatus(AccountStatus.ACTIVE));
     }
 }

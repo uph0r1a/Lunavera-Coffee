@@ -60,15 +60,8 @@ public class DiningTable {
         return capacity;
     }
 
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
-
     public Integer getCurrentOrderId() {
         return currentOrderId;
     }
 
-    public void setCurrentOrderId(Integer currentOrderId) {
-        this.currentOrderId = currentOrderId;
-    }
 }

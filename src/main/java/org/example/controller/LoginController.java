@@ -18,12 +18,10 @@ import com.coffeeshop.coffeeshopmanagement.util.SessionGuard;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import java.util.Optional;
 
 public class LoginController {
 
@@ -33,10 +31,6 @@ public class LoginController {
     private PasswordField passwordField;
     @FXML
     private Button showPasswordButton;
-    @FXML
-    private CheckBox rememberCheckBox;
-    @FXML
-    private Button signInButton;
     @FXML
     private Button loginButton;
 
@@ -53,7 +47,6 @@ public class LoginController {
             TextLengthLimiter.limit(passwordField, TextLengthLimiter.PASSWORD_MAX);
             passwordField.setOnAction(event -> handleLogin());
         }
-        if (signInButton != null) signInButton.setOnAction(event -> handleLogin());
         if (loginButton != null) loginButton.setOnAction(event -> handleLogin());
         PasswordReveal.install(passwordField, showPasswordButton);
     }
@@ -88,8 +81,10 @@ public class LoginController {
     private void onLoginFinished(LoginResult result, boolean usedDefaultPassword) {
         setLoginInProgress(false);
         switch (result.status()) {
-            case INVALID_USERNAME -> AlertUtil.error("Đăng nhập thất bại", "Tên đăng nhập không tồn tại.");
-            case INVALID_PASSWORD -> AlertUtil.error("Đăng nhập thất bại", "Mật khẩu không chính xác.");
+            case INVALID_CREDENTIALS -> AlertUtil.error("Đăng nhập thất bại",
+                    "Tên đăng nhập hoặc mật khẩu không chính xác.");
+            case TOO_MANY_ATTEMPTS -> AlertUtil.error("Thử lại sau",
+                    "Đã nhập sai quá nhiều lần. Vui lòng thử lại sau " + result.retryAfterSeconds() + " giây.");
             case INACTIVE -> AlertUtil.error("Tài khoản bị khóa",
                     "Tài khoản này đã bị khóa. Vui lòng liên hệ quản trị viên.");
             case SUCCESS -> onLoginSuccess(result.user(), usedDefaultPassword);
@@ -99,7 +94,7 @@ public class LoginController {
     /** Disables the button and swaps its label while a login attempt is in flight, so the
      *  window still feels responsive instead of appearing stuck. */
     private void setLoginInProgress(boolean inProgress) {
-        Button active = loginButton != null ? loginButton : signInButton;
+        Button active = loginButton;
         if (active == null) {
             return;
         }
@@ -116,9 +111,27 @@ public class LoginController {
             return;
         }
 
-        Employee employee = user.getEmployeeId() != null
-                ? employeeDAO.findById(user.getEmployeeId()).orElse(null)
-                : null;
+        if (user.getEmployeeId() == null) {
+            enterApplication(user, null, usedDefaultPassword);
+            return;
+        }
+        // The employee lookup is a DB call, so it runs off the FX thread like the password check.
+        setLoginInProgress(true);
+        Async.run(
+                () -> employeeDAO.findById(user.getEmployeeId()).orElse(null),
+                employee -> {
+                    setLoginInProgress(false);
+                    enterApplication(user, employee, usedDefaultPassword);
+                },
+                error -> {
+                    setLoginInProgress(false);
+                    AlertUtil.error("Lỗi đăng nhập",
+                            "Không thể tải thông tin nhân viên. Vui lòng thử lại.");
+                }
+        );
+    }
+
+    private void enterApplication(User user, Employee employee, boolean usedDefaultPassword) {
         Session.start(user, employee);
 
         Stage stage = currentStage();
@@ -137,7 +150,6 @@ public class LoginController {
 
     private Stage currentStage() {
         Node anchor = loginButton != null ? loginButton
-                : signInButton != null ? signInButton
                 : usernameField;
         if (anchor == null || anchor.getScene() == null) {
             return null;

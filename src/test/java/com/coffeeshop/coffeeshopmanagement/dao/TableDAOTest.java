@@ -28,6 +28,11 @@ public class TableDAOTest {
         TestDatabaseSupport.ensureReady();
     }
 
+    /** The UI only ever lists tables, so the test looks one up the same way. */
+    private DiningTable table(int number) {
+        return tableDAO.findAll().stream().filter(t -> t.getTableNumber() == number).findFirst().orElse(null);
+    }
+
     private Order openOrderOn(int tableNumber) {
         Order order = new Order();
         order.setOrderDate(LocalDateTime.now());
@@ -43,36 +48,47 @@ public class TableDAOTest {
     public void seedsTwelveTablesAndTheyStartEmpty() {
         List<DiningTable> tables = tableDAO.findAll();
         assertTrue(tables.size() >= 12);
-        DiningTable first = tableDAO.findByNumber(12);
+        DiningTable first = table(12);
         assertNotNull(first);
-        assertEquals(TableStatus.EMPTY, tableDAO.findByNumber(12).getStatus());
+        assertEquals(TableStatus.EMPTY, table(12).getStatus());
     }
 
     @Test
     public void manualOccupiedThenEmpty() {
         tableDAO.setOccupied(1, null);
-        assertTrue(tableDAO.findByNumber(1).isOccupied());
+        assertTrue(table(1).isOccupied());
         tableDAO.setEmpty(1);
-        assertFalse(tableDAO.findByNumber(1).isOccupied());
+        assertFalse(table(1).isOccupied());
     }
 
     @Test
     public void openOrderMakesTableOccupiedAndSetEmptyCancelsIt() {
         Order saved = openOrderOn(2);
         assertTrue(saved.getId() > 0);
-        assertTrue(tableDAO.findByNumber(2).isOccupied());
-        assertEquals(Integer.valueOf(saved.getId()), tableDAO.findByNumber(2).getCurrentOrderId());
+        assertTrue(table(2).isOccupied());
+        assertEquals(Integer.valueOf(saved.getId()), table(2).getCurrentOrderId());
         assertTrue(orderDAO.findOpenOrderByTable(2).isPresent());
 
         tableDAO.setEmpty(2);
 
-        assertFalse(tableDAO.findByNumber(2).isOccupied());
+        assertFalse(table(2).isOccupied());
         assertFalse(orderDAO.findOpenOrderByTable(2).isPresent());
         assertEquals(OrderStatus.CANCELLED, orderDAO.findById(saved.getId()).orElseThrow().getStatus());
     }
 
     @Test
     public void unknownTableReturnsNull() {
-        assertNull(tableDAO.findByNumber(9999));
+        assertNull(table(9999));
+    }
+
+    @Test
+    public void setEmptyFreesTheTableAndCancelsItsOpenOrderTogether() {
+        Order open = openOrderOn(3);
+        assertTrue(table(3).isOccupied());
+
+        tableDAO.setEmpty(3);
+
+        assertFalse(table(3).isOccupied());
+        assertEquals(OrderStatus.CANCELLED, orderDAO.findById(open.getId()).orElseThrow().getStatus());
     }
 }

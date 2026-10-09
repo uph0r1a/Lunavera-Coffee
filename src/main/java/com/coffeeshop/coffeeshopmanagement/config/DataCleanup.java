@@ -1,12 +1,18 @@
 package com.coffeeshop.coffeeshopmanagement.config;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -23,11 +29,16 @@ import java.util.logging.Logger;
  * lines keep the product name, so {@code order_items.product_id} just becomes NULL, and a deleted
  * customer or employee just becomes "Khách lẻ" / "-"), and any product that was filed under a
  * removed category stays on sale with no category instead of being deleted.
+ *
+ * <p>Because the deletes cannot be undone, a copy of the database is saved to
+ * {@code ~/.lunavera-coffee/backups/before-cleanup-<time>.db} first; if that copy cannot be
+ * made the cleanup is skipped (and retried on the next launch) instead of deleting without one.
+ * A category that still holds other products is kept, with a warning in the log.
  */
-final class DataCleanup {
+public final class DataCleanup {
 
     private static final Logger LOGGER = Logger.getLogger(DataCleanup.class.getName());
-    static final String FLAG_NAME = "cleanup_example_data_v1";
+    public static final String FLAG_NAME = "cleanup_example_data_v1";
 
     private static final List<String> PRODUCT_NAMES = List.of("a", "c");
     private static final List<String> CATEGORY_NAMES = List.of("a", "coffee");
@@ -36,7 +47,7 @@ final class DataCleanup {
     private DataCleanup() {
     }
 
-    static void runIfNeeded(Connection connection) throws SQLException {
+    public static void runIfNeeded(Connection connection) throws SQLException {
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS app_flags (name TEXT PRIMARY KEY)");
         }
@@ -49,6 +60,14 @@ final class DataCleanup {
             }
         }
 
+        if (!hasWork(connection)) {
+            markDone(connection);
+            return;
+        }
+        if (!backupFirst(connection)) {
+            return;
+        }
+
         boolean autoCommit = connection.getAutoCommit();
         connection.setAutoCommit(false);
         try {
@@ -56,10 +75,7 @@ final class DataCleanup {
             int categories = removeCategories(connection);
             int customers = removeCustomers(connection);
             int accounts = removeAccounts(connection);
-            try (PreparedStatement flag = connection.prepareStatement("INSERT INTO app_flags (name) VALUES (?)")) {
-                flag.setString(1, FLAG_NAME);
-                flag.executeUpdate();
-            }
+            markDone(connection);
             connection.commit();
             LOGGER.info("Example-data cleanup done: " + products + " products, " + categories
                     + " categories, " + customers + " customers, " + accounts + " accounts removed.");
@@ -68,6 +84,39 @@ final class DataCleanup {
             throw e;
         } finally {
             connection.setAutoCommit(autoCommit);
+        }
+    }
+
+    private static void markDone(Connection connection) throws SQLException {
+        try (PreparedStatement flag = connection.prepareStatement("INSERT OR IGNORE INTO app_flags (name) VALUES (?)")) {
+            flag.setString(1, FLAG_NAME);
+            flag.executeUpdate();
+        }
+    }
+
+    /** True when there is anything at all to delete (a fresh database has nothing, so needs no backup). */
+    private static boolean hasWork(Connection c) throws SQLException {
+        return !ids(c, "SELECT id FROM products WHERE LOWER(TRIM(name)) IN (" + marks(PRODUCT_NAMES) + ") LIMIT 1", PRODUCT_NAMES).isEmpty()
+                || !ids(c, "SELECT id FROM categories WHERE LOWER(TRIM(name)) IN (" + marks(CATEGORY_NAMES) + ") LIMIT 1", CATEGORY_NAMES).isEmpty()
+                || !ids(c, "SELECT id FROM customers LIMIT 1", List.of()).isEmpty()
+                || !ids(c, "SELECT id FROM users WHERE LOWER(TRIM(username)) IN (" + marks(ACCOUNT_NAMES) + ") LIMIT 1", ACCOUNT_NAMES).isEmpty();
+    }
+
+    private static boolean backupFirst(Connection connection) {
+        try {
+            Path dir = Path.of(System.getProperty("user.home"), ".lunavera-coffee", "backups");
+            Files.createDirectories(dir);
+            String stamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
+            Path target = dir.resolve("before-cleanup-" + stamp + ".db");
+            Files.deleteIfExists(target);
+            try (Statement statement = connection.createStatement()) {
+                statement.execute("VACUUM INTO '" + target.toAbsolutePath().toString().replace("'", "''") + "'");
+            }
+            LOGGER.info("Backup before example-data cleanup written to " + target);
+            return true;
+        } catch (SQLException | IOException e) {
+            LOGGER.log(Level.WARNING, "Could not back up the database; skipping the example-data cleanup for now", e);
+            return false;
         }
     }
 
@@ -82,11 +131,17 @@ final class DataCleanup {
 
     private static int removeCategories(Connection c) throws SQLException {
         List<Integer> ids = ids(c, "SELECT id FROM categories WHERE LOWER(TRIM(name)) IN (" + marks(CATEGORY_NAMES) + ")", CATEGORY_NAMES);
+        int removed = 0;
         for (int id : ids) {
-            update(c, "UPDATE products SET category_id = NULL WHERE category_id = ?", id);
+            // Never strand real products: a category that still holds any product stays.
+            if (!ids(c, "SELECT id FROM products WHERE category_id = " + id + " LIMIT 1", List.of()).isEmpty()) {
+                LOGGER.warning("Category #" + id + " is an example name but still holds products; keeping it.");
+                continue;
+            }
             update(c, "DELETE FROM categories WHERE id = ?", id);
+            removed++;
         }
-        return ids.size();
+        return removed;
     }
 
     private static int removeCustomers(Connection c) throws SQLException {

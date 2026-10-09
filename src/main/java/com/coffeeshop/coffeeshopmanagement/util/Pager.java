@@ -63,14 +63,6 @@ public class Pager<T> {
         currentPage = Math.max(1, Math.min(page, getTotalPages()));
     }
 
-    public void nextPage() {
-        goToPage(currentPage + 1);
-    }
-
-    public void previousPage() {
-        goToPage(currentPage - 1);
-    }
-
     public int getTotalCount() {
         return items.size();
     }

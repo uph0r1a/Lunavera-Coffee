@@ -2,6 +2,7 @@ package com.coffeeshop.coffeeshopmanagement.dao;
 
 import com.coffeeshop.coffeeshopmanagement.config.DatabaseConfig;
 import com.coffeeshop.coffeeshopmanagement.model.Customer;
+import com.coffeeshop.coffeeshopmanagement.util.ValidationUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,6 +17,7 @@ import java.util.Optional;
 public class CustomerDAO {
 
     public Customer insert(Customer customer) {
+        customer.setPhone(ValidationUtil.normalizePhone(customer.getPhone()));
         String sql = "INSERT INTO customers (full_name, phone, email, loyalty_points, created_at) VALUES (?, ?, ?, ?, ?)";
         try (Connection connection = DatabaseConfig.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -37,6 +39,7 @@ public class CustomerDAO {
     }
 
     public void update(Customer customer) {
+        customer.setPhone(ValidationUtil.normalizePhone(customer.getPhone()));
         String sql = "UPDATE customers SET full_name = ?, phone = ?, email = ? WHERE id = ?";
         try (Connection connection = DatabaseConfig.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -55,7 +58,7 @@ public class CustomerDAO {
         String sql = "SELECT 1 FROM customers WHERE phone = ? AND id <> ? LIMIT 1";
         try (Connection connection = DatabaseConfig.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, phone);
+            statement.setString(1, ValidationUtil.normalizePhone(phone));
             statement.setInt(2, excludeId);
             try (ResultSet rs = statement.executeQuery()) {
                 return rs.next();
@@ -85,7 +88,7 @@ public class CustomerDAO {
         String sql = "SELECT * FROM customers WHERE phone = ? LIMIT 1";
         try (Connection connection = DatabaseConfig.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, phone);
+            statement.setString(1, ValidationUtil.normalizePhone(phone));
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
                     return Optional.of(map(rs));

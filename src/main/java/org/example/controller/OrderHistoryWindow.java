@@ -125,34 +125,18 @@ public final class OrderHistoryWindow {
             return true;
         });
 
-        searchField.getStyleClass().add("search-field");
-        statusFilter.getStyleClass().add("filter-combo");
-        viewButton.getStyleClass().add("primary-button");
-        cancelButton.getStyleClass().add("secondary-button");
-        clearDatesButton.getStyleClass().add("secondary-button");
-        table.getStyleClass().add("order-detail-table");
-        countLabel.setStyle("-fx-text-fill: #14300c; -fx-font-size: 12px; -fx-font-weight: bold;");
-
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
         HBox top = new HBox(10, searchField, statusFilter, fromPicker, toPicker, clearDatesButton, spacer, countLabel);
-        top.setStyle("-fx-alignment: CENTER_LEFT;");
         HBox bottom = new HBox(10, viewButton, cancelButton, new Region(), pageBar);
-        bottom.setStyle("-fx-alignment: CENTER_LEFT;");
         HBox.setHgrow(bottom.getChildren().get(2), Priority.ALWAYS);
         VBox root = new VBox(12, top, table, bottom);
         root.setPadding(new Insets(16));
-        root.setStyle("-fx-background-color: #e9efe1;");
         VBox.setVgrow(table, Priority.ALWAYS);
 
         Stage stage = new Stage();
         stage.setTitle("Lịch sử đơn hàng");
-        Scene scene = new Scene(root, 960, 600);
-        java.net.URL css = OrderHistoryWindow.class.getResource("/css/quanlydonhang.css");
-        if (css != null) {
-            scene.getStylesheets().add(css.toExternalForm());
-        }
-        stage.setScene(scene);
+        stage.setScene(new Scene(root, 960, 600));
         AlertUtil.closeOnEscape(stage.getScene());
         stage.show();
 
@@ -165,8 +149,8 @@ public final class OrderHistoryWindow {
                 ? s.order().getOrderDate().format(TIME_FORMAT) : "-"));
         addColumn(OrderDAO.HistorySortKey.EMPLOYEE, column("Nhân viên", 150, s -> orDash(s.employeeName())));
         addColumn(OrderDAO.HistorySortKey.CUSTOMER, column("Khách hàng", 150, s -> s.customerName() != null ? s.customerName() : "Khách lẻ"));
-        addColumn(OrderDAO.HistorySortKey.PAYMENT, column("Thanh toán", 100, s -> s.order().getPaymentMethod() == PaymentMethod.CASH
-                ? "Tiền mặt" : (s.order().getPaymentMethod() == PaymentMethod.QR || s.order().getPaymentMethod() == PaymentMethod.CARD) ? "QR" : "-"));
+        addColumn(OrderDAO.HistorySortKey.PAYMENT, column("Thanh toán", 100, s -> s.order().getPaymentMethod() == PaymentMethod.CARD
+                ? "Thẻ" : s.order().getPaymentMethod() == PaymentMethod.CASH ? "Tiền mặt" : "-"));
         addColumn(OrderDAO.HistorySortKey.TOTAL, column("Tổng tiền", 120, s -> CurrencyUtil.format(s.order().getTotal())));
         addColumn(OrderDAO.HistorySortKey.STATUS, column("Trạng thái", 120, s -> statusLabel(s.order().getStatus())));
     }
