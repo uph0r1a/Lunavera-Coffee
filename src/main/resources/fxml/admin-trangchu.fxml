@@ -14,6 +14,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -202,9 +203,11 @@
                 <VBox spacing="16.0" HBox.hgrow="ALWAYS">
 
                     <!-- DOANH THU 7 NGÀY GẦN ĐÂY -->
-                    <VBox prefHeight="280.0"
-                          spacing="12.0"
-                          styleClass="content-card">
+                    <VBox minHeight="380.0"
+                          prefHeight="430.0"
+                          spacing="10.0"
+                          styleClass="content-card"
+                          VBox.vgrow="ALWAYS">
 
                         <HBox alignment="CENTER_LEFT">
                             <Label text="Doanh thu 7 ngày gần đây"
@@ -216,33 +219,40 @@
                                    styleClass="filter-label"/>
                         </HBox>
 
-                        <LineChart fx:id="revenueChart"
-                                   animated="false"
-                                   legendVisible="false"
-                                   createSymbols="true"
-                                   verticalGridLinesVisible="false"
-                                   horizontalGridLinesVisible="true"
-                                   VBox.vgrow="ALWAYS">
+                        <StackPane VBox.vgrow="ALWAYS">
+                            <LineChart fx:id="revenueChart"
+                                       animated="false"
+                                       legendVisible="false"
+                                       createSymbols="true"
+                                       verticalGridLinesVisible="false"
+                                       horizontalGridLinesVisible="true">
 
-                            <xAxis>
-                                <CategoryAxis fx:id="revenueXAxis"
-                                              label="Ngày"/>
-                            </xAxis>
+                                <xAxis>
+                                    <CategoryAxis fx:id="revenueXAxis"/>
+                                </xAxis>
 
-                            <yAxis>
-                                <NumberAxis fx:id="revenueYAxis"
-                                            label="Doanh thu"/>
-                            </yAxis>
-                        </LineChart>
+                                <yAxis>
+                                    <NumberAxis fx:id="revenueYAxis"
+                                                autoRanging="false"
+                                                lowerBound="0"
+                                                upperBound="10000000"
+                                                tickUnit="2000000"/>
+                                </yAxis>
+                            </LineChart>
+
+                            <Label text="→ Ngày"
+                                   StackPane.alignment="BOTTOM_RIGHT"
+                                   style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #2b4f18; -fx-padding: 0 10px 4px 0;"/>
+                        </StackPane>
                     </VBox>
 
                     <!-- SƠ ĐỒ BÀN PHỤC VỤ (12 BÀN) -->
-                    <VBox spacing="14.0"
+                    <VBox spacing="10.0"
                           styleClass="content-card"
-                          VBox.vgrow="ALWAYS">
+                          VBox.vgrow="NEVER">
 
                         <HBox alignment="CENTER_LEFT" spacing="12.0">
-                            <VBox spacing="3.0">
+                            <VBox spacing="2.0">
                                 <Label text="Sơ đồ bàn phục vụ"
                                        styleClass="section-title"/>
                                 <Label text="Chọn bàn để tạo hoặc xem đơn"
@@ -267,28 +277,27 @@
 
                         <!-- GRID BÀN (3x4 = 12 BÀN) -->
                         <GridPane fx:id="homeTableGrid"
-                                  hgap="12.0"
-                                  vgap="12.0"
-                                  VBox.vgrow="ALWAYS">
+                                  hgap="10.0"
+                                  vgap="8.0">
                             <columnConstraints>
                                 <ColumnConstraints percentWidth="33.333" hgrow="ALWAYS"/>
                                 <ColumnConstraints percentWidth="33.333" hgrow="ALWAYS"/>
                                 <ColumnConstraints percentWidth="33.333" hgrow="ALWAYS"/>
                             </columnConstraints>
                             <rowConstraints>
-                                <RowConstraints minHeight="78.0" prefHeight="88.0" vgrow="ALWAYS"/>
-                                <RowConstraints minHeight="78.0" prefHeight="88.0" vgrow="ALWAYS"/>
-                                <RowConstraints minHeight="78.0" prefHeight="88.0" vgrow="ALWAYS"/>
-                                <RowConstraints minHeight="78.0" prefHeight="88.0" vgrow="ALWAYS"/>
+                                <RowConstraints minHeight="44.0" prefHeight="48.0" vgrow="NEVER"/>
+                                <RowConstraints minHeight="44.0" prefHeight="48.0" vgrow="NEVER"/>
+                                <RowConstraints minHeight="44.0" prefHeight="48.0" vgrow="NEVER"/>
+                                <RowConstraints minHeight="44.0" prefHeight="48.0" vgrow="NEVER"/>
                             </rowConstraints>
                         </GridPane>
                     </VBox>
                 </VBox>
 
                 <!-- RIGHT COLUMN: THỐNG KÊ ĐƠN HÀNG HÔM NAY (KÉO DÀI HẾT CHIỀU CAO) & ĐƠN HÀNG GẦN ĐÂY BÊN DƯỚI -->
-                <VBox prefWidth="360.0"
-                      minWidth="340.0"
-                      maxWidth="380.0"
+                <VBox prefWidth="310.0"
+                      minWidth="290.0"
+                      maxWidth="330.0"
                       spacing="14.0"
                       styleClass="content-card"
                       VBox.vgrow="ALWAYS">
