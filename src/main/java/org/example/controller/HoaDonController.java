@@ -97,7 +97,7 @@ public class HoaDonController {
         totalLabel.setText(CurrencyUtil.format(order.getTotal()));
         PaymentMethod method = order.getPaymentMethod();
         paymentMethodLabel.setText(method == PaymentMethod.CASH ? "Tiền mặt"
-                : method == PaymentMethod.CARD ? "Thẻ" : "-");
+                : (method == PaymentMethod.QR || method == PaymentMethod.CARD) ? "QR" : "-");
 
         qrOrderIdLabel.setText("#" + order.getId());
         showQrCode(order);

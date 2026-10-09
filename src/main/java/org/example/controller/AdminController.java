@@ -58,10 +58,13 @@ import javafx.scene.Node;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
+import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -215,6 +218,9 @@ public class AdminController {
         }
 
         loadHomeTableGrid();
+        if (revenueYAxis != null) {
+            setupRevenueYAxis(null);
+        }
         if (todayOrderLabel != null || todayRevenueLabel != null) {
             loadDashboardStats();
         }
@@ -400,6 +406,7 @@ public class AdminController {
         if (cancelledOrderLabel != null) cancelledOrderLabel.setText(String.valueOf(stats.cancelledOrders()));
 
         if (revenueChart != null) {
+            setupRevenueYAxis(stats);
             XYChart.Series<String, Number> series = new XYChart.Series<>();
             series.setName("Doanh thu");
             DateTimeFormatter dayLabel = DateTimeFormatter.ofPattern("dd/MM");
@@ -431,6 +438,40 @@ public class AdminController {
             DashboardWidgets.fillTodayOrders(todayOrdersContainer, stats.todayOrdersList());
         }
         loadHomeTableGrid();
+    }
+
+    private void setupRevenueYAxis(DashboardStats stats) {
+        if (revenueYAxis == null) return;
+        double max = 10_000_000.0;
+        if (stats != null && stats.revenueLast7Days() != null) {
+            for (BigDecimal rev : stats.revenueLast7Days().values()) {
+                if (rev != null && rev.doubleValue() > max) {
+                    max = Math.ceil(rev.doubleValue() / 2_000_000.0) * 2_000_000.0;
+                }
+            }
+        }
+        revenueYAxis.setAutoRanging(false);
+        revenueYAxis.setLowerBound(0);
+        revenueYAxis.setUpperBound(max);
+        revenueYAxis.setTickUnit(max > 10_000_000.0 ? max / 5.0 : 2_000_000.0);
+        revenueYAxis.setTickLabelFormatter(new StringConverter<Number>() {
+            private final DecimalFormat df = new DecimalFormat("#,###");
+
+            @Override
+            public String toString(Number object) {
+                if (object == null) return "0";
+                return df.format(object.longValue());
+            }
+
+            @Override
+            public Number fromString(String string) {
+                try {
+                    return df.parse(string);
+                } catch (ParseException e) {
+                    return 0;
+                }
+            }
+        });
     }
 
     private void loadHomeTableGrid() {

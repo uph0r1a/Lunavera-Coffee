@@ -957,14 +957,14 @@ public class OrderController {
         RadioButton cashRadio = new RadioButton("Tiền mặt");
         cashRadio.setToggleGroup(methodGroup);
         cashRadio.setSelected(true);
-        RadioButton cardRadio = new RadioButton("Thẻ");
-        cardRadio.setToggleGroup(methodGroup);
+        RadioButton qrRadio = new RadioButton("QR");
+        qrRadio.setToggleGroup(methodGroup);
 
         TextField discountField = new TextField("0");
         TextField cashReceivedField = new TextField();
         TextLengthLimiter.limit(discountField, TextLengthLimiter.NUMBER_MAX);
         TextLengthLimiter.limit(cashReceivedField, TextLengthLimiter.NUMBER_MAX);
-        cashReceivedField.disableProperty().bind(cardRadio.selectedProperty());
+        cashReceivedField.disableProperty().bind(qrRadio.selectedProperty());
         Label totalPreviewLabel = new Label(CurrencyUtil.format(subtotal));
         Label changePreviewLabel = new Label(CurrencyUtil.format(BigDecimal.ZERO));
 
@@ -982,7 +982,7 @@ public class OrderController {
         };
         discountField.textProperty().addListener((obs, o, n) -> updatePreview.run());
         cashReceivedField.textProperty().addListener((obs, o, n) -> updatePreview.run());
-        cardRadio.selectedProperty().addListener((obs, o, n) -> updatePreview.run());
+        qrRadio.selectedProperty().addListener((obs, o, n) -> updatePreview.run());
         updatePreview.run();
 
         GridPane grid = new GridPane();
@@ -992,7 +992,7 @@ public class OrderController {
         grid.addRow(0, new Label("Tạm tính:"), new Label(CurrencyUtil.format(subtotal)));
         grid.addRow(1, new Label("Giảm giá:"), discountField);
         grid.addRow(2, new Label("Thành tiền:"), totalPreviewLabel);
-        grid.addRow(3, new Label("Phương thức:"), new HBox(14, cashRadio, cardRadio));
+        grid.addRow(3, new Label("Phương thức:"), new HBox(14, cashRadio, qrRadio));
         grid.addRow(4, new Label("Tiền khách đưa:"), cashReceivedField);
         grid.addRow(5, new Label("Tiền thối lại:"), changePreviewLabel);
         dialog.getDialogPane().setContent(grid);
@@ -1012,7 +1012,7 @@ public class OrderController {
                 return;
             }
             BigDecimal total = subtotal.subtract(discount);
-            PaymentMethod method = cashRadio.isSelected() ? PaymentMethod.CASH : PaymentMethod.CARD;
+            PaymentMethod method = cashRadio.isSelected() ? PaymentMethod.CASH : PaymentMethod.QR;
             if (method == PaymentMethod.CASH) {
                 BigDecimal received = parseNonNegative(cashReceivedField.getText());
                 if (received == null) {

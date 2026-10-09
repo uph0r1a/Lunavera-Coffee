@@ -56,7 +56,7 @@ public final class DashboardWidgets {
         for (Order order : orders) {
             LocalDateTime when = order.getPaidAt() != null ? order.getPaidAt() : order.getOrderDate();
             StringBuilder detail = new StringBuilder(when != null ? when.format(TIME_FORMAT) : "-");
-            detail.append(" • ").append(order.getPaymentMethod() == PaymentMethod.CARD ? "Thẻ" : "Tiền mặt");
+            detail.append(" • ").append(order.getPaymentMethod() == PaymentMethod.CASH ? "Tiền mặt" : "QR");
             if (order.getStatus() == OrderStatus.CANCELLED) {
                 detail.append(" • Đã hủy");
             }
