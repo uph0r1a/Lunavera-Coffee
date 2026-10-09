@@ -5,6 +5,7 @@ import com.coffeeshop.coffeeshopmanagement.model.OrderItem;
 import com.coffeeshop.coffeeshopmanagement.model.PaymentMethod;
 import com.coffeeshop.coffeeshopmanagement.util.AlertUtil;
 import com.coffeeshop.coffeeshopmanagement.util.CurrencyUtil;
+import com.coffeeshop.coffeeshopmanagement.util.QrCode;
 
 import javafx.fxml.FXML;
 import javafx.print.PrinterJob;
@@ -13,6 +14,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -96,9 +100,40 @@ public class HoaDonController {
                 : method == PaymentMethod.CARD ? "Thẻ" : "-");
 
         qrOrderIdLabel.setText("#" + order.getId());
-        // No QR-code generation library is included in this project (adding one was out of
-        // scope for this pass - see progress.md), so qrCodeImage intentionally stays blank
-        // rather than showing a fake placeholder graphic.
+        showQrCode(order);
+    }
+
+    /** What the receipt's QR code says: shop, order number, total and time - short enough to stay a small, easily scanned symbol. */
+    static String qrPayload(Order order) {
+        String time = order.getOrderDate() != null
+                ? order.getOrderDate().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) : "";
+        return "LUNAVERA|HD" + order.getId() + "|" + order.getTotal().toBigInteger() + "|" + time;
+    }
+
+    private void showQrCode(Order order) {
+        if (qrCodeImage == null) return;
+        try {
+            qrCodeImage.setImage(renderQr(QrCode.encodeText(qrPayload(order))));
+            qrCodeImage.setSmooth(false); // keep module edges crisp when scaled to the slot
+        } catch (RuntimeException e) {
+            qrCodeImage.setImage(null); // a receipt without a QR is better than no receipt
+        }
+    }
+
+    /** Paints the modules as black squares on white with the 4-module quiet zone scanners need. */
+    private static WritableImage renderQr(QrCode qr) {
+        final int quiet = 4;
+        int modules = qr.getSize() + 2 * quiet;
+        int px = Math.max(3, 270 / modules);
+        WritableImage image = new WritableImage(modules * px, modules * px);
+        PixelWriter writer = image.getPixelWriter();
+        for (int y = 0; y < modules * px; y++) {
+            for (int x = 0; x < modules * px; x++) {
+                boolean dark = qr.getModule(x / px - quiet, y / px - quiet);
+                writer.setColor(x, y, dark ? Color.BLACK : Color.WHITE);
+            }
+        }
+        return image;
     }
 
     @FXML

@@ -339,9 +339,35 @@ public class OrderDAO {
      *  orders silently showed nothing even when matching orders existed). Use with
      *  {@link #countHistory} for the total row count driving the page controls. */
     public List<OrderSummary> findHistoryPage(HistoryFilter filter, int pageSize, int offset) {
+        return findHistoryPage(filter, HistorySort.NEWEST_FIRST, pageSize, offset);
+    }
+
+    /** Sortable columns of the history screen. Whitelisted here (never built from UI text) so
+     *  the ORDER BY can't be used for SQL injection. */
+    public enum HistorySortKey {
+        ID("o.id"), DATE("o.order_date"), EMPLOYEE("e.full_name COLLATE NOCASE"),
+        CUSTOMER("c.full_name COLLATE NOCASE"), PAYMENT("o.payment_method"),
+        TOTAL("o.total"), STATUS("o.status");
+
+        private final String sql;
+
+        HistorySortKey(String sql) {
+            this.sql = sql;
+        }
+    }
+
+    /** Sorting is done in SQL, over the whole filtered result, <em>before</em> LIMIT/OFFSET cuts a page. */
+    public record HistorySort(HistorySortKey key, boolean descending) {
+        public static final HistorySort NEWEST_FIRST = new HistorySort(HistorySortKey.ID, true);
+    }
+
+    public List<OrderSummary> findHistoryPage(HistoryFilter filter, HistorySort sort, int pageSize, int offset) {
         FilterSql filterSql = new FilterSql(filter);
+        HistorySort effective = sort != null ? sort : HistorySort.NEWEST_FIRST;
         String sql = "SELECT o.*, e.full_name AS employee_name, c.full_name AS customer_name"
-                + HISTORY_FROM + filterSql.whereClause + " ORDER BY o.id DESC LIMIT ? OFFSET ?";
+                + HISTORY_FROM + filterSql.whereClause
+                + " ORDER BY " + effective.key().sql + (effective.descending() ? " DESC" : " ASC")
+                + ", o.id DESC LIMIT ? OFFSET ?";
         List<OrderSummary> result = new ArrayList<>();
         try (Connection connection = DatabaseConfig.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {

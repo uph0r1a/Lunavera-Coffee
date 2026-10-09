@@ -642,3 +642,38 @@
     -fx-border-color: #adb5bd;
     -fx-text-fill: #495057;
 }
+
+/* =========================================================
+   TABLE FOOTER / PAGE BAR (customer table)
+   ========================================================= */
+
+.table-footer {
+    -fx-text-fill: #7a8a6a;
+    -fx-font-size: 11px;
+}
+
+.page-button {
+    -fx-background-color: #f4f7ee;
+    -fx-background-radius: 6px;
+    -fx-border-color: #d2dec7;
+    -fx-border-radius: 6px;
+    -fx-min-width: 32px;
+    -fx-min-height: 30px;
+    -fx-max-height: 30px;
+    -fx-padding: 5px 9px;
+    -fx-text-fill: #496d34;
+    -fx-font-size: 11px;
+    -fx-cursor: hand;
+}
+
+.page-button:hover {
+    -fx-background-color: #e2edd6;
+    -fx-border-color: #9cb882;
+}
+
+.page-button-active {
+    -fx-background-color: #3b6624;
+    -fx-border-color: #3b6624;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}

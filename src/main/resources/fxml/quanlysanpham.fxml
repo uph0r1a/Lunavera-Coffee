@@ -257,25 +257,7 @@
 
                         <Region HBox.hgrow="ALWAYS"/>
 
-                        <Button fx:id="previousPageButton"
-                                text="‹"
-                                styleClass="page-button"
-                                onAction="#handleProductPreviousPage"/>
-
-                        <Button fx:id="pageOneButton"
-                                text="1"
-                                styleClass="page-button,page-button-active"
-                                onAction="#handleProductPageOne"/>
-
-                        <Button fx:id="pageTwoButton"
-                                text="2"
-                                styleClass="page-button"
-                                onAction="#handleProductPageTwo"/>
-
-                        <Button fx:id="nextPageButton"
-                                text="›"
-                                styleClass="page-button"
-                                onAction="#handleProductNextPage"/>
+                        <HBox fx:id="productPagerBox" alignment="CENTER_RIGHT"/>
                     </HBox>
 
                 </VBox>

@@ -195,9 +195,7 @@
                 <HBox alignment="CENTER_LEFT" spacing="8">
                     <Label fx:id="categoryPaginationLabel" styleClass="table-footer" text="Hiển thị 0 – 0 trong tổng số 0 danh mục" />
                     <Region HBox.hgrow="ALWAYS" />
-                    <Button fx:id="previousCategoryPageButton" mnemonicParsing="false" onAction="#handlePreviousPage" styleClass="page-button" text="‹" />
-                    <Button fx:id="categoryPageOneButton" mnemonicParsing="false" onAction="#handlePageOne" styleClass="page-button,page-button-active" text="1" />
-                    <Button fx:id="nextCategoryPageButton" mnemonicParsing="false" onAction="#handleNextPage" styleClass="page-button" text="›" />
+                    <HBox fx:id="categoryPagerBox" alignment="CENTER_RIGHT" />
                 </HBox>
 
             </VBox>

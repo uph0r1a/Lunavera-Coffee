@@ -158,6 +158,15 @@
                         <Label text="Chưa có thông tin khách hàng"/>
                     </placeholder>
                 </TableView>
+
+                <HBox alignment="CENTER_LEFT" spacing="8.0">
+                    <padding>
+                        <Insets top="10.0"/>
+                    </padding>
+                    <Label fx:id="customerPaginationLabel" styleClass="table-footer" text="Hiển thị 0 – 0 / 0 khách hàng"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <HBox fx:id="customerPagerBox" alignment="CENTER_RIGHT"/>
+                </HBox>
             </VBox>
 
         </VBox>

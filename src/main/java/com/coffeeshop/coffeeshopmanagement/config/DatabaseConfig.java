@@ -220,6 +220,7 @@ public final class DatabaseConfig {
             seedDiningTables(connection);
             MenuSeeder.seedIfNeeded(connection);
             syncCategoriesAndProducts(connection);
+            DataCleanup.runIfNeeded(connection);
             initialized = true;
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Database initialization failed", e);
@@ -304,15 +305,20 @@ public final class DatabaseConfig {
     }
 
     private static void seedDiningTables(Connection connection) throws SQLException {
-        try (Statement check = connection.createStatement()) {
-            var rs = check.executeQuery("SELECT COUNT(*) FROM dining_tables");
-            rs.next();
-            if (rs.getInt(1) > 0) {
-                return; // already seeded
+        String flagName = "dining_tables_v1";
+        try (Statement createFlags = connection.createStatement()) {
+            createFlags.execute("CREATE TABLE IF NOT EXISTS app_flags (name TEXT PRIMARY KEY)");
+        }
+        try (var check = connection.prepareStatement("SELECT 1 FROM app_flags WHERE name = ?")) {
+            check.setString(1, flagName);
+            try (var rs = check.executeQuery()) {
+                if (rs.next()) {
+                    return; // already seeded once; never re-seed if the user removed tables
+                }
             }
         }
 
-        String insertSql = "INSERT INTO dining_tables (table_number, name, status, capacity) VALUES (?, ?, 'EMPTY', ?)";
+        String insertSql = "INSERT OR IGNORE INTO dining_tables (table_number, name, status, capacity) VALUES (?, ?, 'EMPTY', ?)";
         try (var insert = connection.prepareStatement(insertSql)) {
             for (int i = 1; i <= 12; i++) {
                 insert.setInt(1, i);
@@ -321,6 +327,10 @@ public final class DatabaseConfig {
                 insert.addBatch();
             }
             insert.executeBatch();
+        }
+        try (var insertFlag = connection.prepareStatement("INSERT OR IGNORE INTO app_flags (name) VALUES (?)")) {
+            insertFlag.setString(1, flagName);
+            insertFlag.executeUpdate();
         }
         LOGGER.info("Seeded 12 dining tables into dining_tables.");
     }

@@ -10,12 +10,22 @@ import java.util.List;
  */
 public class Pager<T> {
 
-    private final int pageSize;
+    private int pageSize;
     private List<T> items = Collections.emptyList();
     private int currentPage = 1; // 1-based, matches the "1 / 2 / ›" buttons in the FXML
 
     public Pager(int pageSize) {
         this.pageSize = pageSize;
+    }
+
+    /** Changes the page size (e.g. from a "rows per page" box); the current page is re-clamped. */
+    public void setPageSize(int pageSize) {
+        this.pageSize = Math.max(1, pageSize);
+        goToPage(currentPage);
+    }
+
+    public int getPageSize() {
+        return pageSize;
     }
 
     public void setItems(List<T> items) {

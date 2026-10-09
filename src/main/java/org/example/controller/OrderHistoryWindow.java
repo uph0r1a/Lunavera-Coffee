@@ -9,9 +9,11 @@ import com.coffeeshop.coffeeshopmanagement.model.OrderItem;
 import com.coffeeshop.coffeeshopmanagement.model.OrderStatus;
 import com.coffeeshop.coffeeshopmanagement.model.PaymentMethod;
 import com.coffeeshop.coffeeshopmanagement.util.AlertUtil;
+import com.coffeeshop.coffeeshopmanagement.util.PageBar;
 import com.coffeeshop.coffeeshopmanagement.util.Async;
 import com.coffeeshop.coffeeshopmanagement.util.CurrencyUtil;
 import com.coffeeshop.coffeeshopmanagement.util.SceneNavigator;
+import com.coffeeshop.coffeeshopmanagement.util.TextLengthLimiter;
 import com.coffeeshop.coffeeshopmanagement.util.Session;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -46,7 +48,6 @@ import java.util.List;
  */
 public final class OrderHistoryWindow {
 
-    private static final int PAGE_SIZE = 50;
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
     private static final String ALL_STATUSES = "Tất cả trạng thái";
     private static final String STATUS_PAID = "Đã thanh toán";
@@ -62,12 +63,11 @@ public final class OrderHistoryWindow {
     private final DatePicker fromPicker = new DatePicker();
     private final DatePicker toPicker = new DatePicker();
     private final Label countLabel = new Label();
-    private final Label pageLabel = new Label();
-    private final Button previousPageButton = new Button("‹ Trang trước");
-    private final Button nextPageButton = new Button("Trang sau ›");
+    private final PageBar pageBar = new PageBar(50, 20, 50, 100, 200);
+    private final java.util.Map<TableColumn<OrderSummary, ?>, OrderDAO.HistorySortKey> sortKeys = new java.util.HashMap<>();
+    private OrderDAO.HistorySort sort = OrderDAO.HistorySort.NEWEST_FIRST;
     private final Button viewButton = new Button("Xem hóa đơn");
     private final Button cancelButton = new Button("Hủy đơn (hoàn tiền)");
-    private int currentPage = 1;
     private int totalCount = 0;
 
     private OrderHistoryWindow() {
@@ -82,6 +82,7 @@ public final class OrderHistoryWindow {
 
         searchField.setPromptText("Tìm theo mã đơn, nhân viên, khách hàng...");
         searchField.setPrefWidth(340);
+        TextLengthLimiter.limit(searchField, TextLengthLimiter.SEARCH_MAX);
         searchField.textProperty().addListener((obs, old, value) -> resetAndReload());
         statusFilter.getItems().setAll(ALL_STATUSES, STATUS_PAID, STATUS_CANCELLED);
         statusFilter.getSelectionModel().selectFirst();
@@ -108,24 +109,26 @@ public final class OrderHistoryWindow {
             resetAndReload();
         });
 
-        previousPageButton.setOnAction(e -> {
-            if (currentPage > 1) {
-                currentPage--;
+        pageBar.setOnChange(this::reload);
+        // Sorting is done by the database over ALL matching orders, then paged - the TableView's
+        // own sort would only reorder the rows currently on screen.
+        table.setSortPolicy(tv -> {
+            TableColumn<OrderSummary, ?> first = tv.getSortOrder().isEmpty() ? null : tv.getSortOrder().get(0);
+            OrderDAO.HistorySortKey key = first != null ? sortKeys.get(first) : null;
+            OrderDAO.HistorySort next = key == null ? OrderDAO.HistorySort.NEWEST_FIRST
+                    : new OrderDAO.HistorySort(key, first.getSortType() == TableColumn.SortType.DESCENDING);
+            if (!next.equals(sort)) {
+                sort = next;
+                pageBar.setCurrentPage(1);
                 reload();
             }
-        });
-        nextPageButton.setOnAction(e -> {
-            if (currentPage < totalPages()) {
-                currentPage++;
-                reload();
-            }
+            return true;
         });
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
         HBox top = new HBox(10, searchField, statusFilter, fromPicker, toPicker, clearDatesButton, spacer, countLabel);
-        HBox paging = new HBox(10, previousPageButton, pageLabel, nextPageButton);
-        HBox bottom = new HBox(10, viewButton, cancelButton, new Region(), paging);
+        HBox bottom = new HBox(10, viewButton, cancelButton, new Region(), pageBar);
         HBox.setHgrow(bottom.getChildren().get(2), Priority.ALWAYS);
         VBox root = new VBox(12, top, table, bottom);
         root.setPadding(new Insets(16));
@@ -134,21 +137,27 @@ public final class OrderHistoryWindow {
         Stage stage = new Stage();
         stage.setTitle("Lịch sử đơn hàng");
         stage.setScene(new Scene(root, 960, 600));
+        AlertUtil.closeOnEscape(stage.getScene());
         stage.show();
 
         reload();
     }
 
     private void buildColumns() {
-        table.getColumns().add(column("Mã đơn", 80, s -> "#" + s.order().getId()));
-        table.getColumns().add(column("Thời gian", 150, s -> s.order().getOrderDate() != null
+        addColumn(OrderDAO.HistorySortKey.ID, column("Mã đơn", 80, s -> "#" + s.order().getId()));
+        addColumn(OrderDAO.HistorySortKey.DATE, column("Thời gian", 150, s -> s.order().getOrderDate() != null
                 ? s.order().getOrderDate().format(TIME_FORMAT) : "-"));
-        table.getColumns().add(column("Nhân viên", 150, s -> orDash(s.employeeName())));
-        table.getColumns().add(column("Khách hàng", 150, s -> s.customerName() != null ? s.customerName() : "Khách lẻ"));
-        table.getColumns().add(column("Thanh toán", 100, s -> s.order().getPaymentMethod() == PaymentMethod.CARD
+        addColumn(OrderDAO.HistorySortKey.EMPLOYEE, column("Nhân viên", 150, s -> orDash(s.employeeName())));
+        addColumn(OrderDAO.HistorySortKey.CUSTOMER, column("Khách hàng", 150, s -> s.customerName() != null ? s.customerName() : "Khách lẻ"));
+        addColumn(OrderDAO.HistorySortKey.PAYMENT, column("Thanh toán", 100, s -> s.order().getPaymentMethod() == PaymentMethod.CARD
                 ? "Thẻ" : s.order().getPaymentMethod() == PaymentMethod.CASH ? "Tiền mặt" : "-"));
-        table.getColumns().add(column("Tổng tiền", 120, s -> CurrencyUtil.format(s.order().getTotal())));
-        table.getColumns().add(column("Trạng thái", 120, s -> statusLabel(s.order().getStatus())));
+        addColumn(OrderDAO.HistorySortKey.TOTAL, column("Tổng tiền", 120, s -> CurrencyUtil.format(s.order().getTotal())));
+        addColumn(OrderDAO.HistorySortKey.STATUS, column("Trạng thái", 120, s -> statusLabel(s.order().getStatus())));
+    }
+
+    private void addColumn(OrderDAO.HistorySortKey key, TableColumn<OrderSummary, String> column) {
+        sortKeys.put(column, key);
+        table.getColumns().add(column);
     }
 
     private TableColumn<OrderSummary, String> column(String title, double width,
@@ -178,33 +187,32 @@ public final class OrderHistoryWindow {
         return new HistoryFilter(searchField.getText(), status, fromPicker.getValue(), toPicker.getValue());
     }
 
-    private int totalPages() {
-        return Math.max(1, (int) Math.ceil(totalCount / (double) PAGE_SIZE));
-    }
-
     /** A search/status/date change invalidates whatever page we were on (there may not even be
      *  that many pages of the new, narrower result set), so always jump back to page 1. */
     private void resetAndReload() {
-        currentPage = 1;
+        pageBar.setCurrentPage(1);
         reload();
     }
 
     private void reload() {
         HistoryFilter filter = currentFilter();
-        int page = currentPage;
+        OrderDAO.HistorySort order = sort;
+        int pageSize = pageBar.getPageSize();
+        int page = pageBar.getCurrentPage();
         table.setDisable(true);
         Async.run(
                 () -> new HistoryPage(
-                        orderDAO.findHistoryPage(filter, PAGE_SIZE, (page - 1) * PAGE_SIZE),
+                        orderDAO.findHistoryPage(filter, order, pageSize, (int) Math.min(Integer.MAX_VALUE, (long) (page - 1) * pageSize)),
                         orderDAO.countHistory(filter)),
                 result -> {
                     table.setDisable(false);
                     table.getItems().setAll(result.rows());
                     totalCount = result.totalCount();
                     countLabel.setText(totalCount + " đơn khớp bộ lọc");
-                    pageLabel.setText("Trang " + currentPage + "/" + totalPages());
-                    previousPageButton.setDisable(currentPage <= 1);
-                    nextPageButton.setDisable(currentPage >= totalPages());
+                    pageBar.setTotalItems(totalCount);
+                    if (pageBar.getCurrentPage() != page) {
+                        reload(); // the page we asked for no longer exists (e.g. after a cancel) - load the clamped one
+                    }
                 },
                 error -> {
                     table.setDisable(false);

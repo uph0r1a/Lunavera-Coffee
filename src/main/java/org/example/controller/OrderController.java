@@ -16,7 +16,9 @@ import com.coffeeshop.coffeeshopmanagement.model.PaymentMethod;
 import com.coffeeshop.coffeeshopmanagement.model.Product;
 import com.coffeeshop.coffeeshopmanagement.model.TableStatus;
 import com.coffeeshop.coffeeshopmanagement.util.AlertUtil;
+import com.coffeeshop.coffeeshopmanagement.util.TextLengthLimiter;
 import com.coffeeshop.coffeeshopmanagement.util.Async;
+import com.coffeeshop.coffeeshopmanagement.util.ValidationUtil;
 import com.coffeeshop.coffeeshopmanagement.util.CurrencyUtil;
 import com.coffeeshop.coffeeshopmanagement.util.SceneNavigator;
 import com.coffeeshop.coffeeshopmanagement.util.Session;
@@ -191,6 +193,7 @@ public class OrderController {
                 new SimpleStringProperty(CurrencyUtil.format(data.getValue().getLineTotal())));
 
         if (productSearchField != null) {
+            TextLengthLimiter.limit(productSearchField, TextLengthLimiter.SEARCH_MAX);
             productSearchField.textProperty().addListener((obs, o, n) -> renderProductCatalog());
         }
 
@@ -219,6 +222,8 @@ public class OrderController {
 
     // =================================================================== Customer Auto-Link
     private void initCustomerInputs() {
+        TextLengthLimiter.limit(customerNameField, TextLengthLimiter.NAME_MAX);
+        TextLengthLimiter.limit(customerPhoneField, 15);
         if (customerPhoneField != null) {
             customerPhoneField.textProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal != null && newVal.trim().length() >= 9) {
@@ -274,27 +279,35 @@ public class OrderController {
         );
     }
 
+    // Serialises find-or-create so two async callers (name-field focus-lost + start/checkout)
+    // can never both miss the lookup and insert the same phone twice.
+    private static final Object CUSTOMER_LOCK = new Object();
+
+    /**
+     * Customers are identified by phone number. With no valid phone the order is a walk-in
+     * (no customer row is created), so a customer is never added twice for one checkout.
+     */
     private Customer ensureCustomerInDb(String name, String phone) {
-        if (!phone.isEmpty()) {
+        if (!ValidationUtil.isValidPhone(phone)) return null;
+        synchronized (CUSTOMER_LOCK) {
             Optional<Customer> existing = customerDAO.findByPhone(phone);
             if (existing.isPresent()) {
                 Customer c = existing.get();
-                if (!name.isEmpty() && !name.equals(c.getFullName())) {
+                if (!name.isEmpty() && !"Khách vãng lai".equals(name) && !name.equals(c.getFullName())) {
                     c.setFullName(name);
                     try { customerDAO.update(c); } catch (Exception ignored) {}
                 }
                 return c;
             }
-        }
-        if (name.isEmpty() && phone.isEmpty()) return null;
-        Customer newCust = new Customer();
-        newCust.setFullName(name.isEmpty() ? "Khách vãng lai" : name);
-        newCust.setPhone(phone.isEmpty() ? null : phone);
-        newCust.setLoyaltyPoints(0);
-        try {
-            return customerDAO.insert(newCust);
-        } catch (Exception e) {
-            return null;
+            Customer newCust = new Customer();
+            newCust.setFullName(name.isEmpty() ? "Khách vãng lai" : name);
+            newCust.setPhone(phone);
+            newCust.setLoyaltyPoints(0);
+            try {
+                return customerDAO.insert(newCust);
+            } catch (Exception e) {
+                return null;
+            }
         }
     }
 
@@ -327,7 +340,8 @@ public class OrderController {
         categoryTabBox.getChildren().clear();
 
         Button allBtn = new Button("Tất cả");
-        allBtn.getStyleClass().add(selectedCategoryId == null ? "category-chip-active" : "category-chip");
+        allBtn.getStyleClass().add("category-chip");
+        if (selectedCategoryId == null) allBtn.getStyleClass().add("category-chip-active");
         allBtn.setOnAction(e -> {
             selectedCategoryId = null;
             renderCategoryChips();
@@ -339,7 +353,8 @@ public class OrderController {
             if (!cat.isActive()) continue;
             Button catBtn = new Button(cat.getName());
             boolean isSelected = selectedCategoryId != null && selectedCategoryId == cat.getId();
-            catBtn.getStyleClass().add(isSelected ? "category-chip-active" : "category-chip");
+            catBtn.getStyleClass().add("category-chip");
+            if (isSelected) catBtn.getStyleClass().add("category-chip-active");
             catBtn.setOnAction(e -> {
                 selectedCategoryId = cat.getId();
                 renderCategoryChips();
@@ -665,6 +680,12 @@ public class OrderController {
 
         boolean newOccupied = !table.isOccupied();
         final int tNum = selectedTableNumber;
+        // setEmpty() also cancels the table's OPEN order, so never do that silently.
+        if (!newOccupied && activeOpenOrder != null && !cart.isEmpty()
+                && !AlertUtil.confirm("Hủy đơn đang phục vụ",
+                "Bàn " + tNum + " đang có đơn chưa thanh toán. Đổi sang không hoạt động sẽ hủy đơn này. Tiếp tục?")) {
+            return;
+        }
         Async.run(
                 () -> {
                     if (newOccupied) {
@@ -676,6 +697,7 @@ public class OrderController {
                 },
                 result -> {
                     loadTablesFromDb();
+                    loadTableOrderFromDb(tNum);
                     AlertUtil.info("Thành công",
                             "Bàn " + tNum + " đã đổi sang: " + (newOccupied ? "Đang sử dụng" : "Không hoạt động"));
                 },
@@ -928,6 +950,8 @@ public class OrderController {
         AlertUtil.configure(dialog);
         ButtonType confirmButtonType = new ButtonType("Xác nhận thanh toán", ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(confirmButtonType, ButtonType.CANCEL);
+        AlertUtil.setDefaultButton(dialog, confirmButtonType);
+        AlertUtil.setCancelButton(dialog, ButtonType.CANCEL);
 
         ToggleGroup methodGroup = new ToggleGroup();
         RadioButton cashRadio = new RadioButton("Tiền mặt");
@@ -938,6 +962,8 @@ public class OrderController {
 
         TextField discountField = new TextField("0");
         TextField cashReceivedField = new TextField();
+        TextLengthLimiter.limit(discountField, TextLengthLimiter.NUMBER_MAX);
+        TextLengthLimiter.limit(cashReceivedField, TextLengthLimiter.NUMBER_MAX);
         cashReceivedField.disableProperty().bind(cardRadio.selectedProperty());
         Label totalPreviewLabel = new Label(CurrencyUtil.format(subtotal));
         Label changePreviewLabel = new Label(CurrencyUtil.format(BigDecimal.ZERO));

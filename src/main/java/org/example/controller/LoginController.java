@@ -9,7 +9,9 @@ import com.coffeeshop.coffeeshopmanagement.service.AuthenticationService;
 import com.coffeeshop.coffeeshopmanagement.service.AuthenticationService.LoginResult;
 import com.coffeeshop.coffeeshopmanagement.util.AlertUtil;
 import com.coffeeshop.coffeeshopmanagement.util.Async;
+import com.coffeeshop.coffeeshopmanagement.util.PasswordReveal;
 import com.coffeeshop.coffeeshopmanagement.util.Session;
+import com.coffeeshop.coffeeshopmanagement.util.TextLengthLimiter;
 import com.coffeeshop.coffeeshopmanagement.util.SceneNavigator;
 import com.coffeeshop.coffeeshopmanagement.util.SessionGuard;
 
@@ -17,7 +19,6 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -35,13 +36,9 @@ public class LoginController {
     @FXML
     private CheckBox rememberCheckBox;
     @FXML
-    private Hyperlink forgotPasswordLink;
-    @FXML
     private Button signInButton;
     @FXML
     private Button loginButton;
-    @FXML
-    private Hyperlink registerLink;
 
     private final AuthenticationService authenticationService = new AuthenticationService();
     private final EmployeeDAO employeeDAO = new EmployeeDAO();
@@ -51,12 +48,14 @@ public class LoginController {
         if (usernameField != null && passwordField != null) {
             usernameField.setOnAction(event -> passwordField.requestFocus());
         }
-        if (passwordField != null) passwordField.setOnAction(event -> handleLogin());
+        TextLengthLimiter.limit(usernameField, TextLengthLimiter.USERNAME_MAX);
+        if (passwordField != null) {
+            TextLengthLimiter.limit(passwordField, TextLengthLimiter.PASSWORD_MAX);
+            passwordField.setOnAction(event -> handleLogin());
+        }
         if (signInButton != null) signInButton.setOnAction(event -> handleLogin());
         if (loginButton != null) loginButton.setOnAction(event -> handleLogin());
-        if (registerLink != null) registerLink.setOnAction(event -> handleRegister());
-        if (forgotPasswordLink != null) forgotPasswordLink.setOnAction(event -> handleForgotPassword());
-        if (showPasswordButton != null) showPasswordButton.setOnAction(event -> handleShowPassword());
+        PasswordReveal.install(passwordField, showPasswordButton);
     }
 
     @FXML
@@ -134,28 +133,6 @@ public class LoginController {
         if (usedDefaultPassword) {
             javafx.application.Platform.runLater(() -> DefaultPasswordPrompt.show(user));
         }
-    }
-
-    @FXML
-    public void handleRegister() {
-        Stage stage = currentStage();
-        if (stage != null) {
-            SceneNavigator.switchScene(stage, "/fxml/dangky.fxml");
-        }
-    }
-
-    @FXML
-    public void handleForgotPassword() {
-        AlertUtil.info("Quên mật khẩu",
-                "Tính năng tự đặt lại mật khẩu chưa được triển khai. Vui lòng liên hệ quản trị viên " +
-                        "để được đặt lại mật khẩu thủ công.");
-    }
-
-    @FXML
-    public void handleShowPassword() {
-        // No plain-text sibling field exists in this screen's FXML for the password field, so
-        // there is nothing to toggle to yet; kept as a no-op placeholder rather than removed,
-        // since dangnhap.fxml does not currently wire this button at all.
     }
 
     private Stage currentStage() {

@@ -34,6 +34,8 @@ final class DefaultPasswordPrompt {
         ButtonType saveType = new ButtonType("Đổi mật khẩu", ButtonData.OK_DONE);
         ButtonType laterType = new ButtonType("Để sau", ButtonData.CANCEL_CLOSE);
         dialog.getDialogPane().getButtonTypes().addAll(saveType, laterType);
+        AlertUtil.setDefaultButton(dialog, saveType);
+        AlertUtil.setCancelButton(dialog, laterType);
 
         PasswordField newField = new PasswordField();
         PasswordField confirmField = new PasswordField();

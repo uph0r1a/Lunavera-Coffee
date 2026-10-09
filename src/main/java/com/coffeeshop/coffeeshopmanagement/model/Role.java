@@ -2,8 +2,9 @@ package com.coffeeshop.coffeeshopmanagement.model;
 
 /**
  * System roles. ADMIN has full access (referred to as "Owner" / "Quản trị viên" in the UI),
- * EMPLOYEE can operate the POS and day-to-day screens, CUSTOMER is a self-registered
- * account (created from the public registration screen) with no dashboard access yet.
+ * EMPLOYEE can operate the POS and day-to-day screens, CUSTOMER is a legacy value for
+ * accounts that came from the removed self-registration screen: they have no dashboard and the
+ * login screen just says so. Nothing in the app creates CUSTOMER accounts any more.
  */
 public enum Role {
     ADMIN,

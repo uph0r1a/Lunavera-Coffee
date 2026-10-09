@@ -20,7 +20,6 @@ public final class SceneNavigator {
 
     private static final Logger LOGGER = Logger.getLogger(SceneNavigator.class.getName());
     private static final String LOGIN_FXML = "/fxml/dangnhap.fxml";
-    private static final String DANGKY_FXML = "/fxml/dangky.fxml";
 
     private SceneNavigator() {
     }
@@ -38,7 +37,7 @@ public final class SceneNavigator {
         // SessionGuard (progress.md, latest session) now also covers a background 30s tick, the
         // moment of taking a payment, and admin-only actions - this call is the "every screen
         // change" layer of that, delegated so there's one definition of "still valid".
-        if (!LOGIN_FXML.equals(fxmlPath) && !DANGKY_FXML.equals(fxmlPath)
+        if (!LOGIN_FXML.equals(fxmlPath)
                 && Session.getCurrentUser() != null && !SessionGuard.validateNow()) {
             SessionGuard.forceLogout();
             return;
@@ -56,7 +55,7 @@ public final class SceneNavigator {
     }
 
     public static <T> T switchSceneAndGetController(Stage stage, String fxmlPath) {
-        if (!LOGIN_FXML.equals(fxmlPath) && !DANGKY_FXML.equals(fxmlPath)
+        if (!LOGIN_FXML.equals(fxmlPath)
                 && Session.getCurrentUser() != null && !SessionGuard.validateNow()) {
             SessionGuard.forceLogout();
             return null;
@@ -86,6 +85,7 @@ public final class SceneNavigator {
             Stage stage = new Stage();
             stage.setTitle(title);
             stage.setScene(new Scene(root));
+            AlertUtil.closeOnEscape(stage.getScene());
             stage.show();
             return loader.getController();
         } catch (IOException e) {

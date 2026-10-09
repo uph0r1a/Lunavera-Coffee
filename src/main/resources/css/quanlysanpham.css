@@ -273,19 +273,37 @@
     -fx-cursor: hand;
 }
 
+/* Labels inside the button graphic don't inherit the button's text fill, so set them explicitly */
+.category-list-button .label {
+    -fx-text-fill: #50634f;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 12px;
+}
+
 .category-list-button:hover {
     -fx-background-color: rgba(113, 131, 106, 0.10);
     -fx-text-fill: #50634f;
 }
 
 .category-list-active {
-    -fx-background-color: #e5ebdd;
-    -fx-text-fill: #50634f;
+    -fx-background-color: #71836a;
+    -fx-text-fill: white;
     -fx-font-weight: bold;
 }
 
 .category-list-active:hover {
-    -fx-background-color: #dce5d3;
+    -fx-background-color: #65785f;
+}
+
+.category-list-button:hover .label {
+    -fx-text-fill: #50634f;
+}
+
+.category-list-active .label,
+.category-list-active:hover .label,
+.category-list-active:hover .category-count {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
 }
 
 .add-category-button {
@@ -565,4 +583,16 @@
 
 .primary-button:focused {
     -fx-effect: dropshadow(gaussian, rgba(113, 131, 106, 0.25), 6, 0, 0, 1);
+}
+.category-count {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.category-list-button .category-count {
+    -fx-text-fill: #7d8b72;
+}
+
+.category-list-active .category-count {
+    -fx-text-fill: white;
 }

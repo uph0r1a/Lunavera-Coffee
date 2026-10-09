@@ -4,6 +4,8 @@ import com.coffeeshop.coffeeshopmanagement.dao.CustomerDAO;
 import com.coffeeshop.coffeeshopmanagement.dao.DataAccessException;
 import com.coffeeshop.coffeeshopmanagement.model.Customer;
 import com.coffeeshop.coffeeshopmanagement.util.AlertUtil;
+import com.coffeeshop.coffeeshopmanagement.util.PagedTable;
+import com.coffeeshop.coffeeshopmanagement.util.TextLengthLimiter;
 import com.coffeeshop.coffeeshopmanagement.util.Async;
 import com.coffeeshop.coffeeshopmanagement.util.Session;
 import com.coffeeshop.coffeeshopmanagement.util.SceneNavigator;
@@ -58,6 +60,9 @@ public class CustomerController {
     @FXML private TableColumn<Customer, Number> customerLoyaltyColumn;
     @FXML private TableColumn<Customer, String> customerTierColumn;
     @FXML private TableColumn<Customer, Void> customerActionColumn;
+    @FXML private javafx.scene.layout.HBox customerPagerBox;
+    @FXML private javafx.scene.control.Label customerPaginationLabel;
+    private PagedTable<Customer> customerPaged;
 
     @FXML private Button productMenuButton;
     @FXML private Button categoryMenuButton;
@@ -87,8 +92,11 @@ public class CustomerController {
             }
         }
 
+        customerPaged = new PagedTable<>(customerTable, customerPagerBox, 10)
+                .unsortable(customerIndexColumn, customerActionColumn)
+                .sortKey(customerTierColumn, Customer::getLoyaltyPoints); // rank by points, not by the label text
         customerIndexColumn.setCellValueFactory(data -> new SimpleIntegerProperty(
-                customerTable.getItems().indexOf(data.getValue()) + 1));
+                customerTable.getItems().indexOf(data.getValue()) + customerPaged.getFromIndex()));
         customerNameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getFullName()));
         customerPhoneColumn.setCellValueFactory(data -> new SimpleStringProperty(
                 data.getValue().getPhone() != null ? data.getValue().getPhone() : "-"));
@@ -98,6 +106,7 @@ public class CustomerController {
         customerTierColumn.setCellValueFactory(data -> new SimpleStringProperty(tierFor(data.getValue().getLoyaltyPoints())));
         customerActionColumn.setCellFactory(editOnlyActionColumn(this::openEditDialog));
 
+        TextLengthLimiter.limit(customerSearchField, TextLengthLimiter.SEARCH_MAX);
         customerSearchField.textProperty().addListener((obs, old, value) -> applyFilter());
 
         reloadCustomers();
@@ -119,8 +128,11 @@ public class CustomerController {
                         .filter(c -> c.getFullName().toLowerCase().contains(keyword)
                                 || (c.getPhone() != null && c.getPhone().toLowerCase().contains(keyword)))
                         .collect(Collectors.toList());
-        customerTable.getItems().setAll(filtered);
-        customerTable.refresh();
+        customerPaged.setItems(filtered);
+        if (customerPaginationLabel != null) {
+            customerPaginationLabel.setText(String.format("Hiển thị %d – %d / %d khách hàng",
+                    customerPaged.getFromIndex(), customerPaged.getToIndex(), customerPaged.getTotalCount()));
+        }
     }
 
     /**
@@ -149,10 +161,15 @@ public class CustomerController {
         AlertUtil.configure(dialog);
         ButtonType saveButtonType = new ButtonType("Lưu", ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+        AlertUtil.setDefaultButton(dialog, saveButtonType);
+        AlertUtil.setCancelButton(dialog, ButtonType.CANCEL);
 
         TextField nameField = new TextField(existing != null ? existing.getFullName() : "");
+        TextLengthLimiter.limit(nameField, TextLengthLimiter.NAME_MAX);
         TextField phoneField = new TextField(existing != null ? existing.getPhone() : "");
+        TextLengthLimiter.limit(phoneField, TextLengthLimiter.PHONE_MAX);
         TextField emailField = new TextField(existing != null ? existing.getEmail() : "");
+        TextLengthLimiter.limit(emailField, TextLengthLimiter.EMAIL_MAX);
 
         GridPane grid = new GridPane();
         grid.setHgap(10);

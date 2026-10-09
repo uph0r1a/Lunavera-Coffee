@@ -17,10 +17,11 @@ import com.coffeeshop.coffeeshopmanagement.service.DashboardStatsService;
 import com.coffeeshop.coffeeshopmanagement.service.DashboardStatsService.DashboardStats;
 import com.coffeeshop.coffeeshopmanagement.service.PasswordUtil;
 import com.coffeeshop.coffeeshopmanagement.util.AlertUtil;
+import com.coffeeshop.coffeeshopmanagement.util.TextLengthLimiter;
 import com.coffeeshop.coffeeshopmanagement.util.Async;
 import com.coffeeshop.coffeeshopmanagement.util.DashboardWidgets;
 import com.coffeeshop.coffeeshopmanagement.util.CurrencyUtil;
-import com.coffeeshop.coffeeshopmanagement.util.Pager;
+import com.coffeeshop.coffeeshopmanagement.util.PagedTable;
 import com.coffeeshop.coffeeshopmanagement.util.Session;
 import com.coffeeshop.coffeeshopmanagement.util.SessionGuard;
 import com.coffeeshop.coffeeshopmanagement.util.SceneNavigator;
@@ -76,7 +77,6 @@ import java.util.stream.Collectors;
 public class AdminController {
 
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    private static final int PAGE_SIZE = 8;
 
     private final DashboardStatsService dashboardStatsService = new DashboardStatsService();
     private final CategoryDAO categoryDAO = new CategoryDAO();
@@ -123,11 +123,9 @@ public class AdminController {
     @FXML private TableColumn<Category, String> categoryStatusColumn;
     @FXML private TableColumn<Category, Void> categoryActionColumn;
     @FXML private Label categoryPaginationLabel;
-    @FXML private Button previousCategoryPageButton;
-    @FXML private Button categoryPageOneButton;
-    @FXML private Button nextCategoryPageButton;
+    @FXML private HBox categoryPagerBox;
 
-    private final Pager<Category> categoryPager = new Pager<>(PAGE_SIZE);
+    private PagedTable<Category> categoryPaged;
     private List<Category> allCategories = List.of();
     // Loaded once per reload via CategoryDAO.countProductsByCategory() (a single grouped
     // query) instead of calling countProductsInCategory(id) per row/per keystroke - see
@@ -154,10 +152,7 @@ public class AdminController {
     @FXML private TableColumn<User, String> createdDateColumn;
     @FXML private TableColumn<User, Void> accountActionColumn;
     @FXML private Label accountPaginationLabel;
-    @FXML private Button previousPageButton;
-    @FXML private Button pageOneButton;
-    @FXML private Button nextPageNumberButton;
-    @FXML private Button nextPageButton;
+    @FXML private HBox accountPagerBox;
     @FXML private javafx.scene.layout.VBox accountDetailCard;
     @FXML private Button closeDetailButton;
     @FXML private Label detailAvatar;
@@ -173,7 +168,7 @@ public class AdminController {
     @FXML private Button editAccountButton;
     @FXML private Button lockAccountButton;
 
-    private final Pager<User> accountPager = new Pager<>(PAGE_SIZE);
+    private PagedTable<User> accountPaged;
     private List<User> allAccounts = List.of();
     // Loaded once per reload instead of calling employeeDAO.findById(id) per row/per
     // keystroke in employeeNameFor()/employeePhoneFor() - see progress.md performance notes.
@@ -198,9 +193,9 @@ public class AdminController {
     @FXML private TableColumn<Product, String> productStatusColumn;
     @FXML private TableColumn<Product, Void> actionColumn;
     @FXML private Label totalProductLabel;
-    @FXML private Button pageTwoButton;
+    @FXML private HBox productPagerBox;
 
-    private final Pager<Product> productPager = new Pager<>(PAGE_SIZE);
+    private PagedTable<Product> productPaged;
     private List<Product> allProducts = List.of();
     private List<Category> allActiveCategories = List.of();
 
@@ -413,14 +408,14 @@ public class AdminController {
             }
             revenueChart.getData().setAll(series);
         }
-        // The old hardcoded "Bàn" (dine-in table) occupancy grid and fake low-stock rows were
-        // replaced with real data (progress.md, Session 13): there's no table entity to report
-        // real occupancy from, so those cards now show product count / low stock / recent orders.
+        // The dashboard cards show real data: product count, low stock and recent orders.
         if (dashboardProductCountLabel != null) {
             dashboardProductCountLabel.setText(String.valueOf(stats.totalProducts()));
         }
         if (dashboardLowStockNoteLabel != null) {
-            dashboardLowStockNoteLabel.setText("Đang kinh doanh");
+            dashboardLowStockNoteLabel.setText(stats.lowStockCount() == 0
+                    ? "Không có sản phẩm sắp hết hàng"
+                    : "Cần nhập thêm: " + stats.lowStockCount() + " sản phẩm");
         }
         if (lowStockList != null) {
             DashboardWidgets.fillLowStock(lowStockList, stats.lowStockProducts());
@@ -467,9 +462,11 @@ public class AdminController {
                 setGraphic(null);
             }
         });
+        categoryPaged = new PagedTable<>(categoryTable, categoryPagerBox, 10)
+                .unsortable(categoryImageColumn, categoryIndexColumn, categoryActionColumn);
         categoryIndexColumn.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleIntegerProperty(
-                        categoryTable.getItems().indexOf(data.getValue()) + categoryPager.getFromIndex()));
+                        categoryTable.getItems().indexOf(data.getValue()) + categoryPaged.getFromIndex()));
         categoryNameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getName()));
         categoryDescriptionColumn.setCellValueFactory(data ->
                 new SimpleStringProperty(data.getValue().getDescription() == null ? "" : data.getValue().getDescription()));
@@ -484,6 +481,7 @@ public class AdminController {
         ));
 
         if (categorySearchField != null) {
+            TextLengthLimiter.limit(categorySearchField, TextLengthLimiter.SEARCH_MAX);
             categorySearchField.textProperty().addListener((obs, old, value) -> applyCategoryFilter());
         }
 
@@ -518,15 +516,13 @@ public class AdminController {
                         .filter(c -> c.getName().toLowerCase().contains(keyword))
                         .collect(Collectors.toList());
 
-        categoryPager.setItems(filtered);
-        // categoryTable is null when this runs from the Product screen's own "+ Thêm danh
+        // categoryPaged is null when this runs from the Product screen's own "+ Thêm danh
         // mục" shortcut (it shares handleAddCategory()/openCategoryDialog() with the real
         // Category screen, and each screen gets its own fresh AdminController instance with
         // only its own fx:id fields populated) - guard rather than NPE right after a
-        // successful save.
-        if (categoryTable != null) {
-            categoryTable.getItems().setAll(categoryPager.getCurrentPageItems());
-            categoryTable.refresh();
+        // successful save. Sorting + paging both happen inside PagedTable (sort first).
+        if (categoryPaged != null) {
+            categoryPaged.setItems(filtered);
         }
 
         long activeCount = allCategories.stream().filter(Category::isActive).count();
@@ -537,9 +533,9 @@ public class AdminController {
             int totalProducts = categoryProductCounts.values().stream().mapToInt(Integer::intValue).sum();
             totalCategoryProductLabel.setText(String.valueOf(totalProducts));
         }
-        if (categoryPaginationLabel != null) {
+        if (categoryPaginationLabel != null && categoryPaged != null) {
             categoryPaginationLabel.setText(String.format("Hiển thị %d – %d trong tổng số %d danh mục",
-                    categoryPager.getFromIndex(), categoryPager.getToIndex(), categoryPager.getTotalCount()));
+                    categoryPaged.getFromIndex(), categoryPaged.getToIndex(), categoryPaged.getTotalCount()));
         }
     }
 
@@ -562,9 +558,13 @@ public class AdminController {
         dialog.setTitle(existing == null ? "Thêm danh mục" : "Chỉnh sửa danh mục");
         AlertUtil.configure(dialog);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        AlertUtil.setDefaultButton(dialog, ButtonType.OK);
+        AlertUtil.setCancelButton(dialog, ButtonType.CANCEL);
 
         TextField nameField = new TextField(existing != null ? existing.getName() : "");
+        TextLengthLimiter.limit(nameField, TextLengthLimiter.NAME_MAX);
         TextArea descriptionField = new TextArea(existing != null ? existing.getDescription() : "");
+        TextLengthLimiter.limit(descriptionField, TextLengthLimiter.DESCRIPTION_MAX);
         descriptionField.setPrefRowCount(3);
         CheckBox activeBox = new CheckBox("Đang hoạt động");
         activeBox.setSelected(existing == null || existing.isActive());
@@ -631,24 +631,6 @@ public class AdminController {
     }
 
     @FXML
-    public void handlePreviousPage() {
-        categoryPager.previousPage();
-        applyCategoryFilter();
-    }
-
-    @FXML
-    public void handlePageOne() {
-        categoryPager.goToPage(1);
-        applyCategoryFilter();
-    }
-
-    @FXML
-    public void handleNextPage() {
-        categoryPager.nextPage();
-        applyCategoryFilter();
-    }
-
-    @FXML
     public void handleTableClick() {
         // Row selection alone needs no action; edit/delete are reached through the action
         // column's own buttons (see actionColumnFactory).
@@ -657,9 +639,12 @@ public class AdminController {
     // =================================================================== Account management
 
     private void initAccountScreen() {
+        accountPaged = new PagedTable<>(accountTable, accountPagerBox, 10)
+                .unsortable(accountIndexColumn, accountActionColumn)
+                .sortKey(createdDateColumn, User::getCreatedAt); // real date order, not the dd/MM text
         accountIndexColumn.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleIntegerProperty(
-                        accountTable.getItems().indexOf(data.getValue()) + accountPager.getFromIndex()));
+                        accountTable.getItems().indexOf(data.getValue()) + accountPaged.getFromIndex()));
         usernameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getUsername()));
         fullNameColumn.setCellValueFactory(data -> new SimpleStringProperty(employeeNameFor(data.getValue())));
         phoneColumn.setCellValueFactory(data -> new SimpleStringProperty(employeePhoneFor(data.getValue())));
@@ -679,6 +664,7 @@ public class AdminController {
             accountStatusFilter.getSelectionModel().selectFirst();
         }
         if (accountSearchField != null) {
+            TextLengthLimiter.limit(accountSearchField, TextLengthLimiter.SEARCH_MAX);
             accountSearchField.textProperty().addListener((obs, old, value) -> applyAccountFilter());
         }
         if (!Session.isAdmin() && permissionBox != null) {
@@ -729,9 +715,7 @@ public class AdminController {
                         || (u.getStatus() == AccountStatus.ACTIVE) == statusChoice.equals("Hoạt động"))
                 .collect(Collectors.toList());
 
-        accountPager.setItems(filtered);
-        accountTable.getItems().setAll(accountPager.getCurrentPageItems());
-        accountTable.refresh();
+        accountPaged.setItems(filtered);
 
         if (totalAccountLabel != null) totalAccountLabel.setText(String.valueOf(allAccounts.size()));
         if (activeAccountLabel != null) {
@@ -746,7 +730,7 @@ public class AdminController {
         if (accountCountLabel != null) accountCountLabel.setText(filtered.size() + " tài khoản");
         if (accountPaginationLabel != null) {
             accountPaginationLabel.setText(String.format("Hiển thị %d – %d / %d tài khoản",
-                    accountPager.getFromIndex(), accountPager.getToIndex(), accountPager.getTotalCount()));
+                    accountPaged.getFromIndex(), accountPaged.getToIndex(), accountPaged.getTotalCount()));
         }
     }
 
@@ -792,15 +776,21 @@ public class AdminController {
         AlertUtil.configure(dialog);
         ButtonType saveButtonType = new ButtonType("Lưu", ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+        AlertUtil.setDefaultButton(dialog, saveButtonType);
+        AlertUtil.setCancelButton(dialog, ButtonType.CANCEL);
 
         Employee existingEmployee = existing != null && existing.getEmployeeId() != null
                 ? employeeDAO.findById(existing.getEmployeeId()).orElse(null) : null;
 
         TextField fullNameField = new TextField(existingEmployee != null ? existingEmployee.getFullName() : "");
+        TextLengthLimiter.limit(fullNameField, TextLengthLimiter.NAME_MAX);
         TextField phoneField = new TextField(existingEmployee != null ? existingEmployee.getPhone() : "");
+        TextLengthLimiter.limit(phoneField, TextLengthLimiter.PHONE_MAX);
         TextField usernameField = new TextField(existing != null ? existing.getUsername() : "");
+        TextLengthLimiter.limit(usernameField, TextLengthLimiter.USERNAME_MAX);
         usernameField.setDisable(existing != null); // username is immutable once created
         PasswordField passwordField = new PasswordField();
+        TextLengthLimiter.limit(passwordField, TextLengthLimiter.PASSWORD_MAX);
         passwordField.setPromptText(existing == null ? "" : "Để trống nếu không đổi mật khẩu");
         ComboBox<Role> roleBox = new ComboBox<>();
         roleBox.getItems().setAll(Role.ADMIN, Role.EMPLOYEE);
@@ -987,30 +977,6 @@ public class AdminController {
         }
     }
 
-    @FXML
-    public void handlePreviousAccountPage() {
-        accountPager.previousPage();
-        applyAccountFilter();
-    }
-
-    @FXML
-    public void handleAccountPageOne() {
-        accountPager.goToPage(1);
-        applyAccountFilter();
-    }
-
-    @FXML
-    public void handleAccountPageTwo() {
-        accountPager.goToPage(2);
-        applyAccountFilter();
-    }
-
-    @FXML
-    public void handleNextAccountPage() {
-        accountPager.nextPage();
-        applyAccountFilter();
-    }
-
     private boolean requireAdmin() {
         // Re-read the account first: refreshes the role (an admin demoted since login stops
         // being one immediately) and ends the session if it was locked/removed meanwhile.
@@ -1064,6 +1030,10 @@ public class AdminController {
     // =================================================================== Product management (quanlysanpham.fxml)
 
     private void initProductScreen() {
+        // Default 20 rows (was a fixed 8); the page-size box offers 10 / 20 / 50 / 100 / Tất cả.
+        productPaged = new PagedTable<>(productTable, productPagerBox, 20)
+                .unsortable(imageColumn, actionColumn)
+                .sortKey(sellingPriceColumn, Product::getPrice); // by amount, not by "25.000đ" text
         nameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getName()));
         categoryColumn.setCellValueFactory(data -> new SimpleStringProperty(
                 data.getValue().getCategoryName() != null ? data.getValue().getCategoryName() : "-"));
@@ -1118,6 +1088,7 @@ public class AdminController {
         categoryFilter.getSelectionModel().selectFirst();
         statusFilter.getItems().setAll("Tất cả trạng thái", "Đang bán", "Ngừng bán");
         statusFilter.getSelectionModel().selectFirst();
+        TextLengthLimiter.limit(searchField, TextLengthLimiter.SEARCH_MAX);
         searchField.textProperty().addListener((obs, old, value) -> applyProductFilter());
 
         reloadProducts();
@@ -1139,12 +1110,17 @@ public class AdminController {
                     categoryProductCounts = castCountMap(result[2]);
 
                     if (categoryFilter != null) {
-                        String currentCategoryChoice = categoryFilter.getValue();
-                        categoryFilter.getItems().setAll("Tất cả danh mục");
-                        allActiveCategories.forEach(c -> categoryFilter.getItems().add(c.getName()));
-                        categoryFilter.setValue(
-                                currentCategoryChoice != null && categoryFilter.getItems().contains(currentCategoryChoice)
-                                        ? currentCategoryChoice : "Tất cả danh mục");
+                        syncingCategoryFilter = true;
+                        try {
+                            categoryFilter.getItems().setAll("Tất cả danh mục");
+                            allActiveCategories.forEach(c -> categoryFilter.getItems().add(c.getName()));
+                            if (selectedProductCategoryId != null
+                                    && allActiveCategories.stream().noneMatch(c -> c.getId() == selectedProductCategoryId)) {
+                                selectedProductCategoryId = null; // selected category was deleted/deactivated
+                            }
+                            categoryFilter.setValue("Tất cả danh mục");
+                        } finally { syncingCategoryFilter = false; }
+                        syncCategoryFilterWithSelection();
                     }
 
                     renderProductCategoryTabs();
@@ -1211,7 +1187,7 @@ public class AdminController {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
         Label countLbl = new Label(String.valueOf(count));
-        countLbl.setStyle("-fx-font-size: 11px; -fx-text-fill: #7d8b72; -fx-font-weight: bold;");
+        countLbl.getStyleClass().add("category-count");
 
         HBox graphic = new HBox(8, iconLbl, nameLbl, spacer, countLbl);
         graphic.setAlignment(Pos.CENTER_LEFT);
@@ -1233,10 +1209,26 @@ public class AdminController {
 
     private void setProductCategoryTab(Integer categoryId) {
         selectedProductCategoryId = categoryId;
-        productPager.goToPage(1);
+        if (productPaged != null) productPaged.firstPage();
+        syncCategoryFilterWithSelection();
         renderProductCategoryTabs();
         renderProductCategoryList();
         applyProductFilter();
+    }
+
+    /** Keep the "Danh mục" combo in step with the sidebar/tab selection ("Tất cả" -> all categories). */
+    private void syncCategoryFilterWithSelection() {
+        if (categoryFilter == null) return;
+        String target = "Tất cả danh mục";
+        if (selectedProductCategoryId != null) {
+            for (Category c : allActiveCategories) {
+                if (c.getId() == selectedProductCategoryId) { target = c.getName(); break; }
+            }
+        }
+        if (!target.equals(categoryFilter.getValue())) {
+            syncingCategoryFilter = true;
+            try { categoryFilter.setValue(target); } finally { syncingCategoryFilter = false; }
+        }
     }
 
     private void applyProductFilter() {
@@ -1253,18 +1245,33 @@ public class AdminController {
                         || p.isActive() == statusChoice.equals("Đang bán"))
                 .collect(Collectors.toList());
 
-        productPager.setItems(filtered);
-        if (productTable != null) {
-            productTable.getItems().setAll(productPager.getCurrentPageItems());
-            productTable.refresh();
+        if (productPaged != null) {
+            productPaged.setItems(filtered);
         }
-
         if (totalProductLabel != null) {
             totalProductLabel.setText("Tổng cộng: " + filtered.size() + " sản phẩm");
         }
     }
 
-    @FXML public void handleCategoryFilter() { applyProductFilter(); }
+    private boolean syncingCategoryFilter = false;
+
+    /** Picking a category in the combo also moves the sidebar/tab selection, so they never disagree. */
+    @FXML public void handleCategoryFilter() {
+        if (syncingCategoryFilter || categoryFilter == null) return;
+        String choice = categoryFilter.getValue();
+        if (choice == null) return;
+        Integer id = null;
+        if (!choice.startsWith("Tất cả")) {
+            for (Category c : allActiveCategories) {
+                if (c.getName().equals(choice)) { id = c.getId(); break; }
+            }
+        }
+        if (java.util.Objects.equals(id, selectedProductCategoryId)) {
+            applyProductFilter();
+            return;
+        }
+        setProductCategoryTab(id);
+    }
     @FXML public void handleStatusFilter() { applyProductFilter(); }
 
     @FXML
@@ -1287,8 +1294,11 @@ public class AdminController {
         AlertUtil.configure(dialog);
         ButtonType saveButtonType = new ButtonType("Lưu", ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+        AlertUtil.setDefaultButton(dialog, saveButtonType);
+        AlertUtil.setCancelButton(dialog, ButtonType.CANCEL);
 
         TextField nameField = new TextField(existing != null ? existing.getName() : "");
+        TextLengthLimiter.limit(nameField, TextLengthLimiter.NAME_MAX);
         ComboBox<Category> categoryBox = new ComboBox<>();
         categoryBox.getItems().setAll(allActiveCategories);
         if (existing != null && existing.getCategoryId() != null) {
@@ -1298,7 +1308,11 @@ public class AdminController {
         TextField priceField = new TextField(existing != null ? existing.getPrice().toPlainString() : "");
         TextField costField = new TextField(existing != null && existing.getCost() != null ? existing.getCost().toPlainString() : "");
         TextField stockField = new TextField(existing != null ? String.valueOf(existing.getStock()) : "0");
+        TextLengthLimiter.limit(priceField, TextLengthLimiter.NUMBER_MAX);
+        TextLengthLimiter.limit(costField, TextLengthLimiter.NUMBER_MAX);
+        TextLengthLimiter.limit(stockField, 9);
         TextArea descriptionField = new TextArea(existing != null ? existing.getDescription() : "");
+        TextLengthLimiter.limit(descriptionField, TextLengthLimiter.DESCRIPTION_MAX);
         descriptionField.setPrefRowCount(3);
         CheckBox activeBox = new CheckBox("Đang bán");
         activeBox.setSelected(existing == null || existing.isActive());
@@ -1436,8 +1450,4 @@ public class AdminController {
         }
     }
 
-    @FXML public void handleProductPreviousPage() { productPager.previousPage(); applyProductFilter(); }
-    @FXML public void handleProductPageOne() { productPager.goToPage(1); applyProductFilter(); }
-    @FXML public void handleProductPageTwo() { productPager.goToPage(2); applyProductFilter(); }
-    @FXML public void handleProductNextPage() { productPager.nextPage(); applyProductFilter(); }
 }

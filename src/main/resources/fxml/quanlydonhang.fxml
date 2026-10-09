@@ -371,7 +371,7 @@
                     <VBox spacing="6.0" VBox.vgrow="ALWAYS">
                         <!-- HEADER THỰC ĐƠN & TÌM KIẾM -->
                         <HBox alignment="CENTER_LEFT" spacing="10.0">
-                            <Label text="Thực đơn món (từ CSDL)" styleClass="section-subtitle-bold"/>
+                            <Label text="Thực đơn món" styleClass="section-subtitle-bold"/>
                             <Region HBox.hgrow="ALWAYS"/>
                             <TextField fx:id="productSearchField"
                                        promptText="Tìm kiếm món theo tên..."

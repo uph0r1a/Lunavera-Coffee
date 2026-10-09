@@ -107,6 +107,7 @@ public final class ReportWindow {
         Stage stage = new Stage();
         stage.setTitle("Báo cáo doanh thu");
         stage.setScene(new Scene(root, 940, 560));
+        AlertUtil.closeOnEscape(stage.getScene());
         stage.show();
 
         reload();

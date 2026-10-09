@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
@@ -10,6 +9,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
@@ -99,23 +99,24 @@
             <Insets top="12"/>
          </VBox.margin>
          <Label styleClass="field-label" text="Mật khẩu"/>
-         <PasswordField fx:id="passwordField"
-                        maxWidth="310"
-                        prefHeight="42"
-                        prefWidth="310"
-                        promptText="Nhập mật khẩu"
-                        styleClass="login-field"/>
+         <HBox alignment="CENTER_LEFT" maxWidth="310" prefWidth="310" spacing="0" styleClass="password-box">
+            <PasswordField fx:id="passwordField"
+                           maxWidth="Infinity"
+                           prefHeight="42"
+                           prefWidth="260"
+                           promptText="Nhập mật khẩu"
+                           styleClass="password-inner"
+                           HBox.hgrow="ALWAYS"/>
+            <Button fx:id="showPasswordButton"
+                    focusTraversable="false"
+                    minWidth="44"
+                    prefHeight="42"
+                    prefWidth="44"
+                    styleClass="password-eye"/>
+         </HBox>
       </VBox>
 
-      <!-- Forgot password -->
-      <HBox alignment="CENTER_RIGHT" maxWidth="310" prefWidth="310">
-         <VBox.margin>
-            <Insets bottom="17" top="7"/>
-         </VBox.margin>
-         <Hyperlink fx:id="forgotPasswordLink"
-                    styleClass="forgot-password"
-                    text="Quên mật khẩu?"/>
-      </HBox>
+      <Region prefHeight="24"/>
 
       <!-- Login button -->
       <Button fx:id="loginButton"
@@ -125,22 +126,6 @@
               prefWidth="310"
               styleClass="login-button"
               text="ĐĂNG NHẬP"/>
-
-      <!-- Register: hidden on purpose (TODO.md item 9). A self-registered CUSTOMER account can't
-           log in to anything - there is no customer-facing screen (LoginController.onLoginSuccess
-           says so) - so offering sign-up here just created dead-end accounts. Staff add customers
-           (with loyalty points) from Quản lý khách hàng instead. dangky.fxml / RegisterController
-           are kept intact: to bring the link back, delete the visible/managed attributes below. -->
-      <HBox alignment="CENTER" maxWidth="310" prefWidth="310" spacing="5" visible="false" managed="false">
-         <VBox.margin>
-            <Insets top="16"/>
-         </VBox.margin>
-         <Label styleClass="register-question" text="Bạn chưa có tài khoản?"/>
-         <Hyperlink fx:id="registerLink"
-                    onAction="#handleRegister"
-                    styleClass="register-link"
-                    text="Đăng ký ngay"/>
-      </HBox>
 
    </VBox>
 

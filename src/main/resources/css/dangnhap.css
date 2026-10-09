@@ -145,29 +145,6 @@
 
 
 /* =========================================================
-   FORGOT PASSWORD
-   ========================================================= */
-
-.forgot-password {
-    -fx-text-fill: #9A7444;
-
-    -fx-font-size: 11px;
-
-    -fx-border-color: transparent;
-    -fx-padding: 0;
-
-    -fx-cursor: hand;
-
-    -fx-focus-color: transparent;
-    -fx-faint-focus-color: transparent;
-}
-
-.forgot-password:hover {
-    -fx-text-fill: #B18B54;
-}
-
-
-/* =========================================================
    LOGIN BUTTON
    ========================================================= */
 
@@ -219,36 +196,6 @@
 
 
 /* =========================================================
-   REGISTER
-   ========================================================= */
-
-.register-question {
-    -fx-text-fill: #71806E;
-
-    -fx-font-size: 11px;
-}
-
-.register-link {
-    -fx-text-fill: #9A7444;
-
-    -fx-font-size: 11px;
-    -fx-font-weight: bold;
-
-    -fx-border-color: transparent;
-    -fx-padding: 0;
-
-    -fx-cursor: hand;
-
-    -fx-focus-color: transparent;
-    -fx-faint-focus-color: transparent;
-}
-
-.register-link:hover {
-    -fx-text-fill: #B18B54;
-}
-
-
-/* =========================================================
    GENERAL FOCUS
    ========================================================= */
 
@@ -258,4 +205,65 @@
 .hyperlink:focused {
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
+}
+
+/* =========================================================
+   PASSWORD BOX + EYE BUTTON (one visual control)
+   The HBox is the visible input box; the field and the eye button inside are borderless.
+   ========================================================= */
+
+.password-box {
+    -fx-background-color: #F7F4E9;
+    -fx-background-radius: 22px;
+    -fx-border-color: #B8C2AE;
+    -fx-border-radius: 22px;
+    -fx-border-width: 1px;
+}
+
+.password-box:hover {
+    -fx-background-color: #FAF8F0;
+    -fx-border-color: #8E9E86;
+}
+
+.password-box:focused-within {
+    -fx-background-color: #FAF8F0;
+    -fx-border-color: #657A63;
+    -fx-border-width: 1.5px;
+    -fx-effect: dropshadow(gaussian, rgba(82, 105, 78, 0.22), 9, 0.25, 0, 0);
+}
+
+.password-inner,
+.password-inner:focused,
+.password-inner:hover {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent;
+    -fx-effect: null;
+    -fx-text-fill: #435443;
+    -fx-prompt-text-fill: #98A091;
+    -fx-font-size: 13px;
+    -fx-padding: 0 0 0 15px;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.password-eye {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0 22px 22px 0;
+    -fx-border-color: transparent;
+    -fx-padding: 0 16px 0 6px;
+    -fx-cursor: hand;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.password-eye-icon {
+    -fx-fill: transparent;
+    -fx-stroke: #71836A;
+    -fx-stroke-width: 1.4px;
+}
+
+.password-eye:hover .password-eye-icon {
+    -fx-stroke: #435443;
 }

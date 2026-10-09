@@ -254,4 +254,28 @@ public class OrderDAOTest {
         assertTrue("an order from today must not match a yesterday-only range",
                 orderDAO.findHistoryPage(onlyYesterday, 500, 0).stream().noneMatch(s -> s.order().getId() == order.getId()));
     }
+
+    @Test
+    public void historySortsTheWholeResultBeforePaging() {
+        Product product = newProduct(30, new BigDecimal("10000"));
+        Customer customer = newCustomer();
+        for (String total : new String[]{"30000", "10000", "20000"}) {
+            orderDAO.insert(paidOrderTotaling(new BigDecimal(total), customer.getId()), List.of(lineFor(product, 1)));
+        }
+        OrderDAO.HistoryFilter mine = new OrderDAO.HistoryFilter(customer.getFullName(), null, null, null);
+
+        OrderDAO.HistorySort ascending = new OrderDAO.HistorySort(OrderDAO.HistorySortKey.TOTAL, false);
+        OrderDAO.HistorySort descending = new OrderDAO.HistorySort(OrderDAO.HistorySortKey.TOTAL, true);
+
+        // Page 1 of 2-per-page must hold the two smallest totals overall - not "the two newest, then sorted".
+        List<OrderDAO.OrderSummary> ascPage1 = orderDAO.findHistoryPage(mine, ascending, 2, 0);
+        assertEquals(new BigDecimal("10000"), ascPage1.get(0).order().getTotal());
+        assertEquals(new BigDecimal("20000"), ascPage1.get(1).order().getTotal());
+
+        List<OrderDAO.OrderSummary> descPage1 = orderDAO.findHistoryPage(mine, descending, 2, 0);
+        assertEquals(new BigDecimal("30000"), descPage1.get(0).order().getTotal());
+        List<OrderDAO.OrderSummary> descPage2 = orderDAO.findHistoryPage(mine, descending, 2, 2);
+        assertEquals(1, descPage2.size());
+        assertEquals(new BigDecimal("10000"), descPage2.get(0).order().getTotal());
+    }
 }
